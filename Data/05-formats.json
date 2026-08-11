@@ -1,0 +1,1158 @@
+[
+  {
+    "id": "f-ord-001",
+    "domain": "containers",
+    "objective": "Implement container application hosting",
+    "kind": "ordering",
+    "difficulty": 2,
+    "stem": "You have a Dockerfile in a repository and an empty Azure Container Registry. Put the steps in the order needed to get the image built in Azure and running on Azure Container Apps, using a managed identity for the pull.",
+    "options": [
+      {
+        "id": "1",
+        "text": "Create the registry and the Container Apps environment"
+      },
+      {
+        "id": "2",
+        "text": "Run `az acr build` to build the image on ACR Tasks and push it"
+      },
+      {
+        "id": "3",
+        "text": "Assign the `AcrPull` role to the container app's managed identity"
+      },
+      {
+        "id": "4",
+        "text": "Create the container app referencing the image and the identity"
+      }
+    ],
+    "correct": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "explanation": "The registry must exist before anything can be pushed to it, and `az acr build` both builds and pushes in one step. The identity needs `AcrPull` before the app first tries to pull, otherwise the initial revision fails with an image pull error. Creating the app last means its first revision starts from an image it is already authorised to read.",
+    "docs": [
+      {
+        "title": "ACR Tasks overview",
+        "url": "https://learn.microsoft.com/azure/container-registry/container-registry-tasks-overview"
+      }
+    ],
+    "tags": [
+      "acr",
+      "container-apps",
+      "managed-identity",
+      "deployment"
+    ]
+  },
+  {
+    "id": "f-ord-002",
+    "domain": "containers",
+    "objective": "Implement container-orchestrated solutions",
+    "kind": "ordering",
+    "difficulty": 3,
+    "stem": "A pod on AKS is not serving traffic. Put the diagnostic steps in the order that narrows the problem down fastest, cheapest first.",
+    "options": [
+      {
+        "id": "1",
+        "text": "`kubectl get pods` to see the phase and restart count"
+      },
+      {
+        "id": "2",
+        "text": "`kubectl describe pod` to read the events and probe results"
+      },
+      {
+        "id": "3",
+        "text": "`kubectl logs --previous` to read the output of the run that died"
+      },
+      {
+        "id": "4",
+        "text": "`kubectl port-forward` to the pod to bypass the Service and Ingress"
+      }
+    ],
+    "correct": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "explanation": "Each step costs more effort than the last and answers a narrower question. The phase alone separates 'not scheduled' from 'crashing'. describe adds the events that explain a Pending or `ImagePullBackOff`. Logs are only worth reading once you know the container actually started. Port-forward is last because it only matters if the container is up and you now suspect the networking layer in front of it.",
+    "docs": [
+      {
+        "title": "Troubleshoot common AKS issues",
+        "url": "https://learn.microsoft.com/troubleshoot/azure/azure-kubernetes/welcome-azure-kubernetes"
+      }
+    ],
+    "tags": [
+      "aks",
+      "troubleshooting",
+      "kubectl"
+    ]
+  },
+  {
+    "id": "f-ord-003",
+    "domain": "data",
+    "objective": "Develop AI solutions by using Azure Database for PostgreSQL",
+    "kind": "ordering",
+    "difficulty": 3,
+    "stem": "You are standing up `pgvector` on Azure Database for PostgreSQL flexible server for a table that will hold two million embeddings. Put the steps in the order that produces a usable index.",
+    "options": [
+      {
+        "id": "1",
+        "text": "Add vector to the `azure.extensions` server parameter"
+      },
+      {
+        "id": "2",
+        "text": "Run `CREATE EXTENSION vector` in the database"
+      },
+      {
+        "id": "3",
+        "text": "Create the table with a vector(1536) column and load the two million rows"
+      },
+      {
+        "id": "4",
+        "text": "Create the IVFFlat index with an appropriate lists value"
+      }
+    ],
+    "correct": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "explanation": "The allowlist is checked before CREATE EXTENSION will succeed, so that comes first. The ordering that actually catches people out is the last pair: IVFFlat derives its cluster centroids from the data present when the index is built, so building before loading produces a partitioning that does not match the data and recall collapses. HNSW is the alternative precisely because it can be built first.",
+    "docs": [
+      {
+        "title": "Optimize pgvector performance",
+        "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/how-to-optimize-performance-pgvector"
+      }
+    ],
+    "tags": [
+      "postgresql",
+      "pgvector",
+      "indexing",
+      "ivfflat"
+    ]
+  },
+  {
+    "id": "f-ord-004",
+    "domain": "operations",
+    "objective": "Implement secure Azure solutions",
+    "kind": "ordering",
+    "difficulty": 2,
+    "stem": "An App Service app must read a secret from Key Vault with no credential in its configuration. Put the steps in order.",
+    "options": [
+      {
+        "id": "1",
+        "text": "Enable a system-assigned managed identity on the app"
+      },
+      {
+        "id": "2",
+        "text": "Assign the identity the Key Vault Secrets User role on the vault"
+      },
+      {
+        "id": "3",
+        "text": "Add an app setting whose value is a @Microsoft.KeyVault(SecretUri=...) reference"
+      },
+      {
+        "id": "4",
+        "text": "Restart the app and confirm the setting resolves rather than showing the literal reference"
+      }
+    ],
+    "correct": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "explanation": "The identity must exist before it can be granted a role, and the role must be in place before App Service tries to resolve the reference — otherwise the setting surfaces as the literal @Microsoft.KeyVault(...) string rather than the secret. That literal value appearing in your app is the classic symptom of the role assignment being missing or not yet propagated.",
+    "docs": [
+      {
+        "title": "Use Key Vault references",
+        "url": "https://learn.microsoft.com/azure/app-service/app-service-key-vault-references"
+      }
+    ],
+    "tags": [
+      "key-vault",
+      "app-service",
+      "managed-identity",
+      "secrets"
+    ]
+  },
+  {
+    "id": "f-ord-005",
+    "domain": "integration",
+    "objective": "Develop event- and message-based AI solutions",
+    "kind": "ordering",
+    "difficulty": 2,
+    "stem": "Put the lifecycle of a Service Bus message processed in PeekLock mode into order, for a message that fails repeatedly.",
+    "options": [
+      {
+        "id": "1",
+        "text": "The receiver takes a lock on the message and begins processing"
+      },
+      {
+        "id": "2",
+        "text": "Processing throws, the receiver abandons the message and the delivery count increments"
+      },
+      {
+        "id": "3",
+        "text": "The message becomes visible again and is redelivered to a receiver"
+      },
+      {
+        "id": "4",
+        "text": "The delivery count exceeds `MaxDeliveryCount` and the broker dead-letters the message"
+      }
+    ],
+    "correct": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "explanation": "PeekLock makes delivery at-least-once: the message stays in the queue, invisible, until it is completed or the lock lapses. Abandon returns it immediately and bumps the delivery count; the same happens silently if the lock simply expires. Once the count passes `MaxDeliveryCount` — 10 by default — the broker moves it to the dead-letter queue, which is what stops one poison message blocking the queue forever.",
+    "docs": [
+      {
+        "title": "Service Bus dead-letter queues",
+        "url": "https://learn.microsoft.com/azure/service-bus-messaging/service-bus-dead-letter-queues"
+      }
+    ],
+    "tags": [
+      "service-bus",
+      "peek-lock",
+      "dead-letter"
+    ]
+  },
+  {
+    "id": "f-blk-001",
+    "domain": "data",
+    "objective": "Develop AI solutions by using Azure Cosmos DB for NoSQL",
+    "kind": "blanks",
+    "difficulty": 2,
+    "stem": "Complete the Cosmos DB for NoSQL query so it returns the ten chunks most similar to the query embedding, using the vector index.",
+    "code": "SELECT TOP 10 c.id, c.text,\n       [1](c.embedding, @queryVector) AS score\nFROM c\n[2] [1](c.embedding, @queryVector)",
+    "blanks": [
+      {
+        "id": "b1",
+        "label": "Blank 1 — the similarity function",
+        "choices": [
+          {
+            "id": "a",
+            "text": "`VectorDistance`"
+          },
+          {
+            "id": "b",
+            "text": "`ST_DISTANCE`"
+          },
+          {
+            "id": "c",
+            "text": "`COSINE_SIMILARITY`"
+          },
+          {
+            "id": "d",
+            "text": "`VECTOR_MATCH`"
+          }
+        ],
+        "correct": "a"
+      },
+      {
+        "id": "b2",
+        "label": "Blank 2 — the clause that engages the vector index",
+        "choices": [
+          {
+            "id": "a",
+            "text": "ORDER BY"
+          },
+          {
+            "id": "b",
+            "text": "WHERE"
+          },
+          {
+            "id": "c",
+            "text": "GROUP BY"
+          },
+          {
+            "id": "d",
+            "text": "HAVING"
+          }
+        ],
+        "correct": "a"
+      }
+    ],
+    "explanation": "`VectorDistance` is the built-in similarity function, and it must appear in an ORDER BY for the engine to use the vector index. Putting it in a WHERE clause forces evaluation across the candidate set instead of an indexed nearest-neighbour search. `ST_DISTANCE` is the geospatial equivalent and works on points, not embeddings.",
+    "docs": [
+      {
+        "title": "VectorDistance in Cosmos DB",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/query/vectordistance"
+      }
+    ],
+    "tags": [
+      "cosmos-db",
+      "vector-search",
+      "query"
+    ]
+  },
+  {
+    "id": "f-blk-002",
+    "domain": "data",
+    "objective": "Develop AI solutions by using Azure Database for PostgreSQL",
+    "kind": "blanks",
+    "difficulty": 3,
+    "stem": "Complete the statement so it builds an HNSW index for cosine similarity search over normalised embeddings.",
+    "code": "CREATE INDEX ON chunks\nUSING [1] (embedding [2]);",
+    "blanks": [
+      {
+        "id": "b1",
+        "label": "Blank 1 — the index method",
+        "choices": [
+          {
+            "id": "a",
+            "text": "`hnsw`"
+          },
+          {
+            "id": "b",
+            "text": "`ivfflat`"
+          },
+          {
+            "id": "c",
+            "text": "gin"
+          },
+          {
+            "id": "d",
+            "text": "btree"
+          }
+        ],
+        "correct": "a"
+      },
+      {
+        "id": "b2",
+        "label": "Blank 2 — the operator class",
+        "choices": [
+          {
+            "id": "a",
+            "text": "`vector_cosine_ops`"
+          },
+          {
+            "id": "b",
+            "text": "`vector_l2_ops`"
+          },
+          {
+            "id": "c",
+            "text": "`vector_ip_ops`"
+          },
+          {
+            "id": "d",
+            "text": "`jsonb_ops`"
+          }
+        ],
+        "correct": "a"
+      }
+    ],
+    "explanation": "The operator class must match the distance operator the query uses, or the planner ignores the index and falls back to a sequential scan. Cosine distance is <=> and pairs with `vector_cosine_ops`; L2 is <-> with `vector_l2_ops`, and inner product is <#> with `vector_ip_ops`. A mismatch here is the usual reason `EXPLAIN ANALYZE` shows a `Seq Scan` on a table that clearly has a vector index.",
+    "docs": [
+      {
+        "title": "Use pgvector on flexible server",
+        "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/how-to-use-pgvector"
+      }
+    ],
+    "tags": [
+      "postgresql",
+      "pgvector",
+      "indexing",
+      "hnsw"
+    ]
+  },
+  {
+    "id": "f-blk-003",
+    "domain": "integration",
+    "objective": "Develop and implement Azure Functions",
+    "kind": "blanks",
+    "difficulty": 2,
+    "stem": "Complete the timer trigger so the function runs every five minutes, and choose the plan that allows a single execution to run for 30 minutes.",
+    "code": "[TimerTrigger(\"[1]\")]",
+    "blanks": [
+      {
+        "id": "b1",
+        "label": "Blank 1 — the NCRONTAB expression",
+        "choices": [
+          {
+            "id": "a",
+            "text": "0 */5 * * * *"
+          },
+          {
+            "id": "b",
+            "text": "*/5 * * * *"
+          },
+          {
+            "id": "c",
+            "text": "*/5 * * * * *"
+          },
+          {
+            "id": "d",
+            "text": "0 0 */5 * * *"
+          }
+        ],
+        "correct": "a"
+      },
+      {
+        "id": "b2",
+        "label": "Plan that permits a 30-minute execution",
+        "choices": [
+          {
+            "id": "a",
+            "text": "Premium (Elastic Premium)"
+          },
+          {
+            "id": "b",
+            "text": "Consumption"
+          },
+          {
+            "id": "c",
+            "text": "Either, with `functionTimeout` raised in `host.json`"
+          },
+          {
+            "id": "d",
+            "text": "Free App Service plan"
+          }
+        ],
+        "correct": "a"
+      }
+    ],
+    "explanation": "Functions NCRONTAB has six fields and starts with seconds, so a five-field Linux cron expression is misread. Consumption caps execution at ten minutes and `host.json` cannot raise a timeout beyond the plan's own limit — Premium and Flex Consumption default to 30 minutes and allow more.",
+    "docs": [
+      {
+        "title": "Timer trigger for Azure Functions",
+        "url": "https://learn.microsoft.com/azure/azure-functions/functions-bindings-timer"
+      }
+    ],
+    "tags": [
+      "functions",
+      "timer-trigger",
+      "ncrontab",
+      "hosting"
+    ]
+  },
+  {
+    "id": "f-blk-004",
+    "domain": "operations",
+    "objective": "Monitor and troubleshoot Azure solutions",
+    "kind": "blanks",
+    "difficulty": 2,
+    "stem": "Complete the KQL query so it returns the count of failed requests in five-minute buckets over the last hour.",
+    "code": "requests\n| where timestamp > [1](1h)\n| where success == false\n| [2] count() by [3](timestamp, 5m)",
+    "blanks": [
+      {
+        "id": "b1",
+        "label": "Blank 1 — relative time",
+        "choices": [
+          {
+            "id": "a",
+            "text": "ago"
+          },
+          {
+            "id": "b",
+            "text": "now"
+          },
+          {
+            "id": "c",
+            "text": "datetime"
+          },
+          {
+            "id": "d",
+            "text": "startofhour"
+          }
+        ],
+        "correct": "a"
+      },
+      {
+        "id": "b2",
+        "label": "Blank 2 — the aggregation operator",
+        "choices": [
+          {
+            "id": "a",
+            "text": "`summarize`"
+          },
+          {
+            "id": "b",
+            "text": "project"
+          },
+          {
+            "id": "c",
+            "text": "extend"
+          },
+          {
+            "id": "d",
+            "text": "evaluate"
+          }
+        ],
+        "correct": "a"
+      },
+      {
+        "id": "b3",
+        "label": "Blank 3 — the bucketing function",
+        "choices": [
+          {
+            "id": "a",
+            "text": "bin"
+          },
+          {
+            "id": "b",
+            "text": "round"
+          },
+          {
+            "id": "c",
+            "text": "floor"
+          },
+          {
+            "id": "d",
+            "text": "range"
+          }
+        ],
+        "correct": "a"
+      }
+    ],
+    "explanation": "`summarize` is the only operator that aggregates across rows — project and extend work row by row. `bin()` rounds a value down to the nearest multiple, which is how KQL builds time series. Putting the `ago()` filter first matters for more than correctness: Log Analytics partitions by time, so an early time filter is the single biggest performance lever in a query.",
+    "docs": [
+      {
+        "title": "KQL summarize operator",
+        "url": "https://learn.microsoft.com/kusto/query/summarize-operator"
+      }
+    ],
+    "tags": [
+      "kql",
+      "aggregation",
+      "monitoring"
+    ]
+  },
+  {
+    "id": "f-yn-001",
+    "domain": "data",
+    "objective": "Develop AI solutions by using Azure Cosmos DB for NoSQL",
+    "kind": "blanks",
+    "difficulty": 3,
+    "stem": "A change feed processor keeps a search index in step with a Cosmos DB container, running in the default latest-version mode. For each statement, decide whether it is true.",
+    "blanks": [
+      {
+        "id": "s1",
+        "label": "Deleting an item produces a change feed event the processor can act on.",
+        "choices": [
+          {
+            "id": "y",
+            "text": "Yes"
+          },
+          {
+            "id": "n",
+            "text": "No"
+          }
+        ],
+        "correct": "n"
+      },
+      {
+        "id": "s2",
+        "label": "Updating an item twice in quick succession may surface only its final state.",
+        "choices": [
+          {
+            "id": "y",
+            "text": "Yes"
+          },
+          {
+            "id": "n",
+            "text": "No"
+          }
+        ],
+        "correct": "y"
+      },
+      {
+        "id": "s3",
+        "label": "Running a second instance against the same lease container distributes the load.",
+        "choices": [
+          {
+            "id": "y",
+            "text": "Yes"
+          },
+          {
+            "id": "n",
+            "text": "No"
+          }
+        ],
+        "correct": "y"
+      },
+      {
+        "id": "s4",
+        "label": "Setting the account to Strong consistency makes deletes visible to the feed.",
+        "choices": [
+          {
+            "id": "y",
+            "text": "Yes"
+          },
+          {
+            "id": "n",
+            "text": "No"
+          }
+        ],
+        "correct": "n"
+      }
+    ],
+    "explanation": "Latest-version mode reports inserts and updates only, and only the current state of an item — so intermediate versions can be missed and deletes are invisible entirely. The lease container is what divides partitions between instances, so scaling out is just running more of them. Consistency level has no bearing on change feed semantics; to see deletes you need all-versions-and-deletes mode, or a soft-delete flag with a TTL so the deletion arrives as an update.",
+    "docs": [
+      {
+        "title": "Change feed in Azure Cosmos DB",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/change-feed"
+      }
+    ],
+    "tags": [
+      "cosmos-db",
+      "change-feed"
+    ]
+  },
+  {
+    "id": "f-yn-002",
+    "domain": "containers",
+    "objective": "Implement container-orchestrated solutions",
+    "kind": "blanks",
+    "difficulty": 3,
+    "stem": "An Azure Container App is running in multiple-revision mode. For each statement, decide whether it is true.",
+    "blanks": [
+      {
+        "id": "s1",
+        "label": "Changing the container image tag creates a new revision.",
+        "choices": [
+          {
+            "id": "y",
+            "text": "Yes"
+          },
+          {
+            "id": "n",
+            "text": "No"
+          }
+        ],
+        "correct": "y"
+      },
+      {
+        "id": "s2",
+        "label": "Changing the value of a secret creates a new revision.",
+        "choices": [
+          {
+            "id": "y",
+            "text": "Yes"
+          },
+          {
+            "id": "n",
+            "text": "No"
+          }
+        ],
+        "correct": "n"
+      },
+      {
+        "id": "s3",
+        "label": "Running containers pick up a changed secret value without restarting.",
+        "choices": [
+          {
+            "id": "y",
+            "text": "Yes"
+          },
+          {
+            "id": "n",
+            "text": "No"
+          }
+        ],
+        "correct": "n"
+      },
+      {
+        "id": "s4",
+        "label": "Traffic can be split by weight across two active revisions.",
+        "choices": [
+          {
+            "id": "y",
+            "text": "Yes"
+          },
+          {
+            "id": "n",
+            "text": "No"
+          }
+        ],
+        "correct": "y"
+      }
+    ],
+    "explanation": "Revision-scope changes — image, environment variables, CPU and memory, scale rules — create a new revision. App-scope changes such as secret values, ingress and registry credentials apply across all revisions in place. That combination produces the trap in the third statement: the new secret value is stored immediately, but it is injected into a container's environment at start, so running containers keep the old value until they restart. Traffic weighting works only in multiple-revision mode, which this app is in.",
+    "docs": [
+      {
+        "title": "Container Apps revisions",
+        "url": "https://learn.microsoft.com/azure/container-apps/revisions"
+      }
+    ],
+    "tags": [
+      "container-apps",
+      "revisions",
+      "secrets"
+    ]
+  },
+  {
+    "id": "f-yn-003",
+    "domain": "operations",
+    "objective": "Implement secure Azure solutions",
+    "kind": "blanks",
+    "difficulty": 2,
+    "stem": "For each statement about Azure Key Vault, decide whether it is true.",
+    "blanks": [
+      {
+        "id": "s1",
+        "label": "Soft delete can be turned off for a vault that does not need it.",
+        "choices": [
+          {
+            "id": "y",
+            "text": "Yes"
+          },
+          {
+            "id": "n",
+            "text": "No"
+          }
+        ],
+        "correct": "n"
+      },
+      {
+        "id": "s2",
+        "label": "Purge protection, once enabled, cannot be disabled.",
+        "choices": [
+          {
+            "id": "y",
+            "text": "Yes"
+          },
+          {
+            "id": "n",
+            "text": "No"
+          }
+        ],
+        "correct": "y"
+      },
+      {
+        "id": "s3",
+        "label": "Omitting the version from a secret URI returns the current version.",
+        "choices": [
+          {
+            "id": "y",
+            "text": "Yes"
+          },
+          {
+            "id": "n",
+            "text": "No"
+          }
+        ],
+        "correct": "y"
+      },
+      {
+        "id": "s4",
+        "label": "Reading a secret on every request is the recommended pattern.",
+        "choices": [
+          {
+            "id": "y",
+            "text": "Yes"
+          },
+          {
+            "id": "n",
+            "text": "No"
+          }
+        ],
+        "correct": "n"
+      }
+    ],
+    "explanation": "Soft delete is mandatory and always on; purge protection is optional but deliberately irreversible, which is the point — it stops an attacker or a mistake destroying secrets before the retention window elapses. Versionless URIs are what make rotation transparent to callers. Key Vault is throttled per vault and is documented as a secret store rather than a per-request lookup service, so the value belongs in an in-memory cache refreshed periodically.",
+    "docs": [
+      {
+        "title": "Key Vault soft-delete overview",
+        "url": "https://learn.microsoft.com/azure/key-vault/general/soft-delete-overview"
+      }
+    ],
+    "tags": [
+      "key-vault",
+      "soft-delete",
+      "caching"
+    ]
+  },
+  {
+    "id": "f-cs-001",
+    "domain": "integration",
+    "objective": "Develop event- and message-based AI solutions",
+    "kind": "single",
+    "difficulty": 3,
+    "caseStudyId": "cs-contoso-rag",
+    "stem": "Which change to the ingestion path satisfies the requirement that a multi-hour outage of the embedding worker must not lose documents?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Have Event Grid deliver blob-created events into a Service Bus queue that the worker consumes"
+      },
+      {
+        "id": "B",
+        "text": "Have Event Grid deliver blob-created events directly to the worker's HTTP endpoint"
+      },
+      {
+        "id": "C",
+        "text": "Poll the container every minute from a timer-triggered Function"
+      },
+      {
+        "id": "D",
+        "text": "Increase the Event Grid maximum delivery attempts to 100"
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation": "Event Grid reacts to the blob event; Service Bus provides the durable buffer that absorbs a long outage, with retries, dead-lettering and back-pressure. The queue holds work for as long as the message TTL allows, which is far beyond Event Grid's own retry window.",
+    "whyWrong": {
+      "B": "Direct delivery is bounded by Event Grid's 24-hour retry window and gives no back-pressure control; a multi-hour outage risks exhausting it.",
+      "C": "Polling adds latency, costs invocations, and needs its own bookkeeping of what has already been processed.",
+      "D": "Attempts are capped by the event's 24-hour time to live, so raising the count does not extend how long the work survives."
+    },
+    "docs": [
+      {
+        "title": "Compare messaging services",
+        "url": "https://learn.microsoft.com/azure/event-grid/compare-messaging-services"
+      }
+    ],
+    "tags": [
+      "event-grid",
+      "service-bus",
+      "architecture",
+      "resiliency"
+    ]
+  },
+  {
+    "id": "f-cs-002",
+    "domain": "data",
+    "objective": "Develop AI solutions by using Azure Database for PostgreSQL",
+    "kind": "single",
+    "difficulty": 3,
+    "caseStudyId": "cs-contoso-rag",
+    "stem": "Retrieval for the smallest tenants frequently returns fewer than the requested ten chunks, even though those tenants have hundreds. What is the cause?",
+    "options": [
+      {
+        "id": "A",
+        "text": "The ANN index returns a fixed candidate set before the tenant filter is applied, so few candidates survive it"
+      },
+      {
+        "id": "B",
+        "text": "Small tenants have not had their embeddings generated yet"
+      },
+      {
+        "id": "C",
+        "text": "The p95 latency budget is causing the query to be cancelled early"
+      },
+      {
+        "id": "D",
+        "text": "LIMIT cannot be combined with a vector ORDER BY"
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation": "This is the classic filtered-ANN failure. The approximate index is searched first and yields a bounded candidate list; the tenant predicate is then applied to those candidates, and for a highly selective filter most are discarded. The fixes are a partial index per tenant, iterative scans, or raising `ef_search` so the candidate pool is larger.",
+    "whyWrong": {
+      "B": "Missing embeddings would affect tenants regardless of size, not specifically the small ones.",
+      "C": "A latency budget is a target, not a mechanism that truncates result sets.",
+      "D": "LIMIT with a vector ORDER BY is the standard KNN query form."
+    },
+    "docs": [
+      {
+        "title": "Optimize pgvector performance",
+        "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/how-to-optimize-performance-pgvector"
+      }
+    ],
+    "tags": [
+      "postgresql",
+      "pgvector",
+      "rag",
+      "filtering"
+    ]
+  },
+  {
+    "id": "f-cs-003",
+    "domain": "containers",
+    "objective": "Implement container-orchestrated solutions",
+    "kind": "single",
+    "difficulty": 2,
+    "caseStudyId": "cs-contoso-rag",
+    "stem": "Which configuration makes the embedding worker cost nothing while no documents are waiting, given the team's constraint about Kubernetes?",
+    "options": [
+      {
+        "id": "A",
+        "text": "`minReplicas` 0 on the Container App with a KEDA `azure-servicebus` scale rule"
+      },
+      {
+        "id": "B",
+        "text": "`minReplicas` 1 with an HTTP scale rule on concurrent requests"
+      },
+      {
+        "id": "C",
+        "text": "Move the worker to AKS and use the cluster autoscaler"
+      },
+      {
+        "id": "D",
+        "text": "`minReplicas` 0 with no scale rule, relying on the default HTTP rule"
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation": "A KEDA scaler driven by queue length lets the app scale to zero when the queue drains and out again as it fills. Container Apps gives you KEDA without any Kubernetes to operate, which is exactly the stated constraint.",
+    "whyWrong": {
+      "B": "The worker has no HTTP ingress so the rule never fires, and minReplicas 1 means paying around the clock.",
+      "C": "This contradicts the requirement to avoid Kubernetes.",
+      "D": "With no ingress and no scale rule there is nothing to wake the app; it sits at zero while the queue grows."
+    },
+    "docs": [
+      {
+        "title": "Set scaling rules in Container Apps",
+        "url": "https://learn.microsoft.com/azure/container-apps/scale-app"
+      }
+    ],
+    "tags": [
+      "container-apps",
+      "keda",
+      "scaling",
+      "cost"
+    ]
+  },
+  {
+    "id": "f-cs-004",
+    "domain": "operations",
+    "objective": "Monitor and troubleshoot Azure solutions",
+    "kind": "single",
+    "difficulty": 3,
+    "caseStudyId": "cs-contoso-rag",
+    "stem": "Support engineers must trace one customer question across the API, retrieval and the model call. Retrieval currently appears as an unrelated trace. What is the fix?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Ensure the W3C `traceparent` context is propagated across the hop into the worker"
+      },
+      {
+        "id": "B",
+        "text": "Set the same `service.name` resource attribute on every component"
+      },
+      {
+        "id": "C",
+        "text": "Raise the sampling rate to 100% on all components"
+      },
+      {
+        "id": "D",
+        "text": "Send all components to a single Log Analytics workspace"
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation": "Correlation depends on the trace context travelling with the call. A hand-built HttpClient outside the instrumented pipeline, or a queue message that does not carry the context, breaks the chain and the downstream component starts a brand new trace.",
+    "whyWrong": {
+      "B": "service.name maps to cloud_RoleName and is what separates nodes on the application map — making them identical would merge the components, not correlate the trace.",
+      "C": "Sampling can drop spans but never reassigns surviving ones to a different trace.",
+      "D": "They may already share a workspace; co-location does not create correlation."
+    },
+    "docs": [
+      {
+        "title": "Telemetry correlation",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/app/distributed-trace-data"
+      }
+    ],
+    "tags": [
+      "opentelemetry",
+      "correlation",
+      "troubleshooting"
+    ]
+  },
+  {
+    "id": "f-cs-005",
+    "domain": "integration",
+    "objective": "Develop and implement Azure Functions",
+    "kind": "single",
+    "difficulty": 2,
+    "caseStudyId": "cs-fabrikam-migration",
+    "stem": "The nightly job is terminated part-way through at roughly the same elapsed time each run. Which change addresses the cause while meeting the requirement that nothing stays alive between runs?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Move the work to a Container Apps job with a schedule trigger"
+      },
+      {
+        "id": "B",
+        "text": "Raise `functionTimeout` in `host.json` to 60 minutes"
+      },
+      {
+        "id": "C",
+        "text": "Add a retry policy so the function resumes after being terminated"
+      },
+      {
+        "id": "D",
+        "text": "Enable Always On for the Function app"
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation": "Termination at a consistent elapsed time is the Consumption plan's ten-minute execution cap. A Container Apps job runs to completion, is triggered on a cron schedule and retains no replica between runs, which is exactly the stated requirement. Durable Functions fan-out would be the alternative if they wanted to stay in Functions.",
+    "whyWrong": {
+      "B": "host.json cannot raise a timeout past the plan's own limit; on Consumption the ceiling is ten minutes.",
+      "C": "A retry restarts the work from the beginning and hits the same cap again.",
+      "D": "Always On is not available on Consumption and addresses idle unloading, not execution length."
+    },
+    "docs": [
+      {
+        "title": "Jobs in Azure Container Apps",
+        "url": "https://learn.microsoft.com/azure/container-apps/jobs"
+      }
+    ],
+    "tags": [
+      "functions",
+      "container-apps",
+      "jobs",
+      "hosting"
+    ]
+  },
+  {
+    "id": "f-cs-006",
+    "domain": "data",
+    "objective": "Develop AI solutions by using Azure Cosmos DB for NoSQL",
+    "kind": "multi",
+    "difficulty": 3,
+    "caseStudyId": "cs-fabrikam-migration",
+    "stem": "Which two changes address the stale deleted products in the search index, given the team wants to keep the existing account and partition key? Choose two.",
+    "options": [
+      {
+        "id": "A",
+        "text": "Switch the change feed to all-versions-and-deletes mode"
+      },
+      {
+        "id": "B",
+        "text": "Soft-delete products with a flag and a TTL so the deletion arrives as an update"
+      },
+      {
+        "id": "C",
+        "text": "Change the partition key to spread the largest publisher"
+      },
+      {
+        "id": "D",
+        "text": "Raise the container's provisioned throughput"
+      },
+      {
+        "id": "E",
+        "text": "Switch the account to Strong consistency"
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation": "The index is stale because latest-version change feed mode never reports deletes. Either move to all-versions-and-deletes mode, or keep the default mode and model deletion as an update — set a deleted flag plus a TTL, which the feed does surface. Both leave the account and partition key alone.",
+    "whyWrong": {
+      "C": "Repartitioning would help the 429s, but the question is about deletes and the team wants to keep the key.",
+      "D": "More throughput does not make deletes visible to the feed.",
+      "E": "Consistency level has no bearing on change feed semantics."
+    },
+    "docs": [
+      {
+        "title": "Change feed in Azure Cosmos DB",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/change-feed"
+      }
+    ],
+    "tags": [
+      "cosmos-db",
+      "change-feed",
+      "ttl"
+    ]
+  },
+  {
+    "id": "f-cs-007",
+    "domain": "data",
+    "objective": "Develop AI solutions by using Azure Cosmos DB for NoSQL",
+    "kind": "single",
+    "difficulty": 3,
+    "caseStudyId": "cs-fabrikam-migration",
+    "stem": "The 429s are concentrated on the largest publisher even though throughput is generous. What does this indicate?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A hot logical partition — that publisher's traffic lands on one partition, which can only use its share of the throughput"
+      },
+      {
+        "id": "B",
+        "text": "The SDK is in gateway mode rather than direct mode"
+      },
+      {
+        "id": "C",
+        "text": "The container is provisioned with manual rather than autoscale throughput"
+      },
+      {
+        "id": "D",
+        "text": "The nightly job is not using bulk mode"
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation": "Provisioned throughput is divided evenly across physical partitions. When one publisher's documents concentrate in a single logical partition, that partition can only ever draw its slice, so it throttles while the rest of the container sits idle. Adding throughput raises the ceiling but the skew remains.",
+    "whyWrong": {
+      "B": "Gateway mode adds latency but does not produce partition-level throttling.",
+      "C": "Autoscale would raise the ceiling without fixing the per-partition share.",
+      "D": "Bulk mode helps overall ingest throughput but does not rebalance a skewed key — though it is worth enabling for a job of this shape."
+    },
+    "docs": [
+      {
+        "title": "Partitioning and horizontal scaling",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/partitioning-overview"
+      }
+    ],
+    "tags": [
+      "cosmos-db",
+      "partitioning",
+      "throttling"
+    ]
+  },
+  {
+    "id": "f-ord-006",
+    "domain": "operations",
+    "objective": "Monitor and troubleshoot Azure solutions",
+    "kind": "ordering",
+    "difficulty": 2,
+    "stem": "Put the KQL pipeline into the order that runs correctly and fastest over a large table.",
+    "options": [
+      {
+        "id": "1",
+        "text": "requests"
+      },
+      {
+        "id": "2",
+        "text": "`| where timestamp > ago(24h)`"
+      },
+      {
+        "id": "3",
+        "text": "`| where success == false`"
+      },
+      {
+        "id": "4",
+        "text": "`| summarize failures = count() by operation_Name`"
+      },
+      {
+        "id": "5",
+        "text": "`| top 10 by failures desc`"
+      }
+    ],
+    "correct": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    "explanation": "The table comes first, then the time filter — Log Analytics partitions data by time, so filtering on it early eliminates whole partitions before anything else runs and is the single biggest performance lever. Row filters follow, then the aggregation, and only then can you rank the aggregated result.",
+    "docs": [
+      {
+        "title": "KQL best practices",
+        "url": "https://learn.microsoft.com/kusto/query/best-practices"
+      }
+    ],
+    "tags": [
+      "kql",
+      "performance",
+      "aggregation"
+    ]
+  }
+]

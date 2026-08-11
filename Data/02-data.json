@@ -7,12 +7,26 @@
     "difficulty": 2,
     "stem": "Your retrieval service reads from Cosmos DB for NoSQL at Strong consistency. Read charges are twice what you budgeted. Users only ever read their own writes, from a single region. Which change reduces RU cost with no correctness impact for that pattern?",
     "options": [
-      { "id": "A", "text": "Switch the default consistency level to Session" },
-      { "id": "B", "text": "Switch to Bounded Staleness with a small lag window" },
-      { "id": "C", "text": "Enable autoscale throughput" },
-      { "id": "D", "text": "Add a composite index covering the query" }
+      {
+        "id": "A",
+        "text": "Switch the default consistency level to Session"
+      },
+      {
+        "id": "B",
+        "text": "Switch to Bounded Staleness with a small lag window"
+      },
+      {
+        "id": "C",
+        "text": "Enable autoscale throughput"
+      },
+      {
+        "id": "D",
+        "text": "Add a composite index covering the query"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Reads at Strong and Bounded Staleness are charged at double the RU rate of Session, Consistent Prefix and Eventual. Session guarantees read-your-own-writes within a session, which is precisely the stated requirement, so it halves read cost without breaking anything.",
     "whyWrong": {
       "B": "Bounded Staleness is in the same 2× RU band as Strong, so it saves nothing.",
@@ -20,9 +34,17 @@
       "D": "Composite indexes help multi-property ORDER BY. They do not change the consistency multiplier on reads."
     },
     "docs": [
-      { "title": "Consistency levels in Azure Cosmos DB", "url": "https://learn.microsoft.com/azure/cosmos-db/consistency-levels" }
+      {
+        "title": "Consistency levels in Azure Cosmos DB",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/consistency-levels"
+      }
     ],
-    "tags": ["cosmos-db", "consistency", "ru", "cost"]
+    "tags": [
+      "cosmos-db",
+      "consistency",
+      "ru",
+      "cost"
+    ]
   },
   {
     "id": "d-cos-002",
@@ -32,12 +54,26 @@
     "difficulty": 1,
     "stem": "What is the default consistency level for a new Azure Cosmos DB account?",
     "options": [
-      { "id": "A", "text": "Session" },
-      { "id": "B", "text": "Strong" },
-      { "id": "C", "text": "Eventual" },
-      { "id": "D", "text": "Consistent Prefix" }
+      {
+        "id": "A",
+        "text": "Session"
+      },
+      {
+        "id": "B",
+        "text": "Strong"
+      },
+      {
+        "id": "C",
+        "text": "Eventual"
+      },
+      {
+        "id": "D",
+        "text": "Consistent Prefix"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Session is the default. It is the middle of the five levels and gives read-your-own-writes and monotonic reads within a session, at the cheaper read rate.",
     "whyWrong": {
       "B": "Strong is the strictest level and must be chosen deliberately; it also doubles read RU charges.",
@@ -45,9 +81,15 @@
       "D": "Consistent Prefix guarantees ordering without recency and is not the default."
     },
     "docs": [
-      { "title": "Consistency levels in Azure Cosmos DB", "url": "https://learn.microsoft.com/azure/cosmos-db/consistency-levels" }
+      {
+        "title": "Consistency levels in Azure Cosmos DB",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/consistency-levels"
+      }
     ],
-    "tags": ["cosmos-db", "consistency"]
+    "tags": [
+      "cosmos-db",
+      "consistency"
+    ]
   },
   {
     "id": "d-cos-003",
@@ -57,22 +99,44 @@
     "difficulty": 3,
     "stem": "A managed identity has been granted the Cosmos DB Account Reader Role on the account. The application authenticates successfully but every document read returns 403 Forbidden. What is missing?",
     "options": [
-      { "id": "A", "text": "A data-plane role assignment, created with az cosmosdb sql role assignment create" },
-      { "id": "B", "text": "The Contributor role on the resource group" },
-      { "id": "C", "text": "A firewall rule allowing the application's outbound IP" },
-      { "id": "D", "text": "Enabling the local authentication keys on the account" }
+      {
+        "id": "A",
+        "text": "A data-plane role assignment, created with `az cosmosdb sql role assignment create`"
+      },
+      {
+        "id": "B",
+        "text": "The Contributor role on the resource group"
+      },
+      {
+        "id": "C",
+        "text": "A firewall rule allowing the application's outbound IP"
+      },
+      {
+        "id": "D",
+        "text": "Enabling the local authentication keys on the account"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "Cosmos DB separates control plane from data plane. Azure RBAC roles such as Account Reader or even Owner govern the resource, not the documents. Reading items requires a Cosmos DB data-plane role assignment created with az cosmosdb sql role assignment create.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "Cosmos DB separates control plane from data plane. Azure RBAC roles such as Account Reader or even Owner govern the resource, not the documents. Reading items requires a Cosmos DB data-plane role assignment created with `az cosmosdb sql role assignment create`.",
     "whyWrong": {
       "B": "Contributor is another control-plane role and grants no data access at all.",
       "C": "A firewall block produces a network-level failure, not a 403 after successful authentication.",
       "D": "The scenario uses a managed identity, so key-based auth is irrelevant — and enabling keys weakens security."
     },
     "docs": [
-      { "title": "Data plane RBAC in Cosmos DB", "url": "https://learn.microsoft.com/azure/cosmos-db/how-to-setup-rbac" }
+      {
+        "title": "Data plane RBAC in Cosmos DB",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/how-to-setup-rbac"
+      }
     ],
-    "tags": ["cosmos-db", "rbac", "security", "managed-identity"]
+    "tags": [
+      "cosmos-db",
+      "rbac",
+      "security",
+      "managed-identity"
+    ]
   },
   {
     "id": "d-cos-004",
@@ -82,22 +146,43 @@
     "difficulty": 2,
     "stem": "You are adding vector search to a Cosmos DB for NoSQL container holding several million chunks. Which vector index type is designed for large datasets with low query latency?",
     "options": [
-      { "id": "A", "text": "diskANN" },
-      { "id": "B", "text": "flat" },
-      { "id": "C", "text": "quantizedFlat" },
-      { "id": "D", "text": "composite" }
+      {
+        "id": "A",
+        "text": "`diskANN`"
+      },
+      {
+        "id": "B",
+        "text": "flat"
+      },
+      {
+        "id": "C",
+        "text": "`quantizedFlat`"
+      },
+      {
+        "id": "D",
+        "text": "composite"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "Cosmos DB offers flat (exact search, small sets), quantizedFlat (compressed vectors, medium sets) and diskANN (a graph index built for large-scale approximate search with low latency). Several million vectors is diskANN territory.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "Cosmos DB offers flat (exact search, small sets), `quantizedFlat` (compressed vectors, medium sets) and `diskANN` (a graph index built for large-scale approximate search with low latency). Several million vectors is `diskANN` territory.",
     "whyWrong": {
       "B": "flat performs an exact scan and does not scale to millions of vectors.",
       "C": "quantizedFlat improves on flat by compressing vectors but is still not the large-scale option.",
       "D": "composite is a regular index type for multi-property ORDER BY, not a vector index."
     },
     "docs": [
-      { "title": "Vector search in Cosmos DB for NoSQL", "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/vector-search" }
+      {
+        "title": "Vector search in Cosmos DB for NoSQL",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/vector-search"
+      }
     ],
-    "tags": ["cosmos-db", "vector-search", "indexing"]
+    "tags": [
+      "cosmos-db",
+      "vector-search",
+      "indexing"
+    ]
   },
   {
     "id": "d-cos-005",
@@ -108,22 +193,43 @@
     "stem": "Complete the NoSQL query so it returns the ten chunks most similar to the query embedding.",
     "code": "SELECT TOP 10 c.id, c.text,\n       VectorDistance(c.embedding, @queryVector) AS score\nFROM c\n<?>",
     "options": [
-      { "id": "A", "text": "ORDER BY VectorDistance(c.embedding, @queryVector)" },
-      { "id": "B", "text": "ORDER BY score DESC" },
-      { "id": "C", "text": "WHERE VectorDistance(c.embedding, @queryVector) < 0.2" },
-      { "id": "D", "text": "GROUP BY VectorDistance(c.embedding, @queryVector)" }
+      {
+        "id": "A",
+        "text": "ORDER BY `VectorDistance`(c.embedding, @queryVector)"
+      },
+      {
+        "id": "B",
+        "text": "ORDER BY score DESC"
+      },
+      {
+        "id": "C",
+        "text": "WHERE `VectorDistance`(c.embedding, @queryVector) < 0.2"
+      },
+      {
+        "id": "D",
+        "text": "GROUP BY `VectorDistance`(c.embedding, @queryVector)"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "Vector search in Cosmos DB is expressed as ORDER BY VectorDistance(...). Only that form lets the engine use the vector index; the distance function must appear in the ORDER BY clause.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "Vector search in Cosmos DB is expressed as ORDER BY `VectorDistance`(...). Only that form lets the engine use the vector index; the distance function must appear in the ORDER BY clause.",
     "whyWrong": {
       "B": "Ordering by the projected alias does not engage the vector index, and DESC would rank the least similar first for a distance metric.",
       "C": "A WHERE filter on distance forces evaluation over the candidate set rather than an indexed nearest-neighbour search.",
       "D": "GROUP BY aggregates rows; it has no role in a similarity ranking."
     },
     "docs": [
-      { "title": "VectorDistance in Cosmos DB", "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/query/vectordistance" }
+      {
+        "title": "VectorDistance in Cosmos DB",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/query/vectordistance"
+      }
     ],
-    "tags": ["cosmos-db", "vector-search", "query"]
+    "tags": [
+      "cosmos-db",
+      "vector-search",
+      "query"
+    ]
   },
   {
     "id": "d-cos-006",
@@ -133,12 +239,26 @@
     "difficulty": 3,
     "stem": "A change feed processor keeps documents in a search index up to date. Deleted documents remain in the index indefinitely. What explains this?",
     "options": [
-      { "id": "A", "text": "The default latest-version change feed mode does not emit delete events" },
-      { "id": "B", "text": "The lease container is missing, so checkpoints are lost" },
-      { "id": "C", "text": "The processor is running with too few instances to keep up" },
-      { "id": "D", "text": "Deletes are only emitted at the Strong consistency level" }
+      {
+        "id": "A",
+        "text": "The default latest-version change feed mode does not emit delete events"
+      },
+      {
+        "id": "B",
+        "text": "The lease container is missing, so checkpoints are lost"
+      },
+      {
+        "id": "C",
+        "text": "The processor is running with too few instances to keep up"
+      },
+      {
+        "id": "D",
+        "text": "Deletes are only emitted at the Strong consistency level"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "In latest-version mode the change feed reports inserts and updates only. Deletes are invisible. The two standard remedies are all-versions-and-deletes mode, or soft-delete: mark the item deleted and set a TTL so the update flows through the feed.",
     "whyWrong": {
       "B": "A missing lease container breaks checkpointing entirely — you would see reprocessing, not selectively missing deletes.",
@@ -146,9 +266,15 @@
       "D": "Change feed behaviour is not governed by the account consistency level."
     },
     "docs": [
-      { "title": "Change feed in Azure Cosmos DB", "url": "https://learn.microsoft.com/azure/cosmos-db/change-feed" }
+      {
+        "title": "Change feed in Azure Cosmos DB",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/change-feed"
+      }
     ],
-    "tags": ["cosmos-db", "change-feed"]
+    "tags": [
+      "cosmos-db",
+      "change-feed"
+    ]
   },
   {
     "id": "d-cos-007",
@@ -158,12 +284,26 @@
     "difficulty": 2,
     "stem": "You are implementing a change feed processor in the .NET SDK. Which component is required in addition to the monitored container?",
     "options": [
-      { "id": "A", "text": "A lease container that stores checkpoints and distributes partitions across instances" },
-      { "id": "B", "text": "An Event Hubs namespace to buffer changes" },
-      { "id": "C", "text": "A second Cosmos DB account in a paired region" },
-      { "id": "D", "text": "A stored procedure registered on the monitored container" }
+      {
+        "id": "A",
+        "text": "A lease container that stores checkpoints and distributes partitions across instances"
+      },
+      {
+        "id": "B",
+        "text": "An Event Hubs namespace to buffer changes"
+      },
+      {
+        "id": "C",
+        "text": "A second Cosmos DB account in a paired region"
+      },
+      {
+        "id": "D",
+        "text": "A stored procedure registered on the monitored container"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "The change feed processor stores its position in a lease container. Leases are also how work is divided between instances, so running more instances against the same lease container is how you scale out.",
     "whyWrong": {
       "B": "Event Hubs is not part of the change feed processor; the feed is read directly from the container.",
@@ -171,9 +311,16 @@
       "D": "Stored procedures execute inside a partition on demand and have no role in change feed processing."
     },
     "docs": [
-      { "title": "Change feed processor", "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/change-feed-processor" }
+      {
+        "title": "Change feed processor",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/change-feed-processor"
+      }
     ],
-    "tags": ["cosmos-db", "change-feed", "sdk"]
+    "tags": [
+      "cosmos-db",
+      "change-feed",
+      "sdk"
+    ]
   },
   {
     "id": "d-cos-008",
@@ -183,12 +330,26 @@
     "difficulty": 2,
     "stem": "Write throughput charges on a container are much higher than expected. Documents contain a large embedding array and several long text fields that are never used in filters. What is the most effective change?",
     "options": [
-      { "id": "A", "text": "Add the unused paths to excludedPaths in the container's indexing policy" },
-      { "id": "B", "text": "Switch the indexing mode from consistent to none" },
-      { "id": "C", "text": "Lower the account consistency level to Eventual" },
-      { "id": "D", "text": "Enable autoscale throughput on the container" }
+      {
+        "id": "A",
+        "text": "Add the unused paths to excludedPaths in the container's indexing policy"
+      },
+      {
+        "id": "B",
+        "text": "Switch the indexing mode from consistent to none"
+      },
+      {
+        "id": "C",
+        "text": "Lower the account consistency level to Eventual"
+      },
+      {
+        "id": "D",
+        "text": "Enable autoscale throughput on the container"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Cosmos DB indexes every path by default, and each indexed path adds RU cost to every write. Excluding paths you never filter or sort on is the standard way to cut write charges while keeping queries working.",
     "whyWrong": {
       "B": "Indexing mode none disables indexing altogether, so all queries degrade to full scans — far too blunt.",
@@ -196,9 +357,17 @@
       "D": "Autoscale changes billing shape, not the RU consumed per write."
     },
     "docs": [
-      { "title": "Indexing policies in Cosmos DB", "url": "https://learn.microsoft.com/azure/cosmos-db/index-policy" }
+      {
+        "title": "Indexing policies in Cosmos DB",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/index-policy"
+      }
     ],
-    "tags": ["cosmos-db", "indexing", "ru", "cost"]
+    "tags": [
+      "cosmos-db",
+      "indexing",
+      "ru",
+      "cost"
+    ]
   },
   {
     "id": "d-cos-009",
@@ -208,12 +377,26 @@
     "difficulty": 2,
     "stem": "A query with ORDER BY c.tenantId, c.createdAt fails with an error stating that the query requires an index that is not configured. What do you add?",
     "options": [
-      { "id": "A", "text": "A composite index on tenantId and createdAt in the indexing policy" },
-      { "id": "B", "text": "A spatial index on both properties" },
-      { "id": "C", "text": "A unique key policy on tenantId and createdAt" },
-      { "id": "D", "text": "A vector index covering both properties" }
+      {
+        "id": "A",
+        "text": "A composite index on tenantId and createdAt in the indexing policy"
+      },
+      {
+        "id": "B",
+        "text": "A spatial index on both properties"
+      },
+      {
+        "id": "C",
+        "text": "A unique key policy on tenantId and createdAt"
+      },
+      {
+        "id": "D",
+        "text": "A vector index covering both properties"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Range indexes cover single-property ORDER BY. Sorting on two or more properties requires a composite index that lists them in the same order and direction as the query.",
     "whyWrong": {
       "B": "Spatial indexes serve geospatial types and operators.",
@@ -221,9 +404,16 @@
       "D": "Vector indexes serve VectorDistance similarity search only."
     },
     "docs": [
-      { "title": "Composite indexes", "url": "https://learn.microsoft.com/azure/cosmos-db/index-policy" }
+      {
+        "title": "Composite indexes",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/index-policy"
+      }
     ],
-    "tags": ["cosmos-db", "indexing", "query"]
+    "tags": [
+      "cosmos-db",
+      "indexing",
+      "query"
+    ]
   },
   {
     "id": "d-cos-010",
@@ -233,12 +423,26 @@
     "difficulty": 2,
     "stem": "Your service returns HTTP 429 from Cosmos DB during traffic spikes, always on documents belonging to the same large customer. Throughput is already provisioned generously. What is the underlying problem?",
     "options": [
-      { "id": "A", "text": "A hot logical partition — the partition key concentrates that customer's traffic on one partition" },
-      { "id": "B", "text": "The SDK is configured in gateway mode instead of direct mode" },
-      { "id": "C", "text": "The account is at Session consistency instead of Strong" },
-      { "id": "D", "text": "Autoscale is disabled on the container" }
+      {
+        "id": "A",
+        "text": "A hot logical partition — the partition key concentrates that customer's traffic on one partition"
+      },
+      {
+        "id": "B",
+        "text": "The SDK is configured in gateway mode instead of direct mode"
+      },
+      {
+        "id": "C",
+        "text": "The account is at Session consistency instead of Strong"
+      },
+      {
+        "id": "D",
+        "text": "Autoscale is disabled on the container"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Provisioned throughput is divided evenly across physical partitions. A partition key that funnels one tenant's traffic into a single logical partition means that partition can only ever use its share, so it throttles while the rest of the container sits idle.",
     "whyWrong": {
       "B": "Gateway mode adds latency but does not cause partition-level throttling.",
@@ -246,9 +450,17 @@
       "D": "Autoscale would raise the ceiling, but the per-partition share is still a fraction of the total — the skew remains."
     },
     "docs": [
-      { "title": "Partitioning and horizontal scaling", "url": "https://learn.microsoft.com/azure/cosmos-db/partitioning-overview" }
+      {
+        "title": "Partitioning and horizontal scaling",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/partitioning-overview"
+      }
     ],
-    "tags": ["cosmos-db", "partitioning", "throttling", "troubleshooting"]
+    "tags": [
+      "cosmos-db",
+      "partitioning",
+      "throttling",
+      "troubleshooting"
+    ]
   },
   {
     "id": "d-cos-011",
@@ -256,24 +468,45 @@
     "objective": "Develop AI solutions by using Azure Cosmos DB for NoSQL",
     "kind": "single",
     "difficulty": 2,
-    "stem": "How should CosmosClient be managed in an ASP.NET Core application?",
+    "stem": "How should `CosmosClient` be managed in an ASP.NET Core application?",
     "options": [
-      { "id": "A", "text": "Registered as a singleton and reused for the lifetime of the application" },
-      { "id": "B", "text": "Created per request in a using block and disposed" },
-      { "id": "C", "text": "Registered as scoped so each request gets its own instance" },
-      { "id": "D", "text": "Created per container to isolate connection pools" }
+      {
+        "id": "A",
+        "text": "Registered as a singleton and reused for the lifetime of the application"
+      },
+      {
+        "id": "B",
+        "text": "Created per request in a using block and disposed"
+      },
+      {
+        "id": "C",
+        "text": "Registered as scoped so each request gets its own instance"
+      },
+      {
+        "id": "D",
+        "text": "Created per container to isolate connection pools"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "CosmosClient is thread-safe and maintains connections and routing caches internally. Creating one per request wastes connections and adds cold-start latency to every call, so a singleton is the documented pattern.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "`CosmosClient` is thread-safe and maintains connections and routing caches internally. Creating one per request wastes connections and adds cold-start latency to every call, so a singleton is the documented pattern.",
     "whyWrong": {
       "B": "Disposing per request tears down the connection pool constantly and is a known performance anti-pattern.",
       "C": "Scoped is per request, with the same problem.",
       "D": "One client can address any number of databases and containers; extra clients gain nothing."
     },
     "docs": [
-      { "title": "Performance tips for the .NET SDK", "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/performance-tips-dotnet-sdk-v3" }
+      {
+        "title": "Performance tips for the .NET SDK",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/performance-tips-dotnet-sdk-v3"
+      }
     ],
-    "tags": ["cosmos-db", "sdk", "performance"]
+    "tags": [
+      "cosmos-db",
+      "sdk",
+      "performance"
+    ]
   },
   {
     "id": "d-cos-012",
@@ -283,22 +516,43 @@
     "difficulty": 2,
     "stem": "Which property of the SDK response tells you the RU cost of an operation you just performed?",
     "options": [
-      { "id": "A", "text": "response.RequestCharge" },
-      { "id": "B", "text": "response.Diagnostics.Duration" },
-      { "id": "C", "text": "response.ActivityId" },
-      { "id": "D", "text": "response.ETag" }
+      {
+        "id": "A",
+        "text": "response.`RequestCharge`"
+      },
+      {
+        "id": "B",
+        "text": "response.Diagnostics.Duration"
+      },
+      {
+        "id": "C",
+        "text": "response.ActivityId"
+      },
+      {
+        "id": "D",
+        "text": "response.ETag"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "RequestCharge surfaces the x-ms-request-charge header and reports the RUs consumed. Logging it per operation is how you find the queries that are actually costing you throughput.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "`RequestCharge` surfaces the x-ms-request-charge header and reports the RUs consumed. Logging it per operation is how you find the queries that are actually costing you throughput.",
     "whyWrong": {
       "B": "Duration measures elapsed time, which is related but not the billing unit.",
       "C": "ActivityId correlates a request with server-side traces for support.",
       "D": "ETag supports optimistic concurrency."
     },
     "docs": [
-      { "title": "Request units in Azure Cosmos DB", "url": "https://learn.microsoft.com/azure/cosmos-db/request-units" }
+      {
+        "title": "Request units in Azure Cosmos DB",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/request-units"
+      }
     ],
-    "tags": ["cosmos-db", "ru", "sdk"]
+    "tags": [
+      "cosmos-db",
+      "ru",
+      "sdk"
+    ]
   },
   {
     "id": "d-cos-013",
@@ -308,12 +562,26 @@
     "difficulty": 3,
     "stem": "A nightly job writes two million embedding documents. It runs slowly and generates constant 429s despite generous throughput. Which SDK setting is designed for this workload?",
     "options": [
-      { "id": "A", "text": "Set AllowBulkExecution to true on the CosmosClientOptions" },
-      { "id": "B", "text": "Set ConnectionMode to Gateway" },
-      { "id": "C", "text": "Set ConsistencyLevel to Eventual on each write" },
-      { "id": "D", "text": "Set EnableContentResponseOnWrite to true" }
+      {
+        "id": "A",
+        "text": "Set `AllowBulkExecution` to true on the `CosmosClient`Options"
+      },
+      {
+        "id": "B",
+        "text": "Set ConnectionMode to Gateway"
+      },
+      {
+        "id": "C",
+        "text": "Set ConsistencyLevel to Eventual on each write"
+      },
+      {
+        "id": "D",
+        "text": "Set `EnableContentResponseOnWrite` to true"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Bulk mode batches concurrent operations by physical partition and manages the rate for you, which is exactly what a high-volume ingest needs. It trades per-operation latency for throughput.",
     "whyWrong": {
       "B": "Gateway mode adds a hop and generally reduces throughput compared with direct mode.",
@@ -321,9 +589,17 @@
       "D": "Returning the written document on every write increases payload size — for bulk ingest you normally set this to false."
     },
     "docs": [
-      { "title": "Bulk support in the .NET SDK", "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/tutorial-dotnet-bulk-import" }
+      {
+        "title": "Bulk support in the .NET SDK",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/tutorial-dotnet-bulk-import"
+      }
     ],
-    "tags": ["cosmos-db", "sdk", "bulk", "performance"]
+    "tags": [
+      "cosmos-db",
+      "sdk",
+      "bulk",
+      "performance"
+    ]
   },
   {
     "id": "d-cos-014",
@@ -333,22 +609,44 @@
     "difficulty": 2,
     "stem": "A query filters on a single tenant's documents, and tenantId is the partition key. Query costs are far higher than expected. What is the most likely cause?",
     "options": [
-      { "id": "A", "text": "The partition key is not being passed in QueryRequestOptions, so the query fans out across all partitions" },
-      { "id": "B", "text": "The container is using autoscale throughput" },
-      { "id": "C", "text": "The query is missing a TOP clause" },
-      { "id": "D", "text": "The account is configured for multi-region writes" }
+      {
+        "id": "A",
+        "text": "The partition key is not being passed in `QueryRequestOptions`, so the query fans out across all partitions"
+      },
+      {
+        "id": "B",
+        "text": "The container is using autoscale throughput"
+      },
+      {
+        "id": "C",
+        "text": "The query is missing a TOP clause"
+      },
+      {
+        "id": "D",
+        "text": "The account is configured for multi-region writes"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "Even when the filter names the partition key property, supplying PartitionKey in QueryRequestOptions is what routes the query to a single physical partition. Without it the SDK may fan out, multiplying the RU charge.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "Even when the filter names the partition key property, supplying `PartitionKey` in `QueryRequestOptions` is what routes the query to a single physical partition. Without it the SDK may fan out, multiplying the RU charge.",
     "whyWrong": {
       "B": "Autoscale affects provisioning and billing rate, not the RU cost of a given query.",
       "C": "TOP limits rows returned but does not reduce the partitions scanned.",
       "D": "Multi-region writes affect write routing and conflict handling, not single-partition query cost."
     },
     "docs": [
-      { "title": "Query performance tuning", "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/query-metrics" }
+      {
+        "title": "Query performance tuning",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/query-metrics"
+      }
     ],
-    "tags": ["cosmos-db", "query", "partitioning", "ru"]
+    "tags": [
+      "cosmos-db",
+      "query",
+      "partitioning",
+      "ru"
+    ]
   },
   {
     "id": "d-cos-015",
@@ -358,22 +656,48 @@
     "difficulty": 2,
     "stem": "Which elements must be declared in a container's vector embedding policy before you can run vector search? Choose three.",
     "options": [
-      { "id": "A", "text": "The JSON path of the embedding property" },
-      { "id": "B", "text": "The number of dimensions" },
-      { "id": "C", "text": "The distance function" },
-      { "id": "D", "text": "The embedding model deployment name" },
-      { "id": "E", "text": "The partition key of the container" }
+      {
+        "id": "A",
+        "text": "The JSON path of the embedding property"
+      },
+      {
+        "id": "B",
+        "text": "The number of dimensions"
+      },
+      {
+        "id": "C",
+        "text": "The distance function"
+      },
+      {
+        "id": "D",
+        "text": "The embedding model deployment name"
+      },
+      {
+        "id": "E",
+        "text": "The partition key of the container"
+      }
     ],
-    "correct": ["A", "B", "C"],
+    "correct": [
+      "A",
+      "B",
+      "C"
+    ],
     "explanation": "The vector embedding policy declares path, data type, dimensions and distance function (cosine, dotproduct or euclidean). A matching vector index is then added to the indexing policy.",
     "whyWrong": {
       "D": "Cosmos DB stores vectors; it does not generate them, so it never needs to know which model produced them.",
       "E": "The partition key is part of the container definition, not the vector policy."
     },
     "docs": [
-      { "title": "Vector search in Cosmos DB for NoSQL", "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/vector-search" }
+      {
+        "title": "Vector search in Cosmos DB for NoSQL",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/vector-search"
+      }
     ],
-    "tags": ["cosmos-db", "vector-search", "indexing"]
+    "tags": [
+      "cosmos-db",
+      "vector-search",
+      "indexing"
+    ]
   },
   {
     "id": "d-cos-016",
@@ -383,12 +707,26 @@
     "difficulty": 2,
     "stem": "Chat sessions must be removed automatically 30 days after their last update, without a cleanup job. What do you configure?",
     "options": [
-      { "id": "A", "text": "Time to live on the container, with the value expressed in seconds" },
-      { "id": "B", "text": "A change feed processor that deletes old items" },
-      { "id": "C", "text": "A retention policy on the Cosmos DB account" },
-      { "id": "D", "text": "An analytical store with a 30-day retention window" }
+      {
+        "id": "A",
+        "text": "Time to live on the container, with the value expressed in seconds"
+      },
+      {
+        "id": "B",
+        "text": "A change feed processor that deletes old items"
+      },
+      {
+        "id": "C",
+        "text": "A retention policy on the Cosmos DB account"
+      },
+      {
+        "id": "D",
+        "text": "An analytical store with a 30-day retention window"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Container-level TTL expires items automatically, in seconds, using leftover throughput. Items can override it with their own ttl property. This is the intended answer whenever a scenario says 'without writing a cleanup job'.",
     "whyWrong": {
       "B": "This is the cleanup job the requirement rules out, and it consumes RUs you would otherwise not spend.",
@@ -396,9 +734,16 @@
       "D": "The analytical store is for analytics workloads and does not delete data from the transactional store."
     },
     "docs": [
-      { "title": "Time to live in Azure Cosmos DB", "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/time-to-live" }
+      {
+        "title": "Time to live in Azure Cosmos DB",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/time-to-live"
+      }
     ],
-    "tags": ["cosmos-db", "ttl", "retention"]
+    "tags": [
+      "cosmos-db",
+      "ttl",
+      "retention"
+    ]
   },
   {
     "id": "d-pg-001",
@@ -406,24 +751,45 @@
     "objective": "Develop AI solutions by using Azure Database for PostgreSQL",
     "kind": "single",
     "difficulty": 2,
-    "stem": "You run CREATE EXTENSION vector; on Azure Database for PostgreSQL flexible server and it fails with an error saying the extension is not allow-listed. What must you do first?",
+    "stem": "You run `CREATE EXTENSION vector`; on Azure Database for PostgreSQL flexible server and it fails with an error saying the extension is not allow-listed. What must you do first?",
     "options": [
-      { "id": "A", "text": "Add vector to the azure.extensions server parameter and let the change apply" },
-      { "id": "B", "text": "Restart the server so the extension binaries are loaded" },
-      { "id": "C", "text": "Grant the connecting user the azure_pg_admin role" },
-      { "id": "D", "text": "Upgrade the server to a memory-optimized SKU" }
+      {
+        "id": "A",
+        "text": "Add vector to the `azure.extensions` server parameter and let the change apply"
+      },
+      {
+        "id": "B",
+        "text": "Restart the server so the extension binaries are loaded"
+      },
+      {
+        "id": "C",
+        "text": "Grant the connecting user the azure_pg_admin role"
+      },
+      {
+        "id": "D",
+        "text": "Upgrade the server to a memory-optimized SKU"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "Flexible server keeps an allowlist of permitted extensions in the azure.extensions server parameter. The extension must be added there before CREATE EXTENSION will succeed in any database.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "Flexible server keeps an allowlist of permitted extensions in the `azure.extensions` server parameter. The extension must be added there before CREATE EXTENSION will succeed in any database.",
     "whyWrong": {
       "B": "A restart alone changes nothing while the extension remains off the allowlist.",
       "C": "Role membership governs who may create extensions, but the allowlist is checked regardless of role.",
       "D": "SKU affects performance for vector workloads; it has no bearing on whether the extension may be created."
     },
     "docs": [
-      { "title": "Use pgvector on flexible server", "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/how-to-use-pgvector" }
+      {
+        "title": "Use pgvector on flexible server",
+        "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/how-to-use-pgvector"
+      }
     ],
-    "tags": ["postgresql", "pgvector", "extensions"]
+    "tags": [
+      "postgresql",
+      "pgvector",
+      "extensions"
+    ]
   },
   {
     "id": "d-pg-002",
@@ -433,22 +799,43 @@
     "difficulty": 2,
     "stem": "Your embeddings are normalised and you want cosine similarity. Which operator do you use in the ORDER BY clause?",
     "options": [
-      { "id": "A", "text": "<=>" },
-      { "id": "B", "text": "<->" },
-      { "id": "C", "text": "<#>" },
-      { "id": "D", "text": "@>" }
+      {
+        "id": "A",
+        "text": "<=>"
+      },
+      {
+        "id": "B",
+        "text": "<->"
+      },
+      {
+        "id": "C",
+        "text": "<#>"
+      },
+      {
+        "id": "D",
+        "text": "@>"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "pgvector uses <=> for cosine distance, <-> for L2/Euclidean and <#> for negative inner product. The index's operator class must match the operator you query with, or the planner will fall back to a sequential scan.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "`pgvector` uses <=> for cosine distance, <-> for L2/Euclidean and <#> for negative inner product. The index's operator class must match the operator you query with, or the planner will fall back to a sequential scan.",
     "whyWrong": {
       "B": "<-> is Euclidean distance.",
       "C": "<#> is negative inner product — negated so that smaller means more similar.",
       "D": "@> is the containment operator for arrays and JSON, unrelated to vectors."
     },
     "docs": [
-      { "title": "Use pgvector on flexible server", "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/how-to-use-pgvector" }
+      {
+        "title": "Use pgvector on flexible server",
+        "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/how-to-use-pgvector"
+      }
     ],
-    "tags": ["postgresql", "pgvector", "query"]
+    "tags": [
+      "postgresql",
+      "pgvector",
+      "query"
+    ]
   },
   {
     "id": "d-pg-003",
@@ -458,12 +845,26 @@
     "difficulty": 3,
     "stem": "You create an IVFFlat index on an empty embeddings table, then load two million rows. Recall is poor and results look arbitrary. What went wrong?",
     "options": [
-      { "id": "A", "text": "IVFFlat derives its cluster centroids from the data present when the index is built, so building on an empty table produces a useless partitioning" },
-      { "id": "B", "text": "IVFFlat does not support the cosine operator class" },
-      { "id": "C", "text": "The lists parameter must always equal the number of rows" },
-      { "id": "D", "text": "IVFFlat requires the vectors to be normalised to unit length" }
+      {
+        "id": "A",
+        "text": "IVFFlat derives its cluster centroids from the data present when the index is built, so building on an empty table produces a useless partitioning"
+      },
+      {
+        "id": "B",
+        "text": "IVFFlat does not support the cosine operator class"
+      },
+      {
+        "id": "C",
+        "text": "The lists parameter must always equal the number of rows"
+      },
+      {
+        "id": "D",
+        "text": "IVFFlat requires the vectors to be normalised to unit length"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "IVFFlat partitions the vector space using centroids computed at build time. Build it on an empty table and the partitioning does not reflect your data, so probes land in the wrong lists. Rebuild the index after loading, or use HNSW, which can be built incrementally.",
     "whyWrong": {
       "B": "IVFFlat supports vector_cosine_ops as well as L2 and inner product.",
@@ -471,9 +872,17 @@
       "D": "Normalisation matters for choosing a metric, not for whether IVFFlat functions."
     },
     "docs": [
-      { "title": "Optimize pgvector performance", "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/how-to-optimize-performance-pgvector" }
+      {
+        "title": "Optimize pgvector performance",
+        "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/how-to-optimize-performance-pgvector"
+      }
     ],
-    "tags": ["postgresql", "pgvector", "indexing", "troubleshooting"]
+    "tags": [
+      "postgresql",
+      "pgvector",
+      "indexing",
+      "troubleshooting"
+    ]
   },
   {
     "id": "d-pg-004",
@@ -481,15 +890,33 @@
     "objective": "Develop AI solutions by using Azure Database for PostgreSQL",
     "kind": "multi",
     "difficulty": 3,
-    "stem": "Which statements about HNSW indexes in pgvector are correct? Choose two.",
+    "stem": "Which statements about HNSW indexes in `pgvector` are correct? Choose two.",
     "options": [
-      { "id": "A", "text": "They can be created on an empty table and stay effective as rows are inserted" },
-      { "id": "B", "text": "They generally give better recall and query latency than IVFFlat at the same dataset size" },
-      { "id": "C", "text": "They use less memory than IVFFlat" },
-      { "id": "D", "text": "They are built faster than IVFFlat" },
-      { "id": "E", "text": "They guarantee exact nearest-neighbour results" }
+      {
+        "id": "A",
+        "text": "They can be created on an empty table and stay effective as rows are inserted"
+      },
+      {
+        "id": "B",
+        "text": "They generally give better recall and query latency than IVFFlat at the same dataset size"
+      },
+      {
+        "id": "C",
+        "text": "They use less memory than IVFFlat"
+      },
+      {
+        "id": "D",
+        "text": "They are built faster than IVFFlat"
+      },
+      {
+        "id": "E",
+        "text": "They guarantee exact nearest-neighbour results"
+      }
     ],
-    "correct": ["A", "B"],
+    "correct": [
+      "A",
+      "B"
+    ],
     "explanation": "HNSW builds a navigable graph incrementally, so it works on an empty table and generally beats IVFFlat on recall and latency. The trade-offs are higher memory use and slower index builds.",
     "whyWrong": {
       "C": "HNSW uses more memory, which is its main cost.",
@@ -497,9 +924,16 @@
       "E": "Both HNSW and IVFFlat are approximate. Only an exact scan guarantees true nearest neighbours."
     },
     "docs": [
-      { "title": "Optimize pgvector performance", "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/how-to-optimize-performance-pgvector" }
+      {
+        "title": "Optimize pgvector performance",
+        "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/how-to-optimize-performance-pgvector"
+      }
     ],
-    "tags": ["postgresql", "pgvector", "indexing"]
+    "tags": [
+      "postgresql",
+      "pgvector",
+      "indexing"
+    ]
   },
   {
     "id": "d-pg-005",
@@ -509,22 +943,44 @@
     "difficulty": 2,
     "stem": "Recall from your HNSW-indexed similarity search is too low for production. Which query-time setting raises recall at the cost of latency?",
     "options": [
-      { "id": "A", "text": "SET hnsw.ef_search = 200;" },
-      { "id": "B", "text": "SET ivfflat.probes = 200;" },
-      { "id": "C", "text": "SET work_mem = '256MB';" },
-      { "id": "D", "text": "SET enable_seqscan = off;" }
+      {
+        "id": "A",
+        "text": "`SET hnsw.ef_search = 200;`"
+      },
+      {
+        "id": "B",
+        "text": "`SET ivfflat.probes = 200;`"
+      },
+      {
+        "id": "C",
+        "text": "`SET work_mem = '256MB';`"
+      },
+      {
+        "id": "D",
+        "text": "`SET enable_seqscan = off;`"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "hnsw.ef_search controls how many candidates the graph traversal keeps in its dynamic list. Raising it explores more of the graph, improving recall and increasing query time. The IVFFlat equivalent is ivfflat.probes.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "`hnsw.ef_search` controls how many candidates the graph traversal keeps in its dynamic list. Raising it explores more of the graph, improving recall and increasing query time. The IVFFlat equivalent is `ivfflat.probes`.",
     "whyWrong": {
       "B": "probes applies to IVFFlat indexes and has no effect on an HNSW index.",
       "C": "work_mem sizes sorts and hashes; it does not change ANN search breadth.",
       "D": "Disabling sequential scans nudges the planner toward indexes but does not affect recall within the index."
     },
     "docs": [
-      { "title": "Optimize pgvector performance", "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/how-to-optimize-performance-pgvector" }
+      {
+        "title": "Optimize pgvector performance",
+        "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/how-to-optimize-performance-pgvector"
+      }
     ],
-    "tags": ["postgresql", "pgvector", "tuning", "recall"]
+    "tags": [
+      "postgresql",
+      "pgvector",
+      "tuning",
+      "recall"
+    ]
   },
   {
     "id": "d-pg-006",
@@ -535,22 +991,45 @@
     "stem": "A multi-tenant RAG query filters on tenant_id and orders by vector distance. For small tenants it frequently returns fewer than the requested ten rows, even though the tenant has hundreds of chunks. Why?",
     "code": "SELECT id, content\nFROM chunks\nWHERE tenant_id = $1\nORDER BY embedding <=> $2\nLIMIT 10;",
     "options": [
-      { "id": "A", "text": "The ANN index returns a fixed candidate set before the tenant filter is applied, so few or none of the candidates belong to that tenant" },
-      { "id": "B", "text": "The vector column contains NULLs for that tenant" },
-      { "id": "C", "text": "LIMIT cannot be combined with a vector ORDER BY" },
-      { "id": "D", "text": "The tenant_id column is missing a NOT NULL constraint" }
+      {
+        "id": "A",
+        "text": "The ANN index returns a fixed candidate set before the tenant filter is applied, so few or none of the candidates belong to that tenant"
+      },
+      {
+        "id": "B",
+        "text": "The vector column contains NULLs for that tenant"
+      },
+      {
+        "id": "C",
+        "text": "LIMIT cannot be combined with a vector ORDER BY"
+      },
+      {
+        "id": "D",
+        "text": "The tenant_id column is missing a NOT NULL constraint"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "The approximate index is searched first and yields a bounded candidate list; the WHERE filter is then applied to those candidates. For a selective filter most candidates are discarded. The fixes are partial indexes per tenant, iterative scans, or raising ef_search/probes so the candidate pool is larger.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "The approximate index is searched first and yields a bounded candidate list; the WHERE filter is then applied to those candidates. For a selective filter most candidates are discarded. The fixes are partial indexes per tenant, iterative scans, or raising `ef_search`/probes so the candidate pool is larger.",
     "whyWrong": {
       "B": "NULL embeddings would be a data problem affecting all tenants equally, not a size-dependent shortfall.",
       "C": "LIMIT with a vector ORDER BY is the standard KNN query form.",
       "D": "A nullability constraint has no bearing on how many rows a filtered ANN query returns."
     },
     "docs": [
-      { "title": "Optimize pgvector performance", "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/how-to-optimize-performance-pgvector" }
+      {
+        "title": "Optimize pgvector performance",
+        "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/how-to-optimize-performance-pgvector"
+      }
     ],
-    "tags": ["postgresql", "pgvector", "rag", "filtering", "troubleshooting"]
+    "tags": [
+      "postgresql",
+      "pgvector",
+      "rag",
+      "filtering",
+      "troubleshooting"
+    ]
   },
   {
     "id": "d-pg-007",
@@ -560,22 +1039,44 @@
     "difficulty": 2,
     "stem": "An Azure Function scales out to hundreds of concurrent instances, each opening a PostgreSQL connection. The database starts rejecting connections. What is the recommended fix on flexible server?",
     "options": [
-      { "id": "A", "text": "Route connections through the built-in PgBouncer on port 6432 in transaction pooling mode" },
-      { "id": "B", "text": "Raise max_connections to several thousand" },
-      { "id": "C", "text": "Move the database to a read replica" },
-      { "id": "D", "text": "Switch the client library to use SSL" }
+      {
+        "id": "A",
+        "text": "Route connections through the built-in `PgBouncer` on port 6432 in transaction pooling mode"
+      },
+      {
+        "id": "B",
+        "text": "Raise max_connections to several thousand"
+      },
+      {
+        "id": "C",
+        "text": "Move the database to a read replica"
+      },
+      {
+        "id": "D",
+        "text": "Switch the client library to use SSL"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "Flexible server includes PgBouncer, exposed on port 6432. Transaction pooling multiplexes many short-lived client connections onto a small pool of server connections, which is exactly the serverless fan-out pattern.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "Flexible server includes `PgBouncer`, exposed on port 6432. Transaction pooling multiplexes many short-lived client connections onto a small pool of server connections, which is exactly the serverless fan-out pattern.",
     "whyWrong": {
       "B": "Each Postgres connection is a backend process consuming memory; raising the limit trades connection errors for memory pressure and instability.",
       "C": "Read replicas add read capacity but do nothing about connection count on writes.",
       "D": "TLS is about transport security and is unrelated to connection exhaustion."
     },
     "docs": [
-      { "title": "PgBouncer in Azure Database for PostgreSQL", "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/concepts-pgbouncer" }
+      {
+        "title": "PgBouncer in Azure Database for PostgreSQL",
+        "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/concepts-pgbouncer"
+      }
     ],
-    "tags": ["postgresql", "connections", "pgbouncer", "scaling"]
+    "tags": [
+      "postgresql",
+      "connections",
+      "pgbouncer",
+      "scaling"
+    ]
   },
   {
     "id": "d-pg-008",
@@ -585,22 +1086,44 @@
     "difficulty": 2,
     "stem": "You need to confirm that a similarity query is actually using the vector index rather than scanning the table. What do you run?",
     "options": [
-      { "id": "A", "text": "EXPLAIN ANALYZE on the query and check for an Index Scan rather than a Seq Scan" },
-      { "id": "B", "text": "SELECT * FROM pg_indexes to confirm the index exists" },
-      { "id": "C", "text": "VACUUM ANALYZE on the table" },
-      { "id": "D", "text": "SELECT pg_size_pretty(pg_relation_size('idx_embedding'))" }
+      {
+        "id": "A",
+        "text": "`EXPLAIN ANALYZE` on the query and check for an `Index Scan` rather than a `Seq Scan`"
+      },
+      {
+        "id": "B",
+        "text": "`SELECT * FROM pg_indexes` to confirm the index exists"
+      },
+      {
+        "id": "C",
+        "text": "VACUUM ANALYZE on the table"
+      },
+      {
+        "id": "D",
+        "text": "`SELECT pg_size_pretty(pg_relation_size('idx_embedding'))`"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "EXPLAIN ANALYZE shows the plan the planner actually chose plus real timings. A Seq Scan on a table with a vector index usually means an operator/operator-class mismatch or statistics that make the scan look cheaper.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "`EXPLAIN ANALYZE` shows the plan the planner actually chose plus real timings. A `Seq Scan` on a table with a vector index usually means an operator/operator-class mismatch or statistics that make the scan look cheaper.",
     "whyWrong": {
       "B": "That confirms the index exists, not that the planner chose it — the common failure is an index that exists and is ignored.",
       "C": "VACUUM ANALYZE refreshes statistics and may change the plan, but it does not show you the plan.",
       "D": "Index size tells you nothing about plan selection."
     },
     "docs": [
-      { "title": "Query performance in flexible server", "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/concepts-query-store" }
+      {
+        "title": "Query performance in flexible server",
+        "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/concepts-query-store"
+      }
     ],
-    "tags": ["postgresql", "pgvector", "troubleshooting", "query-plan"]
+    "tags": [
+      "postgresql",
+      "pgvector",
+      "troubleshooting",
+      "query-plan"
+    ]
   },
   {
     "id": "d-pg-009",
@@ -610,22 +1133,43 @@
     "difficulty": 2,
     "stem": "Which column definition stores embeddings from a model that produces 1536-dimensional vectors?",
     "options": [
-      { "id": "A", "text": "embedding vector(1536)" },
-      { "id": "B", "text": "embedding float8[1536]" },
-      { "id": "C", "text": "embedding numeric(1536)" },
-      { "id": "D", "text": "embedding jsonb" }
+      {
+        "id": "A",
+        "text": "embedding vector(1536)"
+      },
+      {
+        "id": "B",
+        "text": "embedding float8[1536]"
+      },
+      {
+        "id": "C",
+        "text": "embedding numeric(1536)"
+      },
+      {
+        "id": "D",
+        "text": "embedding jsonb"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "pgvector introduces the vector type with a fixed dimension, which is required for indexing and for the distance operators to work.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "`pgvector` introduces the vector type with a fixed dimension, which is required for indexing and for the distance operators to work.",
     "whyWrong": {
       "B": "A float array stores the numbers but supports none of the vector operators or indexes.",
       "C": "numeric(1536) declares precision on a single number, not a 1536-element vector.",
       "D": "jsonb can hold the array as data but cannot be indexed for similarity search."
     },
     "docs": [
-      { "title": "Use pgvector on flexible server", "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/how-to-use-pgvector" }
+      {
+        "title": "Use pgvector on flexible server",
+        "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/how-to-use-pgvector"
+      }
     ],
-    "tags": ["postgresql", "pgvector", "schema"]
+    "tags": [
+      "postgresql",
+      "pgvector",
+      "schema"
+    ]
   },
   {
     "id": "d-pg-010",
@@ -635,22 +1179,44 @@
     "difficulty": 3,
     "stem": "Building an HNSW index over ten million embeddings takes many hours. Which server-side change most directly speeds up the build?",
     "options": [
-      { "id": "A", "text": "Raise maintenance_work_mem so the build stays in memory, and increase max_parallel_maintenance_workers" },
-      { "id": "B", "text": "Raise shared_buffers to 90% of available RAM" },
-      { "id": "C", "text": "Lower hnsw.ef_search before creating the index" },
-      { "id": "D", "text": "Disable autovacuum for the duration of the build" }
+      {
+        "id": "A",
+        "text": "Raise `maintenance_work_mem` so the build stays in memory, and increase max_parallel_maintenance_workers"
+      },
+      {
+        "id": "B",
+        "text": "Raise shared_buffers to 90% of available RAM"
+      },
+      {
+        "id": "C",
+        "text": "Lower `hnsw.ef_search` before creating the index"
+      },
+      {
+        "id": "D",
+        "text": "Disable autovacuum for the duration of the build"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "Index builds are bounded by maintenance_work_mem — once the build spills to disk it slows dramatically. Parallel maintenance workers then divide the work across cores.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "Index builds are bounded by `maintenance_work_mem` — once the build spills to disk it slows dramatically. Parallel maintenance workers then divide the work across cores.",
     "whyWrong": {
       "B": "shared_buffers is the general page cache and is not what an index build allocates from; over-sizing it starves everything else.",
       "C": "ef_search is a query-time parameter. The build-time equivalents are m and ef_construction.",
       "D": "Autovacuum is not the bottleneck, and disabling it invites bloat."
     },
     "docs": [
-      { "title": "Optimize pgvector performance", "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/how-to-optimize-performance-pgvector" }
+      {
+        "title": "Optimize pgvector performance",
+        "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/how-to-optimize-performance-pgvector"
+      }
     ],
-    "tags": ["postgresql", "pgvector", "indexing", "tuning"]
+    "tags": [
+      "postgresql",
+      "pgvector",
+      "indexing",
+      "tuning"
+    ]
   },
   {
     "id": "d-pg-011",
@@ -660,12 +1226,26 @@
     "difficulty": 2,
     "stem": "Vector queries on a 20 GB index are slow and the server shows heavy disk read activity. CPU sits at 30%. Which compute change helps most?",
     "options": [
-      { "id": "A", "text": "Move to a memory-optimized SKU with enough RAM to hold the index" },
-      { "id": "B", "text": "Move to a compute-optimized SKU with more vCPUs" },
-      { "id": "C", "text": "Increase the storage size to raise the IOPS allocation" },
-      { "id": "D", "text": "Enable high availability with a standby replica" }
+      {
+        "id": "A",
+        "text": "Move to a memory-optimized SKU with enough RAM to hold the index"
+      },
+      {
+        "id": "B",
+        "text": "Move to a compute-optimized SKU with more vCPUs"
+      },
+      {
+        "id": "C",
+        "text": "Increase the storage size to raise the IOPS allocation"
+      },
+      {
+        "id": "D",
+        "text": "Enable high availability with a standby replica"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Low CPU with heavy disk reads means the working set does not fit in memory. Vector indexes are traversed randomly, so paging from disk dominates. Memory-optimized SKUs give the highest RAM per vCPU.",
     "whyWrong": {
       "B": "More cores do not help when the bottleneck is I/O, as the 30% CPU figure shows.",
@@ -673,9 +1253,17 @@
       "D": "HA provides failover, not query performance."
     },
     "docs": [
-      { "title": "Compute options in flexible server", "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/concepts-compute" }
+      {
+        "title": "Compute options in flexible server",
+        "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/concepts-compute"
+      }
     ],
-    "tags": ["postgresql", "pgvector", "sizing", "performance"]
+    "tags": [
+      "postgresql",
+      "pgvector",
+      "sizing",
+      "performance"
+    ]
   },
   {
     "id": "d-pg-012",
@@ -683,24 +1271,46 @@
     "objective": "Develop AI solutions by using Azure Database for PostgreSQL",
     "kind": "single",
     "difficulty": 2,
-    "stem": "Index memory for your vector column must be reduced with only a small loss of recall. Which pgvector feature addresses this directly?",
+    "stem": "Index memory for your vector column must be reduced with only a small loss of recall. Which `pgvector` feature addresses this directly?",
     "options": [
-      { "id": "A", "text": "Store the column as halfvec, using 16-bit floats" },
-      { "id": "B", "text": "Reduce the vector dimension by truncating the arrays in the application" },
-      { "id": "C", "text": "Switch the index operator class to vector_l2_ops" },
-      { "id": "D", "text": "Enable table compression on the embeddings table" }
+      {
+        "id": "A",
+        "text": "Store the column as `halfvec`, using 16-bit floats"
+      },
+      {
+        "id": "B",
+        "text": "Reduce the vector dimension by truncating the arrays in the application"
+      },
+      {
+        "id": "C",
+        "text": "Switch the index operator class to `vector_l2_ops`"
+      },
+      {
+        "id": "D",
+        "text": "Enable table compression on the embeddings table"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "halfvec stores each component as a 16-bit float, roughly halving index memory for a small recall cost. It is the built-in answer to memory pressure on vector indexes.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "`halfvec` stores each component as a 16-bit float, roughly halving index memory for a small recall cost. It is the built-in answer to memory pressure on vector indexes.",
     "whyWrong": {
       "B": "Arbitrary truncation destroys the geometry of the embedding space unless the model explicitly supports shortened dimensions.",
       "C": "The operator class must match your distance metric; changing it changes semantics, not memory.",
       "D": "There is no table compression setting in PostgreSQL that shrinks an index this way."
     },
     "docs": [
-      { "title": "Optimize pgvector performance", "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/how-to-optimize-performance-pgvector" }
+      {
+        "title": "Optimize pgvector performance",
+        "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/how-to-optimize-performance-pgvector"
+      }
     ],
-    "tags": ["postgresql", "pgvector", "memory", "tuning"]
+    "tags": [
+      "postgresql",
+      "pgvector",
+      "memory",
+      "tuning"
+    ]
   },
   {
     "id": "d-pg-013",
@@ -710,12 +1320,26 @@
     "difficulty": 2,
     "stem": "A RAG pipeline must retrieve chunks for one document only, and that filter is highly selective. Which indexing strategy gives the most reliable results?",
     "options": [
-      { "id": "A", "text": "A partial vector index defined WHERE the filter matches, or a composite strategy that keeps filtered candidates in the index" },
-      { "id": "B", "text": "A B-tree index on document_id alone" },
-      { "id": "C", "text": "A single HNSW index over all embeddings with no filter-aware strategy" },
-      { "id": "D", "text": "A GIN index on the embedding column" }
+      {
+        "id": "A",
+        "text": "A partial vector index defined WHERE the filter matches, or a composite strategy that keeps filtered candidates in the index"
+      },
+      {
+        "id": "B",
+        "text": "A B-tree index on document_id alone"
+      },
+      {
+        "id": "C",
+        "text": "A single HNSW index over all embeddings with no filter-aware strategy"
+      },
+      {
+        "id": "D",
+        "text": "A GIN index on the embedding column"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Highly selective filters combined with ANN search are the classic under-retrieval case. A partial index restricted to the filtered subset means the ANN traversal only ever visits relevant rows.",
     "whyWrong": {
       "B": "A B-tree on document_id speeds the filter but the vector ordering still needs a vector index.",
@@ -723,9 +1347,17 @@
       "D": "GIN indexes serve arrays, full-text and JSON — not vector distance."
     },
     "docs": [
-      { "title": "Optimize pgvector performance", "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/how-to-optimize-performance-pgvector" }
+      {
+        "title": "Optimize pgvector performance",
+        "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/how-to-optimize-performance-pgvector"
+      }
     ],
-    "tags": ["postgresql", "pgvector", "rag", "indexing"]
+    "tags": [
+      "postgresql",
+      "pgvector",
+      "rag",
+      "indexing"
+    ]
   },
   {
     "id": "d-pg-014",
@@ -735,12 +1367,26 @@
     "difficulty": 2,
     "stem": "Which approach lets an application connect to Azure Database for PostgreSQL flexible server without storing a password?",
     "options": [
-      { "id": "A", "text": "Microsoft Entra ID authentication, using an access token from the app's managed identity as the password" },
-      { "id": "B", "text": "Storing the password in Key Vault and reading it at startup" },
-      { "id": "C", "text": "Using a connection string with TrustServerCertificate=true" },
-      { "id": "D", "text": "Enabling public network access with a firewall rule for the app's IP" }
+      {
+        "id": "A",
+        "text": "Microsoft Entra ID authentication, using an access token from the app's managed identity as the password"
+      },
+      {
+        "id": "B",
+        "text": "Storing the password in Key Vault and reading it at startup"
+      },
+      {
+        "id": "C",
+        "text": "Using a connection string with TrustServerCertificate=true"
+      },
+      {
+        "id": "D",
+        "text": "Enabling public network access with a firewall rule for the app's IP"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Flexible server supports Entra ID authentication: the client acquires a token for the managed identity and presents it in place of a password. No secret is stored anywhere.",
     "whyWrong": {
       "B": "This is better than hard-coding, but a password still exists and must be rotated — the requirement was no stored password.",
@@ -748,9 +1394,16 @@
       "D": "Firewall rules control who may connect, not how they authenticate."
     },
     "docs": [
-      { "title": "Entra ID authentication for PostgreSQL", "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/concepts-azure-ad-authentication" }
+      {
+        "title": "Entra ID authentication for PostgreSQL",
+        "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/concepts-azure-ad-authentication"
+      }
     ],
-    "tags": ["postgresql", "security", "managed-identity"]
+    "tags": [
+      "postgresql",
+      "security",
+      "managed-identity"
+    ]
   },
   {
     "id": "d-pg-015",
@@ -760,22 +1413,43 @@
     "difficulty": 3,
     "stem": "You want to generate embeddings for new rows by calling Azure OpenAI directly from SQL, without an application tier. Which Azure extension provides this?",
     "options": [
-      { "id": "A", "text": "azure_ai" },
-      { "id": "B", "text": "pg_cron" },
-      { "id": "C", "text": "postgres_fdw" },
-      { "id": "D", "text": "pg_diskann" }
+      {
+        "id": "A",
+        "text": "`azure_ai`"
+      },
+      {
+        "id": "B",
+        "text": "pg_cron"
+      },
+      {
+        "id": "C",
+        "text": "postgres_fdw"
+      },
+      {
+        "id": "D",
+        "text": "`pg_diskann`"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "The azure_ai extension exposes functions that call Azure OpenAI and other Azure AI services from within SQL, so an INSERT can produce its own embedding. Like any extension it must be allow-listed in azure.extensions first.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "The `azure_ai` extension exposes functions that call Azure OpenAI and other Azure AI services from within SQL, so an INSERT can produce its own embedding. Like any extension it must be allow-listed in `azure.extensions` first.",
     "whyWrong": {
       "B": "pg_cron schedules SQL jobs inside the database but cannot call an external service by itself.",
       "C": "postgres_fdw connects to other PostgreSQL servers.",
       "D": "pg_diskann provides a vector index type, not model invocation."
     },
     "docs": [
-      { "title": "azure_ai extension", "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/generative-ai-azure-openai" }
+      {
+        "title": "azure_ai extension",
+        "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/generative-ai-azure-openai"
+      }
     ],
-    "tags": ["postgresql", "azure-ai-extension", "embeddings"]
+    "tags": [
+      "postgresql",
+      "azure-ai-extension",
+      "embeddings"
+    ]
   },
   {
     "id": "d-red-001",
@@ -785,12 +1459,26 @@
     "difficulty": 2,
     "stem": "You cache LLM responses in Azure Managed Redis. Cached answers must expire after 15 minutes. Which command sets the value and its expiry in a single round trip?",
     "options": [
-      { "id": "A", "text": "SET response:abc123 \"...\" EX 900" },
-      { "id": "B", "text": "SET response:abc123 \"...\" then EXPIRE response:abc123 900" },
-      { "id": "C", "text": "SETNX response:abc123 \"...\" EX 900" },
-      { "id": "D", "text": "HSET response:abc123 ttl 900" }
+      {
+        "id": "A",
+        "text": "`SET response:abc123 \"...\" EX 900`"
+      },
+      {
+        "id": "B",
+        "text": "`SET response:abc123 \"...\" then EXPIRE response:abc123 900`"
+      },
+      {
+        "id": "C",
+        "text": "`SETNX` response:abc123 \"...\" EX 900"
+      },
+      {
+        "id": "D",
+        "text": "`HSET` response:abc123 ttl 900"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "SET with the EX option writes the value and the TTL atomically in one round trip. The two-command form leaves a window in which the key exists with no expiry, and it costs an extra round trip.",
     "whyWrong": {
       "B": "Two commands means two round trips and a window where a crash leaves the key immortal.",
@@ -798,9 +1486,16 @@
       "D": "HSET writes a hash field. Storing 900 in a field called ttl does not make Redis expire anything."
     },
     "docs": [
-      { "title": "Azure Managed Redis", "url": "https://learn.microsoft.com/azure/redis/overview" }
+      {
+        "title": "Azure Managed Redis",
+        "url": "https://learn.microsoft.com/azure/redis/overview"
+      }
     ],
-    "tags": ["redis", "caching", "ttl"]
+    "tags": [
+      "redis",
+      "caching",
+      "ttl"
+    ]
   },
   {
     "id": "d-red-002",
@@ -810,12 +1505,26 @@
     "difficulty": 2,
     "stem": "A product catalogue is cached in Redis and read heavily. When a product is updated in the source database, the cache must not serve stale data. Which approach is most robust?",
     "options": [
-      { "id": "A", "text": "Delete the cache key on update and let the next read repopulate it" },
-      { "id": "B", "text": "Write the new value to the cache immediately after updating the database" },
-      { "id": "C", "text": "Reduce the TTL to one second for all product keys" },
-      { "id": "D", "text": "Call FLUSHALL after every write to the database" }
+      {
+        "id": "A",
+        "text": "Delete the cache key on update and let the next read repopulate it"
+      },
+      {
+        "id": "B",
+        "text": "Write the new value to the cache immediately after updating the database"
+      },
+      {
+        "id": "C",
+        "text": "Reduce the TTL to one second for all product keys"
+      },
+      {
+        "id": "D",
+        "text": "Call `FLUSHALL` after every write to the database"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Invalidate-on-write is the standard cache-aside pattern. Deleting is safer than updating: if the database write succeeds and the cache write fails, a deleted key simply causes a miss, whereas a failed update can leave a stale value behind indefinitely.",
     "whyWrong": {
       "B": "Write-through is workable but has a race: two concurrent updates can write their values to the cache in the opposite order to the database.",
@@ -823,9 +1532,16 @@
       "D": "FLUSHALL wipes the entire cache and would cause a thundering herd on every write."
     },
     "docs": [
-      { "title": "Caching guidance", "url": "https://learn.microsoft.com/azure/architecture/best-practices/caching" }
+      {
+        "title": "Caching guidance",
+        "url": "https://learn.microsoft.com/azure/architecture/best-practices/caching"
+      }
     ],
-    "tags": ["redis", "caching", "invalidation"]
+    "tags": [
+      "redis",
+      "caching",
+      "invalidation"
+    ]
   },
   {
     "id": "d-red-003",
@@ -835,22 +1551,44 @@
     "difficulty": 3,
     "stem": "Cached items disappear well before their TTL expires and the cache reports high memory usage. Which configuration change addresses the cause?",
     "options": [
-      { "id": "A", "text": "Move to a larger tier or set an eviction policy appropriate to the workload, since Redis is evicting under memory pressure" },
-      { "id": "B", "text": "Lower the TTL so keys expire more predictably" },
-      { "id": "C", "text": "Switch the clustering policy from OSS to Enterprise" },
-      { "id": "D", "text": "Enable AOF persistence" }
+      {
+        "id": "A",
+        "text": "Move to a larger tier or set an eviction policy appropriate to the workload, since Redis is evicting under memory pressure"
+      },
+      {
+        "id": "B",
+        "text": "Lower the TTL so keys expire more predictably"
+      },
+      {
+        "id": "C",
+        "text": "Switch the clustering policy from OSS to Enterprise"
+      },
+      {
+        "id": "D",
+        "text": "Enable AOF persistence"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "Keys vanishing early with memory pressure is eviction, not expiry. Either give the cache more memory or choose a policy that matches the workload — allkeys-lru for a pure cache, volatile-lru when only some keys are disposable.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "Keys vanishing early with memory pressure is eviction, not expiry. Either give the cache more memory or choose a policy that matches the workload — `allkeys-lru` for a pure cache, `volatile-lru` when only some keys are disposable.",
     "whyWrong": {
       "B": "Shorter TTLs reduce the hit rate without fixing the underlying shortage.",
       "C": "Clustering policy affects key distribution and client behaviour, not memory capacity.",
       "D": "Persistence protects against data loss on restart and actually adds overhead."
     },
     "docs": [
-      { "title": "Azure Managed Redis architecture", "url": "https://learn.microsoft.com/azure/redis/architecture" }
+      {
+        "title": "Azure Managed Redis architecture",
+        "url": "https://learn.microsoft.com/azure/redis/architecture"
+      }
     ],
-    "tags": ["redis", "eviction", "memory", "troubleshooting"]
+    "tags": [
+      "redis",
+      "eviction",
+      "memory",
+      "troubleshooting"
+    ]
   },
   {
     "id": "d-red-004",
@@ -860,22 +1598,43 @@
     "difficulty": 3,
     "stem": "You want to use Azure Managed Redis as a vector store for semantic caching. Which command creates the index?",
     "options": [
-      { "id": "A", "text": "FT.CREATE idx ON HASH PREFIX 1 doc: SCHEMA embedding VECTOR HNSW 6 TYPE FLOAT32 DIM 1536 DISTANCE_METRIC COSINE" },
-      { "id": "B", "text": "VADD idx embedding 1536 COSINE" },
-      { "id": "C", "text": "ZADD idx 1536 embedding" },
-      { "id": "D", "text": "CREATE INDEX idx ON doc (embedding) USING hnsw" }
+      {
+        "id": "A",
+        "text": "`FT.CREATE idx ON HASH PREFIX 1 doc: SCHEMA embedding VECTOR HNSW 6 TYPE FLOAT32 DIM 1536 DISTANCE_METRIC COSINE`"
+      },
+      {
+        "id": "B",
+        "text": "VADD idx embedding 1536 COSINE"
+      },
+      {
+        "id": "C",
+        "text": "`ZADD` idx 1536 embedding"
+      },
+      {
+        "id": "D",
+        "text": "`CREATE INDEX idx ON doc (embedding) USING hnsw`"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "Vector search in Redis comes from the RediSearch module. FT.CREATE defines the index, and a VECTOR field declares the algorithm (HNSW or FLAT), element type, dimension and distance metric.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "Vector search in Redis comes from the RediSearch module. `FT.CREATE` defines the index, and a VECTOR field declares the algorithm (HNSW or FLAT), element type, dimension and distance metric.",
     "whyWrong": {
       "B": "Not a Redis command.",
       "C": "ZADD adds to a sorted set — one score per member, not a vector index.",
       "D": "That is SQL syntax, not Redis."
     },
     "docs": [
-      { "title": "Vector search in Azure Managed Redis", "url": "https://learn.microsoft.com/azure/redis/how-to-vector-search" }
+      {
+        "title": "Vector search in Azure Managed Redis",
+        "url": "https://learn.microsoft.com/azure/redis/how-to-vector-search"
+      }
     ],
-    "tags": ["redis", "vector-search", "redisearch"]
+    "tags": [
+      "redis",
+      "vector-search",
+      "redisearch"
+    ]
   },
   {
     "id": "d-red-005",
@@ -885,12 +1644,26 @@
     "difficulty": 2,
     "stem": "Which query returns the five nearest neighbours to a supplied vector from a RediSearch vector index?",
     "options": [
-      { "id": "A", "text": "FT.SEARCH idx \"*=>[KNN 5 @embedding $vec AS score]\" PARAMS 2 vec <bytes> DIALECT 2" },
-      { "id": "B", "text": "FT.SEARCH idx \"@embedding:[0 5]\"" },
-      { "id": "C", "text": "GEORADIUS idx 0 0 5 km" },
-      { "id": "D", "text": "ZRANGEBYSCORE idx 0 5" }
+      {
+        "id": "A",
+        "text": "`FT.SEARCH idx \"*=>[KNN 5 @embedding $vec AS score]\" PARAMS 2 vec <bytes> DIALECT 2`"
+      },
+      {
+        "id": "B",
+        "text": "`FT.SEARCH idx \"@embedding:[0 5]\"`"
+      },
+      {
+        "id": "C",
+        "text": "`GEORADIUS` idx 0 0 5 km"
+      },
+      {
+        "id": "D",
+        "text": "`ZRANGEBYSCORE` idx 0 5"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "KNN queries use the *=>[KNN k @field $param AS alias] syntax, with the query vector supplied through PARAMS as raw bytes and DIALECT 2 or higher enabled.",
     "whyWrong": {
       "B": "That is numeric range syntax for a scalar field.",
@@ -898,9 +1671,16 @@
       "D": "ZRANGEBYSCORE reads a sorted set by score."
     },
     "docs": [
-      { "title": "Vector search in Azure Managed Redis", "url": "https://learn.microsoft.com/azure/redis/how-to-vector-search" }
+      {
+        "title": "Vector search in Azure Managed Redis",
+        "url": "https://learn.microsoft.com/azure/redis/how-to-vector-search"
+      }
     ],
-    "tags": ["redis", "vector-search", "query"]
+    "tags": [
+      "redis",
+      "vector-search",
+      "query"
+    ]
   },
   {
     "id": "d-red-006",
@@ -910,22 +1690,43 @@
     "difficulty": 2,
     "stem": "A troubleshooting script runs KEYS session:* against a production Redis instance with millions of keys. What is the consequence, and what should be used instead?",
     "options": [
-      { "id": "A", "text": "KEYS blocks the server for the duration of the scan; use SCAN, which iterates in small batches with a cursor" },
-      { "id": "B", "text": "KEYS returns at most 1000 keys; use KEYS with a higher COUNT" },
-      { "id": "C", "text": "KEYS is fine but returns keys in random order; use SORT to stabilise it" },
-      { "id": "D", "text": "KEYS only matches exact names; use MATCH instead" }
+      {
+        "id": "A",
+        "text": "KEYS blocks the server for the duration of the scan; use `SCAN`, which iterates in small batches with a cursor"
+      },
+      {
+        "id": "B",
+        "text": "KEYS returns at most 1000 keys; use KEYS with a higher COUNT"
+      },
+      {
+        "id": "C",
+        "text": "KEYS is fine but returns keys in random order; use SORT to stabilise it"
+      },
+      {
+        "id": "D",
+        "text": "KEYS only matches exact names; use MATCH instead"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "Redis executes commands on a single thread, so KEYS blocks every other client until it has walked the entire keyspace. SCAN returns a cursor and small batches, letting other commands interleave.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "Redis executes commands on a single thread, so KEYS blocks every other client until it has walked the entire keyspace. `SCAN` returns a cursor and small batches, letting other commands interleave.",
     "whyWrong": {
       "B": "KEYS has no COUNT option and no result cap — it returns everything that matches, which is the problem.",
       "C": "Ordering is not the issue; server blocking is.",
       "D": "KEYS does support glob patterns, and MATCH is an option of SCAN, not a command."
     },
     "docs": [
-      { "title": "Best practices for Azure Managed Redis", "url": "https://learn.microsoft.com/azure/redis/best-practices-development" }
+      {
+        "title": "Best practices for Azure Managed Redis",
+        "url": "https://learn.microsoft.com/azure/redis/best-practices-development"
+      }
     ],
-    "tags": ["redis", "performance", "troubleshooting"]
+    "tags": [
+      "redis",
+      "performance",
+      "troubleshooting"
+    ]
   },
   {
     "id": "d-red-007",
@@ -933,24 +1734,46 @@
     "objective": "Integrate Azure Managed Redis in AI solutions",
     "kind": "single",
     "difficulty": 2,
-    "stem": "An ASP.NET Core service shows intermittent Redis timeouts under load. Investigation shows a new ConnectionMultiplexer is created for each request. What is the fix?",
+    "stem": "An ASP.NET Core service shows intermittent Redis timeouts under load. Investigation shows a new `ConnectionMultiplexer` is created for each request. What is the fix?",
     "options": [
-      { "id": "A", "text": "Create one ConnectionMultiplexer and share it as a singleton for the application's lifetime" },
-      { "id": "B", "text": "Increase the connect timeout in the connection string" },
-      { "id": "C", "text": "Create one multiplexer per Redis database index" },
-      { "id": "D", "text": "Disable connection pooling in the client library" }
+      {
+        "id": "A",
+        "text": "Create one `ConnectionMultiplexer` and share it as a singleton for the application's lifetime"
+      },
+      {
+        "id": "B",
+        "text": "Increase the connect timeout in the connection string"
+      },
+      {
+        "id": "C",
+        "text": "Create one multiplexer per Redis database index"
+      },
+      {
+        "id": "D",
+        "text": "Disable connection pooling in the client library"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "ConnectionMultiplexer is designed to be shared: it is thread-safe and multiplexes all commands over a small number of connections. Creating one per request exhausts sockets and produces exactly this timeout pattern.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "`ConnectionMultiplexer` is designed to be shared: it is thread-safe and multiplexes all commands over a small number of connections. Creating one per request exhausts sockets and produces exactly this timeout pattern.",
     "whyWrong": {
       "B": "A longer timeout hides the symptom while connection churn continues.",
       "C": "One multiplexer can address any database via GetDatabase(n).",
       "D": "Multiplexing is the mechanism that makes the client efficient; disabling it makes things worse."
     },
     "docs": [
-      { "title": "Best practices for development", "url": "https://learn.microsoft.com/azure/redis/best-practices-development" }
+      {
+        "title": "Best practices for development",
+        "url": "https://learn.microsoft.com/azure/redis/best-practices-development"
+      }
     ],
-    "tags": ["redis", "sdk", "performance", "troubleshooting"]
+    "tags": [
+      "redis",
+      "sdk",
+      "performance",
+      "troubleshooting"
+    ]
   },
   {
     "id": "d-red-008",
@@ -960,12 +1783,26 @@
     "difficulty": 2,
     "stem": "Which Azure Managed Redis tier is the best starting point for a workload dominated by vector similarity search across a large index?",
     "options": [
-      { "id": "A", "text": "Compute Optimized, which provides the highest vCPU-to-memory ratio for search-heavy workloads" },
-      { "id": "B", "text": "Flash Optimized, which stores data on NVMe" },
-      { "id": "C", "text": "Memory Optimized, which maximises memory per vCPU" },
-      { "id": "D", "text": "Any tier — vector search performance does not vary by tier" }
+      {
+        "id": "A",
+        "text": "Compute Optimized, which provides the highest vCPU-to-memory ratio for search-heavy workloads"
+      },
+      {
+        "id": "B",
+        "text": "Flash Optimized, which stores data on NVMe"
+      },
+      {
+        "id": "C",
+        "text": "Memory Optimized, which maximises memory per vCPU"
+      },
+      {
+        "id": "D",
+        "text": "Any tier — vector search performance does not vary by tier"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Vector search is computationally intensive per query, so it benefits from more processing power per unit of memory. Compute Optimized is the tier Microsoft recommends for search-heavy workloads, including vector search.",
     "whyWrong": {
       "B": "Flash Optimized trades speed for capacity on colder data — the opposite of what latency-sensitive search needs.",
@@ -973,9 +1810,16 @@
       "D": "Tier selection materially changes vector search throughput and latency."
     },
     "docs": [
-      { "title": "Azure Managed Redis tiers", "url": "https://learn.microsoft.com/azure/redis/overview" }
+      {
+        "title": "Azure Managed Redis tiers",
+        "url": "https://learn.microsoft.com/azure/redis/overview"
+      }
     ],
-    "tags": ["redis", "vector-search", "sizing"]
+    "tags": [
+      "redis",
+      "vector-search",
+      "sizing"
+    ]
   },
   {
     "id": "d-red-009",
@@ -985,12 +1829,26 @@
     "difficulty": 2,
     "stem": "You are implementing a semantic cache in front of an expensive LLM call. Which sequence describes the correct lookup?",
     "options": [
-      { "id": "A", "text": "Embed the prompt, run a KNN query against the cache index, and return the cached answer only if the nearest match is within a similarity threshold" },
-      { "id": "B", "text": "Hash the prompt text and look up the hash with GET" },
-      { "id": "C", "text": "Run a KNN query and always return the nearest match" },
-      { "id": "D", "text": "Store every prompt in a sorted set and use ZRANGEBYLEX for prefix matching" }
+      {
+        "id": "A",
+        "text": "Embed the prompt, run a KNN query against the cache index, and return the cached answer only if the nearest match is within a similarity threshold"
+      },
+      {
+        "id": "B",
+        "text": "Hash the prompt text and look up the hash with GET"
+      },
+      {
+        "id": "C",
+        "text": "Run a KNN query and always return the nearest match"
+      },
+      {
+        "id": "D",
+        "text": "Store every prompt in a sorted set and use ZRANGEBYLEX for prefix matching"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Semantic caching matches on meaning rather than exact text, so it embeds the incoming prompt and does a nearest-neighbour lookup. The similarity threshold is essential — without it the cache confidently returns answers to different questions.",
     "whyWrong": {
       "B": "Exact hashing is a plain cache and misses any paraphrase, which is the whole point of semantic caching.",
@@ -998,9 +1856,17 @@
       "D": "Lexical prefix matching does not capture semantic similarity."
     },
     "docs": [
-      { "title": "Vector search in Azure Managed Redis", "url": "https://learn.microsoft.com/azure/redis/how-to-vector-search" }
+      {
+        "title": "Vector search in Azure Managed Redis",
+        "url": "https://learn.microsoft.com/azure/redis/how-to-vector-search"
+      }
     ],
-    "tags": ["redis", "semantic-cache", "vector-search", "rag"]
+    "tags": [
+      "redis",
+      "semantic-cache",
+      "vector-search",
+      "rag"
+    ]
   },
   {
     "id": "d-cos-017",
@@ -1010,12 +1876,26 @@
     "difficulty": 2,
     "stem": "Traffic to your Cosmos DB container is spiky: near zero for hours, then short bursts ten times the baseline. Which throughput model is most cost-effective?",
     "options": [
-      { "id": "A", "text": "Autoscale, which scales between 10% and 100% of the maximum RU/s you set" },
-      { "id": "B", "text": "Manual throughput provisioned at the peak rate" },
-      { "id": "C", "text": "Manual throughput provisioned at the average rate" },
-      { "id": "D", "text": "Serverless, regardless of the account's other workloads" }
+      {
+        "id": "A",
+        "text": "Autoscale, which scales between 10% and 100% of the maximum RU/s you set"
+      },
+      {
+        "id": "B",
+        "text": "Manual throughput provisioned at the peak rate"
+      },
+      {
+        "id": "C",
+        "text": "Manual throughput provisioned at the average rate"
+      },
+      {
+        "id": "D",
+        "text": "Serverless, regardless of the account's other workloads"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Autoscale is built for unpredictable, spiky traffic: you set a maximum and are billed for the highest RU/s used each hour, down to 10% of the maximum. The 1.5× per-RU premium is easily beaten by not paying peak rates all day.",
     "whyWrong": {
       "B": "Provisioning for peak means paying for peak during the many idle hours.",
@@ -1023,9 +1903,16 @@
       "D": "Serverless suits low-volume, intermittent workloads but has lower throughput ceilings; a ten-times burst may exceed them."
     },
     "docs": [
-      { "title": "Autoscale throughput", "url": "https://learn.microsoft.com/azure/cosmos-db/provision-throughput-autoscale" }
+      {
+        "title": "Autoscale throughput",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/provision-throughput-autoscale"
+      }
     ],
-    "tags": ["cosmos-db", "throughput", "cost"]
+    "tags": [
+      "cosmos-db",
+      "throughput",
+      "cost"
+    ]
   },
   {
     "id": "d-cos-018",
@@ -1035,12 +1922,26 @@
     "difficulty": 2,
     "stem": "Your service handles occasional 429 responses from Cosmos DB. What is the recommended client behaviour?",
     "options": [
-      { "id": "A", "text": "Let the SDK retry automatically, and tune MaxRetryAttemptsOnRateLimitedRequests and MaxRetryWaitTimeOnRateLimitedRequests if needed" },
-      { "id": "B", "text": "Catch the exception and retry immediately in a tight loop" },
-      { "id": "C", "text": "Fail the request and surface a 503 to the caller" },
-      { "id": "D", "text": "Switch the client to gateway mode, which does not return 429" }
+      {
+        "id": "A",
+        "text": "Let the SDK retry automatically, and tune MaxRetryAttemptsOnRateLimitedRequests and MaxRetryWaitTimeOnRateLimitedRequests if needed"
+      },
+      {
+        "id": "B",
+        "text": "Catch the exception and retry immediately in a tight loop"
+      },
+      {
+        "id": "C",
+        "text": "Fail the request and surface a 503 to the caller"
+      },
+      {
+        "id": "D",
+        "text": "Switch the client to gateway mode, which does not return 429"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "The SDK already honours the retry-after hint the service returns and retries transparently. The options let you widen or narrow that window; hand-rolled retry logic usually ignores retry-after and makes throttling worse.",
     "whyWrong": {
       "B": "Immediate retries ignore retry-after and amplify the overload.",
@@ -1048,8 +1949,16 @@
       "D": "Connection mode does not change throughput enforcement; both modes see 429."
     },
     "docs": [
-      { "title": "Troubleshoot request rate too large", "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/troubleshoot-request-rate-too-large" }
+      {
+        "title": "Troubleshoot request rate too large",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/troubleshoot-request-rate-too-large"
+      }
     ],
-    "tags": ["cosmos-db", "throttling", "sdk", "resiliency"]
+    "tags": [
+      "cosmos-db",
+      "throttling",
+      "sdk",
+      "resiliency"
+    ]
   }
 ]

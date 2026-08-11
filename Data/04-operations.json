@@ -7,12 +7,26 @@
     "difficulty": 2,
     "stem": "A Container App's managed identity must read secrets from Key Vault and nothing more. The vault uses the Azure RBAC permission model. Which role do you assign?",
     "options": [
-      { "id": "A", "text": "Key Vault Secrets User" },
-      { "id": "B", "text": "Key Vault Secrets Officer" },
-      { "id": "C", "text": "Key Vault Contributor" },
-      { "id": "D", "text": "Reader on the Key Vault resource" }
+      {
+        "id": "A",
+        "text": "Key Vault Secrets User"
+      },
+      {
+        "id": "B",
+        "text": "Key Vault Secrets Officer"
+      },
+      {
+        "id": "C",
+        "text": "Key Vault Contributor"
+      },
+      {
+        "id": "D",
+        "text": "Reader on the Key Vault resource"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Key Vault Secrets User grants get and list on secret values — exactly what an application needs and nothing more.",
     "whyWrong": {
       "B": "Secrets Officer can create, update and delete secrets, which exceeds read-only.",
@@ -20,9 +34,16 @@
       "D": "Reader is a control-plane role: it lets you see that the vault exists, not read its data."
     },
     "docs": [
-      { "title": "Key Vault RBAC guide", "url": "https://learn.microsoft.com/azure/key-vault/general/rbac-guide" }
+      {
+        "title": "Key Vault RBAC guide",
+        "url": "https://learn.microsoft.com/azure/key-vault/general/rbac-guide"
+      }
     ],
-    "tags": ["key-vault", "rbac", "least-privilege"]
+    "tags": [
+      "key-vault",
+      "rbac",
+      "least-privilege"
+    ]
   },
   {
     "id": "o-kv-002",
@@ -32,12 +53,26 @@
     "difficulty": 3,
     "stem": "A high-traffic API reads an Azure OpenAI key from Key Vault on every incoming request. Under load, some requests fail with throttling errors from Key Vault. What is the correct fix?",
     "options": [
-      { "id": "A", "text": "Cache the secret in memory and refresh it periodically or on an authentication failure" },
-      { "id": "B", "text": "Create a second Key Vault and read from both in round-robin" },
-      { "id": "C", "text": "Upgrade the vault to the Premium SKU" },
-      { "id": "D", "text": "Increase the retry count in SecretClientOptions" }
+      {
+        "id": "A",
+        "text": "Cache the secret in memory and refresh it periodically or on an authentication failure"
+      },
+      {
+        "id": "B",
+        "text": "Create a second Key Vault and read from both in round-robin"
+      },
+      {
+        "id": "C",
+        "text": "Upgrade the vault to the Premium SKU"
+      },
+      {
+        "id": "D",
+        "text": "Increase the retry count in `SecretClient`Options"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Key Vault enforces per-vault transaction limits and is explicitly documented as a secret store, not a per-request lookup service. Caching the value with periodic refresh — and re-fetching when a call is rejected as unauthorised — is the documented pattern.",
     "whyWrong": {
       "B": "Sharding across vaults is complexity to work around a design flaw the cache removes.",
@@ -45,9 +80,17 @@
       "D": "More retries against a throttled service extends latency and keeps the pressure on."
     },
     "docs": [
-      { "title": "Key Vault throttling guidance", "url": "https://learn.microsoft.com/azure/key-vault/general/overview-throttling" }
+      {
+        "title": "Key Vault throttling guidance",
+        "url": "https://learn.microsoft.com/azure/key-vault/general/overview-throttling"
+      }
     ],
-    "tags": ["key-vault", "throttling", "caching", "performance"]
+    "tags": [
+      "key-vault",
+      "throttling",
+      "caching",
+      "performance"
+    ]
   },
   {
     "id": "o-kv-003",
@@ -57,13 +100,31 @@
     "difficulty": 2,
     "stem": "Which statements about Key Vault soft delete and purge protection are correct? Choose two.",
     "options": [
-      { "id": "A", "text": "Soft delete is enabled on all vaults and cannot be disabled" },
-      { "id": "B", "text": "Once purge protection is enabled it cannot be disabled" },
-      { "id": "C", "text": "Purge protection is enabled by default on new vaults" },
-      { "id": "D", "text": "Soft delete only applies to the vault, not to individual secrets" },
-      { "id": "E", "text": "Soft-deleted secrets are permanently removed immediately when purged by an administrator with purge protection on" }
+      {
+        "id": "A",
+        "text": "Soft delete is enabled on all vaults and cannot be disabled"
+      },
+      {
+        "id": "B",
+        "text": "Once purge protection is enabled it cannot be disabled"
+      },
+      {
+        "id": "C",
+        "text": "Purge protection is enabled by default on new vaults"
+      },
+      {
+        "id": "D",
+        "text": "Soft delete only applies to the vault, not to individual secrets"
+      },
+      {
+        "id": "E",
+        "text": "Soft-deleted secrets are permanently removed immediately when purged by an administrator with purge protection on"
+      }
     ],
-    "correct": ["A", "B"],
+    "correct": [
+      "A",
+      "B"
+    ],
     "explanation": "Soft delete is mandatory and always on. Purge protection is optional but irreversible once enabled — that is the point, since it stops an attacker or a mistake from permanently destroying secrets before the retention period elapses.",
     "whyWrong": {
       "C": "Purge protection is opt-in.",
@@ -71,9 +132,16 @@
       "E": "With purge protection on, nobody can purge early; the object is removed only after the retention period."
     },
     "docs": [
-      { "title": "Key Vault soft-delete overview", "url": "https://learn.microsoft.com/azure/key-vault/general/soft-delete-overview" }
+      {
+        "title": "Key Vault soft-delete overview",
+        "url": "https://learn.microsoft.com/azure/key-vault/general/soft-delete-overview"
+      }
     ],
-    "tags": ["key-vault", "soft-delete", "purge-protection"]
+    "tags": [
+      "key-vault",
+      "soft-delete",
+      "purge-protection"
+    ]
   },
   {
     "id": "o-kv-004",
@@ -83,12 +151,26 @@
     "difficulty": 2,
     "stem": "You want applications to pick up a rotated secret automatically, without a redeployment or a configuration change. How should the secret be referenced?",
     "options": [
-      { "id": "A", "text": "By a versionless secret URI, so the current version is always returned" },
-      { "id": "B", "text": "By the full URI including the specific version identifier" },
-      { "id": "C", "text": "By copying the value into an app setting during each deployment" },
-      { "id": "D", "text": "By storing the secret in App Configuration instead" }
+      {
+        "id": "A",
+        "text": "By a versionless secret URI, so the current version is always returned"
+      },
+      {
+        "id": "B",
+        "text": "By the full URI including the specific version identifier"
+      },
+      {
+        "id": "C",
+        "text": "By copying the value into an app setting during each deployment"
+      },
+      {
+        "id": "D",
+        "text": "By storing the secret in App Configuration instead"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Omitting the version from the secret URI makes Key Vault return the current version. Rotation then becomes transparent — the app reads the new value on its next fetch or refresh.",
     "whyWrong": {
       "B": "A pinned version keeps returning the old secret after rotation, which is precisely the failure mode to avoid.",
@@ -96,9 +178,16 @@
       "D": "App Configuration is for non-secret settings; it can hold a Key Vault reference, but the versionless URI is still what makes rotation transparent."
     },
     "docs": [
-      { "title": "About Key Vault secrets", "url": "https://learn.microsoft.com/azure/key-vault/secrets/about-secrets" }
+      {
+        "title": "About Key Vault secrets",
+        "url": "https://learn.microsoft.com/azure/key-vault/secrets/about-secrets"
+      }
     ],
-    "tags": ["key-vault", "rotation", "secrets"]
+    "tags": [
+      "key-vault",
+      "rotation",
+      "secrets"
+    ]
   },
   {
     "id": "o-kv-005",
@@ -108,12 +197,26 @@
     "difficulty": 3,
     "stem": "You must be notified before a stored credential expires so an automated job can rotate it. Which mechanism does Key Vault provide?",
     "options": [
-      { "id": "A", "text": "A rotation policy on the secret, which raises SecretNearExpiry through Event Grid" },
-      { "id": "B", "text": "A diagnostic setting that logs secret reads to Log Analytics" },
-      { "id": "C", "text": "An Azure Monitor metric alert on vault availability" },
-      { "id": "D", "text": "A soft-delete retention alert" }
+      {
+        "id": "A",
+        "text": "A rotation policy on the secret, which raises SecretNearExpiry through Event Grid"
+      },
+      {
+        "id": "B",
+        "text": "A diagnostic setting that logs secret reads to Log Analytics"
+      },
+      {
+        "id": "C",
+        "text": "An Azure Monitor metric alert on vault availability"
+      },
+      {
+        "id": "D",
+        "text": "A soft-delete retention alert"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Key Vault publishes lifecycle events to Event Grid, including SecretNearExpiry and SecretExpired. A rotation policy sets the notification window, and a Function subscribing to the event performs the rotation.",
     "whyWrong": {
       "B": "Read auditing tells you who accessed a secret, not that it is about to expire.",
@@ -121,9 +224,16 @@
       "D": "Soft-delete retention concerns deleted objects, not expiring ones."
     },
     "docs": [
-      { "title": "Key Vault event notifications", "url": "https://learn.microsoft.com/azure/key-vault/general/event-grid-overview" }
+      {
+        "title": "Key Vault event notifications",
+        "url": "https://learn.microsoft.com/azure/key-vault/general/event-grid-overview"
+      }
     ],
-    "tags": ["key-vault", "rotation", "event-grid"]
+    "tags": [
+      "key-vault",
+      "rotation",
+      "event-grid"
+    ]
   },
   {
     "id": "o-kv-006",
@@ -133,22 +243,43 @@
     "difficulty": 2,
     "stem": "The same code must authenticate to Azure services on a developer laptop and in Azure with a user-assigned managed identity. Which credential type do you use, and what extra detail is required in Azure?",
     "options": [
-      { "id": "A", "text": "DefaultAzureCredential, passing the managed identity's client id in the options" },
-      { "id": "B", "text": "ManagedIdentityCredential only, which also works locally" },
-      { "id": "C", "text": "ClientSecretCredential with the secret stored in Key Vault" },
-      { "id": "D", "text": "DefaultAzureCredential with no configuration, which detects user-assigned identities automatically" }
+      {
+        "id": "A",
+        "text": "`DefaultAzureCredential`, passing the managed identity's client id in the options"
+      },
+      {
+        "id": "B",
+        "text": "`ManagedIdentityCredential` only, which also works locally"
+      },
+      {
+        "id": "C",
+        "text": "`ClientSecretCredential` with the secret stored in Key Vault"
+      },
+      {
+        "id": "D",
+        "text": "`DefaultAzureCredential` with no configuration, which detects user-assigned identities automatically"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "DefaultAzureCredential tries a chain — environment, workload identity, managed identity, developer tooling such as the Azure CLI — so the same code works in both places. A user-assigned identity is ambiguous when several are attached, so its client id must be supplied.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "`DefaultAzureCredential` tries a chain — environment, workload identity, managed identity, developer tooling such as the Azure CLI — so the same code works in both places. A user-assigned identity is ambiguous when several are attached, so its client id must be supplied.",
     "whyWrong": {
       "B": "ManagedIdentityCredential has nothing to authenticate against on a laptop.",
       "C": "This reintroduces a secret, and bootstrapping it from Key Vault needs a credential anyway.",
       "D": "The system-assigned identity is found automatically, but a user-assigned one must be identified explicitly."
     },
     "docs": [
-      { "title": "DefaultAzureCredential", "url": "https://learn.microsoft.com/dotnet/azure/sdk/authentication/credential-chains" }
+      {
+        "title": "DefaultAzureCredential",
+        "url": "https://learn.microsoft.com/dotnet/azure/sdk/authentication/credential-chains"
+      }
     ],
-    "tags": ["managed-identity", "authentication", "sdk"]
+    "tags": [
+      "managed-identity",
+      "authentication",
+      "sdk"
+    ]
   },
   {
     "id": "o-ac-001",
@@ -158,12 +289,26 @@
     "difficulty": 2,
     "stem": "One App Configuration store holds settings for dev, test and production. How do you keep the same key names while returning different values per environment?",
     "options": [
-      { "id": "A", "text": "Give each value a label matching the environment, and select that label when loading configuration" },
-      { "id": "B", "text": "Prefix each key with the environment name" },
-      { "id": "C", "text": "Create a separate App Configuration store per environment" },
-      { "id": "D", "text": "Use a feature flag per environment" }
+      {
+        "id": "A",
+        "text": "Give each value a label matching the environment, and select that label when loading configuration"
+      },
+      {
+        "id": "B",
+        "text": "Prefix each key with the environment name"
+      },
+      {
+        "id": "C",
+        "text": "Create a separate App Configuration store per environment"
+      },
+      {
+        "id": "D",
+        "text": "Use a feature flag per environment"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Labels are the dimension App Configuration provides for exactly this. The same key exists once per label, and the app selects its label at startup.",
     "whyWrong": {
       "B": "Prefixing works but changes the key names, and label filtering exists precisely to avoid that.",
@@ -171,9 +316,16 @@
       "D": "Feature flags toggle behaviour on and off; they are not a mechanism for environment-specific values."
     },
     "docs": [
-      { "title": "Keys and values in App Configuration", "url": "https://learn.microsoft.com/azure/azure-app-configuration/concept-key-value" }
+      {
+        "title": "Keys and values in App Configuration",
+        "url": "https://learn.microsoft.com/azure/azure-app-configuration/concept-key-value"
+      }
     ],
-    "tags": ["app-configuration", "labels", "configuration"]
+    "tags": [
+      "app-configuration",
+      "labels",
+      "configuration"
+    ]
   },
   {
     "id": "o-ac-002",
@@ -183,12 +335,26 @@
     "difficulty": 3,
     "stem": "A service must pick up App Configuration changes without a restart, and must never observe a half-applied set of related settings. How do you configure refresh?",
     "options": [
-      { "id": "A", "text": "Register a single sentinel key for refresh, and update it last after changing all the other keys" },
-      { "id": "B", "text": "Register every key for refresh with a short cache expiration" },
-      { "id": "C", "text": "Poll the store on a timer and rebuild the configuration root" },
-      { "id": "D", "text": "Enable geo-replication so changes propagate atomically" }
+      {
+        "id": "A",
+        "text": "Register a single sentinel key for refresh, and update it last after changing all the other keys"
+      },
+      {
+        "id": "B",
+        "text": "Register every key for refresh with a short cache expiration"
+      },
+      {
+        "id": "C",
+        "text": "Poll the store on a timer and rebuild the configuration root"
+      },
+      {
+        "id": "D",
+        "text": "Enable geo-replication so changes propagate atomically"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "The sentinel key pattern makes one key the trigger: the provider only watches that key, and reloads everything when it changes. Updating it last means the reload sees a complete, consistent set.",
     "whyWrong": {
       "B": "Watching every key means each poll can catch a partially applied batch, which is the inconsistency being avoided — and it multiplies requests.",
@@ -196,9 +362,16 @@
       "D": "Geo-replication concerns availability and latency across regions, not update atomicity for a reader."
     },
     "docs": [
-      { "title": "Enable dynamic configuration", "url": "https://learn.microsoft.com/azure/azure-app-configuration/enable-dynamic-configuration-aspnet-core" }
+      {
+        "title": "Enable dynamic configuration",
+        "url": "https://learn.microsoft.com/azure/azure-app-configuration/enable-dynamic-configuration-aspnet-core"
+      }
     ],
-    "tags": ["app-configuration", "refresh", "sentinel-key"]
+    "tags": [
+      "app-configuration",
+      "refresh",
+      "sentinel-key"
+    ]
   },
   {
     "id": "o-ac-003",
@@ -208,12 +381,26 @@
     "difficulty": 2,
     "stem": "A new ranking algorithm must be enabled for 10% of users, with the ability to turn it off instantly if quality drops. What do you implement?",
     "options": [
-      { "id": "A", "text": "A feature flag in App Configuration with a percentage filter, read through IFeatureManager" },
-      { "id": "B", "text": "A deployment slot swap with 10% traffic routing" },
-      { "id": "C", "text": "An environment variable set on 10% of instances" },
-      { "id": "D", "text": "A Key Vault secret holding the rollout percentage" }
+      {
+        "id": "A",
+        "text": "A feature flag in App Configuration with a percentage filter, read through `IFeatureManager`"
+      },
+      {
+        "id": "B",
+        "text": "A deployment slot swap with 10% traffic routing"
+      },
+      {
+        "id": "C",
+        "text": "An environment variable set on 10% of instances"
+      },
+      {
+        "id": "D",
+        "text": "A Key Vault secret holding the rollout percentage"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Feature management with a percentage filter is designed for gradual rollout, and toggling the flag takes effect without redeploying. Instant rollback is the deciding requirement.",
     "whyWrong": {
       "B": "Slot traffic routing splits at the instance level, not per user, and rolling back means another swap.",
@@ -221,9 +408,15 @@
       "D": "Key Vault stores secrets; a rollout percentage is neither secret nor a feature-management mechanism."
     },
     "docs": [
-      { "title": "Feature management overview", "url": "https://learn.microsoft.com/azure/azure-app-configuration/concept-feature-management" }
+      {
+        "title": "Feature management overview",
+        "url": "https://learn.microsoft.com/azure/azure-app-configuration/concept-feature-management"
+      }
     ],
-    "tags": ["app-configuration", "feature-flags"]
+    "tags": [
+      "app-configuration",
+      "feature-flags"
+    ]
   },
   {
     "id": "o-ac-004",
@@ -233,12 +426,26 @@
     "difficulty": 2,
     "stem": "Your app reads both plain settings and secrets. You want one configuration source in code, with secrets still stored in Key Vault. What do you do?",
     "options": [
-      { "id": "A", "text": "Store Key Vault references in App Configuration and give the app identity access to both" },
-      { "id": "B", "text": "Copy the secret values into App Configuration as regular key-values" },
-      { "id": "C", "text": "Store all plain settings in Key Vault alongside the secrets" },
-      { "id": "D", "text": "Read App Configuration at startup and Key Vault on each request" }
+      {
+        "id": "A",
+        "text": "Store Key Vault references in App Configuration and give the app identity access to both"
+      },
+      {
+        "id": "B",
+        "text": "Copy the secret values into App Configuration as regular key-values"
+      },
+      {
+        "id": "C",
+        "text": "Store all plain settings in Key Vault alongside the secrets"
+      },
+      {
+        "id": "D",
+        "text": "Read App Configuration at startup and Key Vault on each request"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "App Configuration can hold a Key Vault reference, which the provider resolves by calling Key Vault with the app's identity. The application sees one configuration source; secret values never live in App Configuration.",
     "whyWrong": {
       "B": "This puts secret material in a store that is not designed for it and loses Key Vault's auditing and rotation.",
@@ -246,9 +453,16 @@
       "D": "Per-request Key Vault calls are the throttling anti-pattern."
     },
     "docs": [
-      { "title": "Use Key Vault references in App Configuration", "url": "https://learn.microsoft.com/azure/azure-app-configuration/use-key-vault-references-dotnet-core" }
+      {
+        "title": "Use Key Vault references in App Configuration",
+        "url": "https://learn.microsoft.com/azure/azure-app-configuration/use-key-vault-references-dotnet-core"
+      }
     ],
-    "tags": ["app-configuration", "key-vault", "secrets"]
+    "tags": [
+      "app-configuration",
+      "key-vault",
+      "secrets"
+    ]
   },
   {
     "id": "o-sec-001",
@@ -258,12 +472,26 @@
     "difficulty": 2,
     "stem": "Which statement correctly distinguishes system-assigned from user-assigned managed identities?",
     "options": [
-      { "id": "A", "text": "A system-assigned identity is tied to one resource and deleted with it; a user-assigned identity is a standalone resource that several resources can share" },
-      { "id": "B", "text": "A system-assigned identity can be shared by several resources; a user-assigned identity cannot" },
-      { "id": "C", "text": "Only user-assigned identities can be granted Azure RBAC roles" },
-      { "id": "D", "text": "System-assigned identities require a client secret to be rotated every 90 days" }
+      {
+        "id": "A",
+        "text": "A system-assigned identity is tied to one resource and deleted with it; a user-assigned identity is a standalone resource that several resources can share"
+      },
+      {
+        "id": "B",
+        "text": "A system-assigned identity can be shared by several resources; a user-assigned identity cannot"
+      },
+      {
+        "id": "C",
+        "text": "Only user-assigned identities can be granted Azure RBAC roles"
+      },
+      {
+        "id": "D",
+        "text": "System-assigned identities require a client secret to be rotated every 90 days"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "A system-assigned identity shares the lifecycle of its resource. A user-assigned identity exists independently, can be attached to many resources, and keeps its role assignments when a resource is recreated — which is why it suits scale sets and repeated deployments.",
     "whyWrong": {
       "B": "This is exactly backwards.",
@@ -271,9 +499,15 @@
       "D": "Managed identities have no secrets to rotate; credential management is handled by the platform."
     },
     "docs": [
-      { "title": "Managed identity types", "url": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview" }
+      {
+        "title": "Managed identity types",
+        "url": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview"
+      }
     ],
-    "tags": ["managed-identity", "security"]
+    "tags": [
+      "managed-identity",
+      "security"
+    ]
   },
   {
     "id": "o-sec-002",
@@ -283,12 +517,26 @@
     "difficulty": 2,
     "stem": "A Function app with a managed identity must send messages to a Service Bus queue. Which role assignment is required, and at what scope should it be granted?",
     "options": [
-      { "id": "A", "text": "Azure Service Bus Data Sender, scoped to the queue" },
-      { "id": "B", "text": "Azure Service Bus Data Owner, scoped to the namespace" },
-      { "id": "C", "text": "Contributor, scoped to the resource group" },
-      { "id": "D", "text": "Azure Service Bus Data Receiver, scoped to the namespace" }
+      {
+        "id": "A",
+        "text": "Azure Service Bus Data Sender, scoped to the queue"
+      },
+      {
+        "id": "B",
+        "text": "Azure Service Bus Data Owner, scoped to the namespace"
+      },
+      {
+        "id": "C",
+        "text": "Contributor, scoped to the resource group"
+      },
+      {
+        "id": "D",
+        "text": "Azure Service Bus Data Receiver, scoped to the namespace"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Data Sender grants send only, and scoping it to the individual queue is the narrowest scope that works. Data-plane roles can be assigned at namespace, queue or topic level.",
     "whyWrong": {
       "B": "Data Owner includes manage and receive rights the app does not need, and namespace scope is broader than required.",
@@ -296,9 +544,17 @@
       "D": "Data Receiver grants receive, not send."
     },
     "docs": [
-      { "title": "Service Bus RBAC roles", "url": "https://learn.microsoft.com/azure/service-bus-messaging/service-bus-managed-service-identity" }
+      {
+        "title": "Service Bus RBAC roles",
+        "url": "https://learn.microsoft.com/azure/service-bus-messaging/service-bus-managed-service-identity"
+      }
     ],
-    "tags": ["managed-identity", "rbac", "service-bus", "least-privilege"]
+    "tags": [
+      "managed-identity",
+      "rbac",
+      "service-bus",
+      "least-privilege"
+    ]
   },
   {
     "id": "o-sec-003",
@@ -308,12 +564,26 @@
     "difficulty": 3,
     "stem": "A GitHub Actions workflow must deploy to Azure without any stored secret. What do you configure?",
     "options": [
-      { "id": "A", "text": "Workload identity federation, with a federated credential on an Entra app registration trusting the workflow's OIDC token" },
-      { "id": "B", "text": "A service principal client secret stored as a GitHub secret" },
-      { "id": "C", "text": "A publish profile downloaded from the App Service" },
-      { "id": "D", "text": "A SAS token scoped to the deployment container" }
+      {
+        "id": "A",
+        "text": "Workload identity federation, with a federated credential on an Entra app registration trusting the workflow's OIDC token"
+      },
+      {
+        "id": "B",
+        "text": "A service principal client secret stored as a GitHub secret"
+      },
+      {
+        "id": "C",
+        "text": "A publish profile downloaded from the App Service"
+      },
+      {
+        "id": "D",
+        "text": "A SAS token scoped to the deployment container"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Workload identity federation lets GitHub's OIDC token be exchanged for an Azure access token. The trust relationship is configured on the app registration, and no credential is stored in the repository.",
     "whyWrong": {
       "B": "This is a stored secret, which the requirement excludes.",
@@ -321,9 +591,16 @@
       "D": "A SAS token is a stored credential and does not authorise a deployment."
     },
     "docs": [
-      { "title": "Workload identity federation", "url": "https://learn.microsoft.com/entra/workload-id/workload-identity-federation" }
+      {
+        "title": "Workload identity federation",
+        "url": "https://learn.microsoft.com/entra/workload-id/workload-identity-federation"
+      }
     ],
-    "tags": ["security", "workload-identity", "cicd"]
+    "tags": [
+      "security",
+      "workload-identity",
+      "cicd"
+    ]
   },
   {
     "id": "o-otel-001",
@@ -333,22 +610,43 @@
     "difficulty": 2,
     "stem": "Which single line wires an ASP.NET Core service up to Application Insights using the Azure Monitor OpenTelemetry distro?",
     "options": [
-      { "id": "A", "text": "builder.Services.AddOpenTelemetry().UseAzureMonitor();" },
-      { "id": "B", "text": "builder.Services.AddApplicationInsightsTelemetry();" },
-      { "id": "C", "text": "builder.Logging.AddAzureMonitor();" },
-      { "id": "D", "text": "builder.Services.AddOpenTelemetry().AddOtlpExporter();" }
+      {
+        "id": "A",
+        "text": "`builder.Services.AddOpenTelemetry()`.`UseAzureMonitor()`;"
+      },
+      {
+        "id": "B",
+        "text": "`builder.Services.AddApplicationInsightsTelemetry()`;"
+      },
+      {
+        "id": "C",
+        "text": "`builder.Logging.AddAzureMonitor()`;"
+      },
+      {
+        "id": "D",
+        "text": "`builder.Services.AddOpenTelemetry()`.`AddOtlpExporter()`;"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "UseAzureMonitor from the Azure.Monitor.OpenTelemetry.AspNetCore package configures traces, metrics and logs together and reads APPLICATIONINSIGHTS_CONNECTION_STRING. It is the current recommended path.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "`UseAzureMonitor` from the Azure.Monitor.OpenTelemetry.AspNetCore package configures traces, metrics and logs together and reads `APPLICATIONINSIGHTS_CONNECTION_STRING`. It is the current recommended path.",
     "whyWrong": {
       "B": "That is the classic Application Insights SDK, not the OpenTelemetry-based distro the exam objective names.",
       "C": "This wires up logs only, leaving traces and metrics unexported.",
       "D": "An OTLP exporter sends to an OTLP endpoint, not to Application Insights, unless a collector sits in between."
     },
     "docs": [
-      { "title": "Enable Azure Monitor OpenTelemetry", "url": "https://learn.microsoft.com/azure/azure-monitor/app/opentelemetry-enable" }
+      {
+        "title": "Enable Azure Monitor OpenTelemetry",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/app/opentelemetry-enable"
+      }
     ],
-    "tags": ["opentelemetry", "application-insights", "instrumentation"]
+    "tags": [
+      "opentelemetry",
+      "application-insights",
+      "instrumentation"
+    ]
   },
   {
     "id": "o-otel-002",
@@ -358,22 +656,43 @@
     "difficulty": 3,
     "stem": "Requests that cross from an API into a background worker appear as two unrelated traces in Application Insights. Which cause fits?",
     "options": [
-      { "id": "A", "text": "Trace context is not propagated across the hop, so the traceparent header or message property never reaches the worker" },
-      { "id": "B", "text": "The two services use different Application Insights sampling rates" },
-      { "id": "C", "text": "The worker sets a different service.name resource attribute" },
-      { "id": "D", "text": "The worker exports metrics but not logs" }
+      {
+        "id": "A",
+        "text": "Trace context is not propagated across the hop, so the `traceparent` header or message property never reaches the worker"
+      },
+      {
+        "id": "B",
+        "text": "The two services use different Application Insights sampling rates"
+      },
+      {
+        "id": "C",
+        "text": "The worker sets a different `service.name` resource attribute"
+      },
+      {
+        "id": "D",
+        "text": "The worker exports metrics but not logs"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "Correlation depends on the W3C traceparent value travelling with the call. A hand-constructed HttpClient outside the instrumented pipeline, or a queue message that does not carry the context, breaks the chain and the worker starts a fresh trace.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "Correlation depends on the W3C `traceparent` value travelling with the call. A hand-constructed HttpClient outside the instrumented pipeline, or a queue message that does not carry the context, breaks the chain and the worker starts a fresh trace.",
     "whyWrong": {
       "B": "Sampling can drop spans but does not reassign surviving ones to a different trace.",
       "C": "service.name sets cloud_RoleName and separates the nodes on the application map — the trace still spans both.",
       "D": "Signal selection does not affect trace identity."
     },
     "docs": [
-      { "title": "Telemetry correlation", "url": "https://learn.microsoft.com/azure/azure-monitor/app/distributed-trace-data" }
+      {
+        "title": "Telemetry correlation",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/app/distributed-trace-data"
+      }
     ],
-    "tags": ["opentelemetry", "correlation", "troubleshooting"]
+    "tags": [
+      "opentelemetry",
+      "correlation",
+      "troubleshooting"
+    ]
   },
   {
     "id": "o-otel-003",
@@ -383,12 +702,26 @@
     "difficulty": 2,
     "stem": "In OpenTelemetry terms, what is the relationship between a trace and a span?",
     "options": [
-      { "id": "A", "text": "A trace is one end-to-end operation composed of spans, each representing a unit of work" },
-      { "id": "B", "text": "A span contains multiple traces, one per service" },
-      { "id": "C", "text": "A trace is a log line and a span is its severity" },
-      { "id": "D", "text": "They are interchangeable names for the same object" }
+      {
+        "id": "A",
+        "text": "A trace is one end-to-end operation composed of spans, each representing a unit of work"
+      },
+      {
+        "id": "B",
+        "text": "A span contains multiple traces, one per service"
+      },
+      {
+        "id": "C",
+        "text": "A trace is a log line and a span is its severity"
+      },
+      {
+        "id": "D",
+        "text": "They are interchangeable names for the same object"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "A trace is the whole request as it moves through the system; spans are the individual operations inside it, linked by parent-child relationships and sharing a trace id.",
     "whyWrong": {
       "B": "The containment is the other way around.",
@@ -396,9 +729,15 @@
       "D": "They are distinct concepts with distinct identifiers."
     },
     "docs": [
-      { "title": "OpenTelemetry overview", "url": "https://learn.microsoft.com/azure/azure-monitor/app/opentelemetry-overview" }
+      {
+        "title": "OpenTelemetry overview",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/app/opentelemetry-overview"
+      }
     ],
-    "tags": ["opentelemetry", "concepts"]
+    "tags": [
+      "opentelemetry",
+      "concepts"
+    ]
   },
   {
     "id": "o-otel-004",
@@ -408,22 +747,43 @@
     "difficulty": 2,
     "stem": "You want to time the embedding step of a request as its own span within the existing trace. What do you use in .NET?",
     "options": [
-      { "id": "A", "text": "An ActivitySource, starting an Activity around the embedding call" },
-      { "id": "B", "text": "A Stopwatch, logging the elapsed milliseconds" },
-      { "id": "C", "text": "A custom metric emitted with a Meter" },
-      { "id": "D", "text": "An ILogger scope" }
+      {
+        "id": "A",
+        "text": "An `ActivitySource`, starting an Activity around the embedding call"
+      },
+      {
+        "id": "B",
+        "text": "A Stopwatch, logging the elapsed milliseconds"
+      },
+      {
+        "id": "C",
+        "text": "A custom metric emitted with a Meter"
+      },
+      {
+        "id": "D",
+        "text": "An ILogger scope"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "In .NET, Activity is the implementation of an OpenTelemetry span. Starting an Activity from a registered ActivitySource creates a child span in the current trace, with its own timing and attributes.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "In .NET, Activity is the implementation of an OpenTelemetry span. Starting an Activity from a registered `ActivitySource` creates a child span in the current trace, with its own timing and attributes.",
     "whyWrong": {
       "B": "A stopwatch measurement in a log line is not a span and will not appear in the end-to-end transaction view.",
       "C": "A metric aggregates values over time; it cannot show this step inside one request's trace.",
       "D": "A log scope adds properties to log entries but creates no span."
     },
     "docs": [
-      { "title": "Add custom telemetry", "url": "https://learn.microsoft.com/azure/azure-monitor/app/opentelemetry-add-modify" }
+      {
+        "title": "Add custom telemetry",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/app/opentelemetry-add-modify"
+      }
     ],
-    "tags": ["opentelemetry", "instrumentation", "dotnet"]
+    "tags": [
+      "opentelemetry",
+      "instrumentation",
+      "dotnet"
+    ]
   },
   {
     "id": "o-otel-005",
@@ -433,12 +793,26 @@
     "difficulty": 2,
     "stem": "Application Insights ingestion costs have grown beyond budget, but you must keep end-to-end traces usable for the requests you do keep. What do you configure?",
     "options": [
-      { "id": "A", "text": "Sampling, which keeps or drops whole traces rather than individual spans" },
-      { "id": "B", "text": "A shorter data retention period" },
-      { "id": "C", "text": "Disabling dependency instrumentation" },
-      { "id": "D", "text": "A daily cap on the workspace" }
+      {
+        "id": "A",
+        "text": "Sampling, which keeps or drops whole traces rather than individual spans"
+      },
+      {
+        "id": "B",
+        "text": "A shorter data retention period"
+      },
+      {
+        "id": "C",
+        "text": "Disabling dependency instrumentation"
+      },
+      {
+        "id": "D",
+        "text": "A daily cap on the workspace"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Sampling reduces volume while keeping sampled traces complete, so the transactions you retain are still fully diagnosable. Metrics are pre-aggregated so they stay accurate.",
     "whyWrong": {
       "B": "Retention affects storage cost, not ingestion, and does not reduce what you are charged to ingest.",
@@ -446,9 +820,16 @@
       "D": "A daily cap stops ingestion once hit, leaving you blind for the rest of the day."
     },
     "docs": [
-      { "title": "Sampling in Application Insights", "url": "https://learn.microsoft.com/azure/azure-monitor/app/sampling" }
+      {
+        "title": "Sampling in Application Insights",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/app/sampling"
+      }
     ],
-    "tags": ["opentelemetry", "sampling", "cost"]
+    "tags": [
+      "opentelemetry",
+      "sampling",
+      "cost"
+    ]
   },
   {
     "id": "o-otel-006",
@@ -458,22 +839,43 @@
     "difficulty": 2,
     "stem": "Several microservices report to one Application Insights resource and appear merged in the application map. Which resource attribute separates them?",
     "options": [
-      { "id": "A", "text": "service.name, which maps to cloud_RoleName" },
-      { "id": "B", "text": "service.version, which maps to application_Version" },
-      { "id": "C", "text": "host.name, which maps to cloud_RoleInstance" },
-      { "id": "D", "text": "deployment.environment" }
+      {
+        "id": "A",
+        "text": "`service.name`, which maps to `cloud_RoleName`"
+      },
+      {
+        "id": "B",
+        "text": "service.version, which maps to application_Version"
+      },
+      {
+        "id": "C",
+        "text": "host.name, which maps to `cloud_RoleInstance`"
+      },
+      {
+        "id": "D",
+        "text": "deployment.environment"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "service.name becomes cloud_RoleName, and that is the field the application map uses to draw distinct nodes. service.instance.id becomes cloud_RoleInstance and distinguishes replicas of the same service.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "`service.name` becomes `cloud_RoleName`, and that is the field the application map uses to draw distinct nodes. service.instance.id becomes `cloud_RoleInstance` and distinguishes replicas of the same service.",
     "whyWrong": {
       "B": "Version annotates releases but does not split nodes on the map.",
       "C": "That distinguishes instances within a role, not the roles themselves.",
       "D": "Environment is a useful custom dimension but is not what the map groups by."
     },
     "docs": [
-      { "title": "Application map", "url": "https://learn.microsoft.com/azure/azure-monitor/app/app-map" }
+      {
+        "title": "Application map",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/app/app-map"
+      }
     ],
-    "tags": ["opentelemetry", "application-insights", "cloud-role"]
+    "tags": [
+      "opentelemetry",
+      "application-insights",
+      "cloud-role"
+    ]
   },
   {
     "id": "o-kql-001",
@@ -484,22 +886,42 @@
     "stem": "Complete the query so it returns the count of failed requests in five-minute buckets over the last hour.",
     "code": "requests\n| where timestamp > ago(1h)\n| where success == false\n<?>",
     "options": [
-      { "id": "A", "text": "| summarize count() by bin(timestamp, 5m)" },
-      { "id": "B", "text": "| project count() by timestamp" },
-      { "id": "C", "text": "| extend count = count() by bin(timestamp, 5m)" },
-      { "id": "D", "text": "| order by timestamp asc | take 5m" }
+      {
+        "id": "A",
+        "text": "`| summarize count() by bin(timestamp, 5m)`"
+      },
+      {
+        "id": "B",
+        "text": "`| project count() by timestamp`"
+      },
+      {
+        "id": "C",
+        "text": "`| extend count = count() by bin(timestamp, 5m)`"
+      },
+      {
+        "id": "D",
+        "text": "`| order by timestamp asc | take 5m`"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "summarize performs the aggregation and bin() rounds the timestamp down into fixed buckets, which is the standard KQL time-series shape.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "`summarize` performs the aggregation and `bin()` rounds the timestamp down into fixed buckets, which is the standard KQL time-series shape.",
     "whyWrong": {
       "B": "project selects and computes columns row by row; it cannot aggregate across rows.",
       "C": "extend adds a column per row and does not support a by clause.",
       "D": "take limits rows and does not accept a timespan."
     },
     "docs": [
-      { "title": "KQL summarize operator", "url": "https://learn.microsoft.com/kusto/query/summarize-operator" }
+      {
+        "title": "KQL summarize operator",
+        "url": "https://learn.microsoft.com/kusto/query/summarize-operator"
+      }
     ],
-    "tags": ["kql", "aggregation"]
+    "tags": [
+      "kql",
+      "aggregation"
+    ]
   },
   {
     "id": "o-kql-002",
@@ -509,22 +931,43 @@
     "difficulty": 2,
     "stem": "You have the operation id of a failed user request and need every telemetry item from every service involved. Which query pattern gets there?",
     "options": [
-      { "id": "A", "text": "union requests, dependencies, exceptions, traces | where operation_Id == \"abc123\"" },
-      { "id": "B", "text": "search \"abc123\"" },
-      { "id": "C", "text": "requests | where id == \"abc123\"" },
-      { "id": "D", "text": "traces | where customDimensions.operationId == \"abc123\"" }
+      {
+        "id": "A",
+        "text": "union requests, dependencies, exceptions, traces | where `operation_Id` == \"abc123\""
+      },
+      {
+        "id": "B",
+        "text": "search \"abc123\""
+      },
+      {
+        "id": "C",
+        "text": "requests | where id == \"abc123\""
+      },
+      {
+        "id": "D",
+        "text": "traces | where `customDimensions`.operationId == \"abc123\""
+      }
     ],
-    "correct": ["A"],
-    "explanation": "operation_Id is the correlation field shared across telemetry types, so a union of the relevant tables filtered on it reconstructs the whole distributed operation.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "`operation_Id` is the correlation field shared across telemetry types, so a union of the relevant tables filtered on it reconstructs the whole distributed operation.",
     "whyWrong": {
       "B": "search scans every column of every table — slow, expensive, and it will match unrelated text.",
       "C": "requests.id identifies one request, not the whole operation across services.",
       "D": "operation_Id is a first-class column, not a custom dimension, and this looks at one table only."
     },
     "docs": [
-      { "title": "Telemetry correlation", "url": "https://learn.microsoft.com/azure/azure-monitor/app/distributed-trace-data" }
+      {
+        "title": "Telemetry correlation",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/app/distributed-trace-data"
+      }
     ],
-    "tags": ["kql", "correlation", "troubleshooting"]
+    "tags": [
+      "kql",
+      "correlation",
+      "troubleshooting"
+    ]
   },
   {
     "id": "o-kql-003",
@@ -534,12 +977,26 @@
     "difficulty": 3,
     "stem": "Which change most improves the performance of a slow KQL query over a large table?",
     "options": [
-      { "id": "A", "text": "Apply the time range filter as the first operator in the pipeline" },
-      { "id": "B", "text": "Move the time range filter to the end so other filters reduce rows first" },
-      { "id": "C", "text": "Replace has with contains for text matching" },
-      { "id": "D", "text": "Add a render operator to the query" }
+      {
+        "id": "A",
+        "text": "Apply the time range filter as the first operator in the pipeline"
+      },
+      {
+        "id": "B",
+        "text": "Move the time range filter to the end so other filters reduce rows first"
+      },
+      {
+        "id": "C",
+        "text": "Replace has with contains for text matching"
+      },
+      {
+        "id": "D",
+        "text": "Add a render operator to the query"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Log Analytics partitions data by time, so an early time filter eliminates whole partitions before anything else runs. It is consistently the biggest single performance lever.",
     "whyWrong": {
       "B": "Every later operator would process the full history first — the opposite of what you want.",
@@ -547,9 +1004,15 @@
       "D": "render only affects how results are visualised."
     },
     "docs": [
-      { "title": "KQL query best practices", "url": "https://learn.microsoft.com/kusto/query/best-practices" }
+      {
+        "title": "KQL query best practices",
+        "url": "https://learn.microsoft.com/kusto/query/best-practices"
+      }
     ],
-    "tags": ["kql", "performance"]
+    "tags": [
+      "kql",
+      "performance"
+    ]
   },
   {
     "id": "o-kql-004",
@@ -557,24 +1020,44 @@
     "objective": "Monitor and troubleshoot Azure solutions",
     "kind": "single",
     "difficulty": 2,
-    "stem": "Custom telemetry stores a tenant identifier in customDimensions. How do you group request counts by tenant?",
+    "stem": "Custom telemetry stores a tenant identifier in `customDimensions`. How do you group request counts by tenant?",
     "options": [
-      { "id": "A", "text": "| extend tenant = tostring(customDimensions.tenantId) | summarize count() by tenant" },
-      { "id": "B", "text": "| summarize count() by customDimensions.tenantId" },
-      { "id": "C", "text": "| project tenantId | summarize count()" },
-      { "id": "D", "text": "| parse customDimensions with tenantId | summarize count() by tenantId" }
+      {
+        "id": "A",
+        "text": "`| extend tenant = tostring(customDimensions.tenantId) | summarize count() by tenant`"
+      },
+      {
+        "id": "B",
+        "text": "`| summarize count() by customDimensions.tenantId`"
+      },
+      {
+        "id": "C",
+        "text": "`| project tenantId | summarize count()`"
+      },
+      {
+        "id": "D",
+        "text": "`| parse customDimensions with tenantId | summarize count() by tenantId`"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "customDimensions is a dynamic column, so the property must be extracted and converted to a concrete type before it can be used as a grouping key. tostring() is the usual conversion.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "`customDimensions` is a dynamic column, so the property must be extracted and converted to a concrete type before it can be used as a grouping key. `tostring()` is the usual conversion.",
     "whyWrong": {
       "B": "Grouping directly on a dynamic property is unreliable and will not give the typed key you expect.",
       "C": "tenantId is not a top-level column, so project cannot select it that way.",
       "D": "parse works on strings using a pattern; it is the wrong tool for a dynamic object."
     },
     "docs": [
-      { "title": "Work with dynamic data in KQL", "url": "https://learn.microsoft.com/kusto/query/scalar-data-types/dynamic" }
+      {
+        "title": "Work with dynamic data in KQL",
+        "url": "https://learn.microsoft.com/kusto/query/scalar-data-types/dynamic"
+      }
     ],
-    "tags": ["kql", "custom-dimensions"]
+    "tags": [
+      "kql",
+      "custom-dimensions"
+    ]
   },
   {
     "id": "o-kql-005",
@@ -584,12 +1067,26 @@
     "difficulty": 2,
     "stem": "Which query returns the slowest 10 dependency calls in the last day, showing the target and duration?",
     "options": [
-      { "id": "A", "text": "dependencies | where timestamp > ago(1d) | top 10 by duration desc | project target, name, duration" },
-      { "id": "B", "text": "dependencies | where timestamp > ago(1d) | summarize max(duration) | take 10" },
-      { "id": "C", "text": "dependencies | sort by duration | limit 10 asc" },
-      { "id": "D", "text": "dependencies | where duration > 10 | project target" }
+      {
+        "id": "A",
+        "text": "dependencies | where timestamp > ago(1d) | top 10 by duration desc | project target, name, duration"
+      },
+      {
+        "id": "B",
+        "text": "dependencies | where timestamp > ago(1d) | `summarize` max(duration) | take 10"
+      },
+      {
+        "id": "C",
+        "text": "dependencies | sort by duration | limit 10 asc"
+      },
+      {
+        "id": "D",
+        "text": "dependencies | where duration > 10 | project target"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "top n by <column> desc is the idiomatic way to get the largest values, and it is more efficient than sorting the whole table. Filtering on time first keeps the scan small.",
     "whyWrong": {
       "B": "summarize max(duration) collapses everything to a single row, so take 10 has nothing to take.",
@@ -597,9 +1094,16 @@
       "D": "A fixed threshold is not the same as the slowest ten, and duration is in milliseconds so 10 is a meaningless cut-off."
     },
     "docs": [
-      { "title": "KQL top operator", "url": "https://learn.microsoft.com/kusto/query/top-operator" }
+      {
+        "title": "KQL top operator",
+        "url": "https://learn.microsoft.com/kusto/query/top-operator"
+      }
     ],
-    "tags": ["kql", "performance", "dependencies"]
+    "tags": [
+      "kql",
+      "performance",
+      "dependencies"
+    ]
   },
   {
     "id": "o-kql-006",
@@ -609,12 +1113,26 @@
     "difficulty": 2,
     "stem": "Which table holds the stdout and stderr output of containers running in Azure Container Apps?",
     "options": [
-      { "id": "A", "text": "ContainerAppConsoleLogs_CL" },
-      { "id": "B", "text": "ContainerAppSystemLogs_CL" },
-      { "id": "C", "text": "ContainerLogV2" },
-      { "id": "D", "text": "AppTraces" }
+      {
+        "id": "A",
+        "text": "ContainerAppConsoleLogs_CL"
+      },
+      {
+        "id": "B",
+        "text": "ContainerAppSystemLogs_CL"
+      },
+      {
+        "id": "C",
+        "text": "ContainerLogV2"
+      },
+      {
+        "id": "D",
+        "text": "AppTraces"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Console logs carry your application's own output. System logs carry the platform's messages about the app, such as why a revision failed to provision.",
     "whyWrong": {
       "B": "System logs are the platform's account of the app's lifecycle, not the app's output.",
@@ -622,9 +1140,16 @@
       "D": "AppTraces holds ILogger output sent through Application Insights, which is a different pipeline."
     },
     "docs": [
-      { "title": "Log monitoring in Container Apps", "url": "https://learn.microsoft.com/azure/container-apps/log-monitoring" }
+      {
+        "title": "Log monitoring in Container Apps",
+        "url": "https://learn.microsoft.com/azure/container-apps/log-monitoring"
+      }
     ],
-    "tags": ["kql", "container-apps", "logs"]
+    "tags": [
+      "kql",
+      "container-apps",
+      "logs"
+    ]
   },
   {
     "id": "o-kql-007",
@@ -634,12 +1159,26 @@
     "difficulty": 3,
     "stem": "You need the 95th percentile response time per operation over the last six hours. Which query is correct?",
     "options": [
-      { "id": "A", "text": "requests | where timestamp > ago(6h) | summarize percentile(duration, 95) by operation_Name" },
-      { "id": "B", "text": "requests | where timestamp > ago(6h) | summarize avg(duration) * 0.95 by operation_Name" },
-      { "id": "C", "text": "requests | where timestamp > ago(6h) | top 95 by duration desc" },
-      { "id": "D", "text": "requests | where timestamp > ago(6h) | summarize max(duration) by percentile(95)" }
+      {
+        "id": "A",
+        "text": "requests | where timestamp > ago(6h) | `summarize` percentile(duration, 95) by operation_Name"
+      },
+      {
+        "id": "B",
+        "text": "requests | where timestamp > ago(6h) | `summarize` avg(duration) * 0.95 by operation_Name"
+      },
+      {
+        "id": "C",
+        "text": "requests | where timestamp > ago(6h) | top 95 by duration desc"
+      },
+      {
+        "id": "D",
+        "text": "requests | where timestamp > ago(6h) | `summarize` max(duration) by percentile(95)"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "percentile(column, n) is the aggregation function for percentiles, and grouping by operation_Name gives one figure per operation.",
     "whyWrong": {
       "B": "Scaling an average has no statistical relationship to a percentile.",
@@ -647,9 +1186,16 @@
       "D": "percentile is an aggregation function, not something you can group by."
     },
     "docs": [
-      { "title": "KQL percentile function", "url": "https://learn.microsoft.com/kusto/query/percentiles-aggregation-function" }
+      {
+        "title": "KQL percentile function",
+        "url": "https://learn.microsoft.com/kusto/query/percentiles-aggregation-function"
+      }
     ],
-    "tags": ["kql", "aggregation", "performance"]
+    "tags": [
+      "kql",
+      "aggregation",
+      "performance"
+    ]
   },
   {
     "id": "o-kql-008",
@@ -659,22 +1205,43 @@
     "difficulty": 2,
     "stem": "Pods on AKS are restarting and you want the cluster events explaining why. Which table do you query?",
     "options": [
-      { "id": "A", "text": "KubeEvents" },
-      { "id": "B", "text": "ContainerLogV2" },
-      { "id": "C", "text": "AzureDiagnostics" },
-      { "id": "D", "text": "Perf" }
+      {
+        "id": "A",
+        "text": "KubeEvents"
+      },
+      {
+        "id": "B",
+        "text": "ContainerLogV2"
+      },
+      {
+        "id": "C",
+        "text": "AzureDiagnostics"
+      },
+      {
+        "id": "D",
+        "text": "Perf"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "KubeEvents holds Kubernetes events collected by Container insights — scheduling failures, image pull errors, probe failures and evictions. It is the equivalent of kubectl get events, queryable over time.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "KubeEvents holds Kubernetes events collected by Container insights — scheduling failures, image pull errors, probe failures and evictions. It is the equivalent of `kubectl get events`, queryable over time.",
     "whyWrong": {
       "B": "ContainerLogV2 holds container stdout and stderr, not cluster events.",
       "C": "AzureDiagnostics is a general table for resource diagnostic logs from many services.",
       "D": "Perf holds performance counters such as CPU and memory."
     },
     "docs": [
-      { "title": "Container insights log tables", "url": "https://learn.microsoft.com/azure/azure-monitor/containers/container-insights-log-query" }
+      {
+        "title": "Container insights log tables",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/containers/container-insights-log-query"
+      }
     ],
-    "tags": ["kql", "aks", "troubleshooting"]
+    "tags": [
+      "kql",
+      "aks",
+      "troubleshooting"
+    ]
   },
   {
     "id": "o-kql-009",
@@ -684,12 +1251,26 @@
     "difficulty": 2,
     "stem": "Which pair of KQL operators lets you enrich request telemetry with matching exception records?",
     "options": [
-      { "id": "A", "text": "join kind=leftouter on operation_Id" },
-      { "id": "B", "text": "union with a where clause" },
-      { "id": "C", "text": "mv-expand on operation_Id" },
-      { "id": "D", "text": "lookup on timestamp" }
+      {
+        "id": "A",
+        "text": "join kind=leftouter on `operation_Id`"
+      },
+      {
+        "id": "B",
+        "text": "union with a where clause"
+      },
+      {
+        "id": "C",
+        "text": "mv-expand on `operation_Id`"
+      },
+      {
+        "id": "D",
+        "text": "lookup on timestamp"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "A leftouter join keeps every request and attaches exception rows where the correlation key matches, so requests without exceptions are still returned.",
     "whyWrong": {
       "B": "union stacks rows from both tables; it does not correlate them into a single row.",
@@ -697,9 +1278,16 @@
       "D": "Joining on timestamp would match unrelated records that merely happened at the same moment."
     },
     "docs": [
-      { "title": "KQL join operator", "url": "https://learn.microsoft.com/kusto/query/join-operator" }
+      {
+        "title": "KQL join operator",
+        "url": "https://learn.microsoft.com/kusto/query/join-operator"
+      }
     ],
-    "tags": ["kql", "join", "correlation"]
+    "tags": [
+      "kql",
+      "join",
+      "correlation"
+    ]
   },
   {
     "id": "o-kql-010",
@@ -709,12 +1297,26 @@
     "difficulty": 2,
     "stem": "An alert must fire when the failure rate of a specific operation exceeds 5% over 15 minutes. Which building block do you use in Azure Monitor?",
     "options": [
-      { "id": "A", "text": "A log search alert rule running a KQL query on a schedule with a threshold condition" },
-      { "id": "B", "text": "An activity log alert on the resource" },
-      { "id": "C", "text": "A service health alert" },
-      { "id": "D", "text": "A workbook with a conditional visualisation" }
+      {
+        "id": "A",
+        "text": "A log search alert rule running a KQL query on a schedule with a threshold condition"
+      },
+      {
+        "id": "B",
+        "text": "An activity log alert on the resource"
+      },
+      {
+        "id": "C",
+        "text": "A service health alert"
+      },
+      {
+        "id": "D",
+        "text": "A workbook with a conditional visualisation"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "A computed ratio over a window is not a platform metric, so it needs a log search alert: the KQL query calculates the failure rate and the rule fires when the result crosses the threshold.",
     "whyWrong": {
       "B": "Activity log alerts fire on control-plane operations such as resource deletion.",
@@ -722,9 +1324,16 @@
       "D": "Workbooks visualise data; they do not raise alerts."
     },
     "docs": [
-      { "title": "Log search alerts", "url": "https://learn.microsoft.com/azure/azure-monitor/alerts/alerts-types" }
+      {
+        "title": "Log search alerts",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/alerts/alerts-types"
+      }
     ],
-    "tags": ["kql", "alerts", "monitoring"]
+    "tags": [
+      "kql",
+      "alerts",
+      "monitoring"
+    ]
   },
   {
     "id": "o-otel-007",
@@ -734,12 +1343,26 @@
     "difficulty": 2,
     "stem": "Which environment variable connects an instrumented application to its Application Insights resource?",
     "options": [
-      { "id": "A", "text": "APPLICATIONINSIGHTS_CONNECTION_STRING" },
-      { "id": "B", "text": "APPINSIGHTS_INSTRUMENTATIONKEY" },
-      { "id": "C", "text": "OTEL_EXPORTER_OTLP_ENDPOINT" },
-      { "id": "D", "text": "AZURE_MONITOR_WORKSPACE_ID" }
+      {
+        "id": "A",
+        "text": "`APPLICATIONINSIGHTS_CONNECTION_STRING`"
+      },
+      {
+        "id": "B",
+        "text": "`APPINSIGHTS_INSTRUMENTATIONKEY`"
+      },
+      {
+        "id": "C",
+        "text": "`OTEL_EXPORTER_OTLP_ENDPOINT`"
+      },
+      {
+        "id": "D",
+        "text": "`AZURE_MONITOR_WORKSPACE_ID`"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "The connection string carries the instrumentation key plus the regional ingestion endpoints, which is why it replaced the bare instrumentation key. Instrumentation-key-only ingestion is retired.",
     "whyWrong": {
       "B": "The instrumentation key on its own is the retired mechanism and lacks endpoint information.",
@@ -747,9 +1370,16 @@
       "D": "Not the setting the SDK reads."
     },
     "docs": [
-      { "title": "Application Insights connection strings", "url": "https://learn.microsoft.com/azure/azure-monitor/app/connection-strings" }
+      {
+        "title": "Application Insights connection strings",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/app/connection-strings"
+      }
     ],
-    "tags": ["opentelemetry", "application-insights", "configuration"]
+    "tags": [
+      "opentelemetry",
+      "application-insights",
+      "configuration"
+    ]
   },
   {
     "id": "o-sec-004",
@@ -759,12 +1389,26 @@
     "difficulty": 2,
     "stem": "An application logs the full request body to help debug model prompts. A review finds customer email addresses in Application Insights. What is the appropriate remediation?",
     "options": [
-      { "id": "A", "text": "Redact or omit personal data before logging, and reduce what is captured to what diagnosis actually requires" },
-      { "id": "B", "text": "Shorten the workspace retention period to 30 days" },
-      { "id": "C", "text": "Restrict access to the workspace with RBAC and leave logging unchanged" },
-      { "id": "D", "text": "Move the workspace to a different region" }
+      {
+        "id": "A",
+        "text": "Redact or omit personal data before logging, and reduce what is captured to what diagnosis actually requires"
+      },
+      {
+        "id": "B",
+        "text": "Shorten the workspace retention period to 30 days"
+      },
+      {
+        "id": "C",
+        "text": "Restrict access to the workspace with RBAC and leave logging unchanged"
+      },
+      {
+        "id": "D",
+        "text": "Move the workspace to a different region"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "The fix is at the source: do not emit personal data into telemetry. Access controls and retention are worthwhile defence in depth, but they do not address having collected the data in the first place.",
     "whyWrong": {
       "B": "Retention limits how long the exposure lasts, not whether it happens.",
@@ -772,8 +1416,15 @@
       "D": "Region affects data residency but does nothing about the content being logged."
     },
     "docs": [
-      { "title": "Data collection and privacy in Application Insights", "url": "https://learn.microsoft.com/azure/azure-monitor/app/data-retention-privacy" }
+      {
+        "title": "Data collection and privacy in Application Insights",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/app/data-retention-privacy"
+      }
     ],
-    "tags": ["security", "privacy", "logging"]
+    "tags": [
+      "security",
+      "privacy",
+      "logging"
+    ]
   }
 ]

@@ -20,7 +20,16 @@ public sealed class SessionItem
 
     public bool Flagged { get; set; }
 
-    public bool Answered => Selected.Count > 0;
+    /// <summary>
+    /// True once enough has been selected to count as a complete attempt. Ordering and
+    /// Blanks need every slot filled; the others just need one selection.
+    /// </summary>
+    public bool Answered => Question.Kind is QuestionKind.Ordering or QuestionKind.Blanks
+        ? Selected.Count >= Question.RequiredSelections
+        : Selected.Count > 0;
+
+    /// <summary>Any selection at all — used to show partial progress on ordering questions.</summary>
+    public bool Started => Selected.Count > 0;
 
     public bool IsCorrect => Question.IsCorrect(Selected);
 
@@ -28,17 +37,51 @@ public sealed class SessionItem
     {
         if (Submitted) return;
 
-        if (Question.Kind == QuestionKind.Single)
+        switch (Question.Kind)
         {
-            Selected.Clear();
-            Selected.Add(optionId);
-            return;
-        }
+            case QuestionKind.Single:
+                Selected.Clear();
+                Selected.Add(optionId);
+                break;
 
-        if (!Selected.Remove(optionId))
-        {
-            Selected.Add(optionId);
+            // Clicking appends to the sequence; clicking an already-placed item pulls it
+            // back out, and everything after it closes up.
+            case QuestionKind.Ordering:
+                if (!Selected.Remove(optionId)) Selected.Add(optionId);
+                break;
+
+            default:
+                if (!Selected.Remove(optionId)) Selected.Add(optionId);
+                break;
         }
+    }
+
+    /// <summary>Sets one dropdown's answer, replacing whatever that blank held before.</summary>
+    public void SetBlank(string blankId, string? choiceId)
+    {
+        if (Submitted) return;
+
+        Selected.RemoveAll(s => s.StartsWith(blankId + "=", StringComparison.Ordinal));
+
+        if (!string.IsNullOrEmpty(choiceId))
+        {
+            Selected.Add(Question.BlankToken(blankId, choiceId));
+        }
+    }
+
+    /// <summary>The choice currently picked for a blank, or null.</summary>
+    public string? ChoiceFor(string blankId)
+    {
+        var prefix = blankId + "=";
+        var hit = Selected.FirstOrDefault(s => s.StartsWith(prefix, StringComparison.Ordinal));
+        return hit?[prefix.Length..];
+    }
+
+    /// <summary>1-based position of an option in the ordering answer, or null if unplaced.</summary>
+    public int? PositionOf(string optionId)
+    {
+        var index = Selected.IndexOf(optionId);
+        return index < 0 ? null : index + 1;
     }
 }
 

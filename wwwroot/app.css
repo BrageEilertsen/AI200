@@ -651,6 +651,25 @@ pre.code {
     letter-spacing: -.01em;
 }
 
+/* Inline code inside question text. The tint is mixed from the current text colour so it
+   reads correctly on every surface it can land on — plain card, tinted option, verdict panel. */
+.q-stem code,
+.option-text code,
+.blank-label code,
+.scenario-body code,
+.explain code,
+.why-wrong code {
+    font-family: var(--mono);
+    font-size: .87em;
+    background-color: var(--surface-2);
+    background-color: color-mix(in srgb, currentColor 9%, transparent);
+    padding: 1.5px 5px;
+    border-radius: var(--r-xs);
+    color: var(--text);
+    letter-spacing: -.01em;
+    word-break: break-word;
+}
+
 .options { display: flex; flex-direction: column; gap: 9px; margin-bottom: 22px; }
 
 .option {
@@ -700,6 +719,118 @@ pre.code {
 
 .option-text { flex: 1; min-width: 0; white-space: pre-wrap; padding-top: 2px; }
 .option-mark { font-size: 15px; font-weight: 700; padding-top: 2px; }
+
+/* ═══════════════ case study scenario ═══════════════ */
+
+.scenario {
+    background-color: var(--surface-2);
+    border-radius: var(--r);
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.scenario > summary {
+    cursor: pointer;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    user-select: none;
+    list-style: none;
+}
+
+.scenario > summary::-webkit-details-marker { display: none; }
+
+.scenario > summary::after {
+    content: "▾";
+    margin-left: auto;
+    color: var(--text-3);
+    font-size: 12px;
+    transition: transform .2s var(--ease);
+}
+
+.scenario[open] > summary::after { transform: rotate(180deg); }
+
+.scenario-tag {
+    font-size: 11px;
+    font-weight: 620;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--on-accent);
+    background-color: var(--accent);
+    padding: 2.5px 8px;
+    border-radius: var(--r-xs);
+}
+
+.scenario-title { font-weight: 560; font-size: 14.5px; letter-spacing: -.012em; }
+
+.scenario-body {
+    padding: 0 18px 16px;
+    white-space: pre-wrap;
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--text-2);
+    letter-spacing: -.011em;
+}
+
+/* ═══════════════ blanks / yes-no series ═══════════════ */
+
+.blanks { display: flex; flex-direction: column; gap: 8px; margin-bottom: 22px; }
+
+.blank {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 16px;
+    border: 1.5px solid transparent;
+    border-radius: var(--r);
+    background-color: var(--surface-2);
+}
+
+.blank.right { border-color: var(--good); background-color: var(--good-tint); }
+.blank.wrong { border-color: var(--bad);  background-color: var(--bad-tint); }
+
+.blank-index {
+    flex: 0 0 26px;
+    height: 26px;
+    border-radius: 50%;
+    background-color: var(--surface);
+    display: grid;
+    place-items: center;
+    font-size: 12.5px;
+    font-weight: 620;
+    color: var(--text-3);
+    box-shadow: var(--shadow-1);
+}
+
+.blank.right .blank-index { background-color: var(--good); color: #fff; }
+.blank.wrong .blank-index { background-color: var(--bad);  color: #fff; }
+
+.blank-label {
+    flex: 1;
+    min-width: 0;
+    font-size: 14.5px;
+    line-height: 1.45;
+    letter-spacing: -.011em;
+    color: var(--text);
+    white-space: pre-wrap;
+}
+
+.blank-control { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
+.blank-control select { min-width: 150px; }
+
+.blank-answer {
+    font-size: 13px;
+    font-weight: 560;
+    color: var(--good);
+    white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+    .blank { flex-wrap: wrap; }
+    .blank-control { width: 100%; }
+    .blank-control select { flex: 1; }
+}
 
 /* ═══════════════ explanation ═══════════════ */
 

@@ -55,7 +55,11 @@ else
         var stat = Progress.StatFor(question.Id);
 
         <div class="card" style="margin-bottom:12px">
-            <QuestionView Question="question" Selected="@(revealed ? question.Correct : [])" Revealed="revealed" />
+            <QuestionView Question="question"
+                          Selected="@(revealed ? question.Correct : [])"
+                          Revealed="revealed"
+                          CaseStudy="Bank.CaseStudyFor(question)"
+                          ScenarioOpen="false" />
 
             <div class="row between" style="margin-top:14px">
                 <span class="xs faint">

@@ -7,22 +7,42 @@
     "difficulty": 2,
     "stem": "Your build agents run in a locked-down Linux VM where the Docker daemon cannot be installed. You need to build a container image from a Dockerfile in your repository and push it to Azure Container Registry. Which approach requires the fewest changes to the agent?",
     "options": [
-      { "id": "A", "text": "Install Podman on the agent and push with docker push" },
-      { "id": "B", "text": "Run az acr build, which builds the image in Azure Container Registry" },
-      { "id": "C", "text": "Use docker buildx with a remote BuildKit builder hosted on an Azure VM" },
-      { "id": "D", "text": "Import the image with az acr import" }
+      {
+        "id": "A",
+        "text": "Install Podman on the agent and push with docker push"
+      },
+      {
+        "id": "B",
+        "text": "Run `az acr build`, which builds the image in Azure Container Registry"
+      },
+      {
+        "id": "C",
+        "text": "Use docker buildx with a remote BuildKit builder hosted on an Azure VM"
+      },
+      {
+        "id": "D",
+        "text": "Import the image with `az acr import`"
+      }
     ],
-    "correct": ["B"],
-    "explanation": "az acr build submits your build context to ACR Tasks, which performs the build on Azure-managed compute and pushes the result into the registry. No local Docker daemon is involved, which is exactly the constraint here.",
+    "correct": [
+      "B"
+    ],
+    "explanation": "`az acr build` submits your build context to ACR Tasks, which performs the build on Azure-managed compute and pushes the result into the registry. No local Docker daemon is involved, which is exactly the constraint here.",
     "whyWrong": {
       "A": "This still requires a container engine on the agent, which is what you cannot install.",
       "C": "It works, but it means standing up and maintaining extra infrastructure — far more change than a single CLI command.",
       "D": "az acr import copies an image that already exists in another registry. It cannot build from a Dockerfile."
     },
     "docs": [
-      { "title": "ACR Tasks overview", "url": "https://learn.microsoft.com/azure/container-registry/container-registry-tasks-overview" }
+      {
+        "title": "ACR Tasks overview",
+        "url": "https://learn.microsoft.com/azure/container-registry/container-registry-tasks-overview"
+      }
     ],
-    "tags": ["acr", "acr-tasks"]
+    "tags": [
+      "acr",
+      "acr-tasks"
+    ]
   },
   {
     "id": "c-acr-002",
@@ -32,12 +52,26 @@
     "difficulty": 2,
     "stem": "Your inference API is deployed to three Azure regions. Pod startup is slow in two of them because images are pulled across regions. You need images served locally in each region from a single registry name. What do you configure?",
     "options": [
-      { "id": "A", "text": "A Premium registry with geo-replication enabled for each region" },
-      { "id": "B", "text": "One Standard registry per region, with az acr import on a schedule" },
-      { "id": "C", "text": "A Standard registry with a Front Door profile in front of it" },
-      { "id": "D", "text": "A Premium registry with a private endpoint in each region" }
+      {
+        "id": "A",
+        "text": "A Premium registry with geo-replication enabled for each region"
+      },
+      {
+        "id": "B",
+        "text": "One Standard registry per region, with `az acr import` on a schedule"
+      },
+      {
+        "id": "C",
+        "text": "A Standard registry with a Front Door profile in front of it"
+      },
+      {
+        "id": "D",
+        "text": "A Premium registry with a private endpoint in each region"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Geo-replication gives you one registry, one login server name and one image tag, with regional replicas serving pulls locally. It is a Premium-tier-only feature and is the intended answer whenever multi-region pull latency is the problem.",
     "whyWrong": {
       "B": "Multiple registries means multiple names and a synchronisation job to maintain — the exact operational overhead geo-replication removes.",
@@ -45,9 +79,16 @@
       "D": "Private endpoints control network reachability. They do not place image data closer to the puller."
     },
     "docs": [
-      { "title": "Geo-replication in ACR", "url": "https://learn.microsoft.com/azure/container-registry/container-registry-geo-replication" }
+      {
+        "title": "Geo-replication in ACR",
+        "url": "https://learn.microsoft.com/azure/container-registry/container-registry-geo-replication"
+      }
     ],
-    "tags": ["acr", "geo-replication", "sku"]
+    "tags": [
+      "acr",
+      "geo-replication",
+      "sku"
+    ]
   },
   {
     "id": "c-acr-003",
@@ -57,22 +98,47 @@
     "difficulty": 2,
     "stem": "Which capabilities require the Premium SKU of Azure Container Registry? Choose three.",
     "options": [
-      { "id": "A", "text": "Geo-replication" },
-      { "id": "B", "text": "Webhooks" },
-      { "id": "C", "text": "Private link with private endpoints" },
-      { "id": "D", "text": "Repository-scoped tokens" },
-      { "id": "E", "text": "ACR Tasks" }
+      {
+        "id": "A",
+        "text": "Geo-replication"
+      },
+      {
+        "id": "B",
+        "text": "Webhooks"
+      },
+      {
+        "id": "C",
+        "text": "Private link with private endpoints"
+      },
+      {
+        "id": "D",
+        "text": "Repository-scoped tokens"
+      },
+      {
+        "id": "E",
+        "text": "ACR Tasks"
+      }
     ],
-    "correct": ["A", "C", "D"],
+    "correct": [
+      "A",
+      "C",
+      "D"
+    ],
     "explanation": "Premium adds geo-replication, private link, content trust, customer-managed keys, repository-scoped tokens and zone redundancy on top of what Standard offers. When a scenario mentions any of those, the SKU is decided for you.",
     "whyWrong": {
       "B": "Webhooks are available from the Basic tier upward.",
       "E": "ACR Tasks run on all tiers, including Basic."
     },
     "docs": [
-      { "title": "ACR service tiers", "url": "https://learn.microsoft.com/azure/container-registry/container-registry-skus" }
+      {
+        "title": "ACR service tiers",
+        "url": "https://learn.microsoft.com/azure/container-registry/container-registry-skus"
+      }
     ],
-    "tags": ["acr", "sku"]
+    "tags": [
+      "acr",
+      "sku"
+    ]
   },
   {
     "id": "c-acr-004",
@@ -82,22 +148,43 @@
     "difficulty": 3,
     "stem": "A security patch is released for the python:3.12-slim base image used by your model-serving container. You want the image rebuilt and pushed automatically whenever that base image is updated, with no pipeline run and no commit. What do you create?",
     "options": [
-      { "id": "A", "text": "A scheduled ACR task that runs az acr build every hour" },
-      { "id": "B", "text": "An ACR task created with az acr task create so that ACR tracks the base image dependency and triggers on base image update" },
-      { "id": "C", "text": "An ACR webhook on the push event that calls a Function which rebuilds the image" },
-      { "id": "D", "text": "A quick task with az acr build --no-wait" }
+      {
+        "id": "A",
+        "text": "A scheduled ACR task that runs `az acr build` every hour"
+      },
+      {
+        "id": "B",
+        "text": "An ACR task created with `az acr task create` so that ACR tracks the base image dependency and triggers on base image update"
+      },
+      {
+        "id": "C",
+        "text": "An ACR webhook on the push event that calls a Function which rebuilds the image"
+      },
+      {
+        "id": "D",
+        "text": "A quick task with `az acr build --no-wait`"
+      }
     ],
-    "correct": ["B"],
-    "explanation": "A task created with az acr task create records the base image dependency at build time, and ACR then triggers a rebuild when that base image changes. Base image update is one of the three trigger types alongside source commit and schedule.",
+    "correct": [
+      "B"
+    ],
+    "explanation": "A task created with `az acr task create` records the base image dependency at build time, and ACR then triggers a rebuild when that base image changes. Base image update is one of the three trigger types alongside source commit and schedule.",
     "whyWrong": {
       "A": "A schedule rebuilds on a clock regardless of whether anything changed — wasteful, and still up to an hour late.",
       "C": "A push webhook fires after your image is pushed. It tells you nothing about the upstream base image.",
       "D": "A quick task is a one-off manual build with no trigger attached at all."
     },
     "docs": [
-      { "title": "Automate rebuilds on base image update", "url": "https://learn.microsoft.com/azure/container-registry/container-registry-tasks-base-images" }
+      {
+        "title": "Automate rebuilds on base image update",
+        "url": "https://learn.microsoft.com/azure/container-registry/container-registry-tasks-base-images"
+      }
     ],
-    "tags": ["acr", "acr-tasks", "base-image"]
+    "tags": [
+      "acr",
+      "acr-tasks",
+      "base-image"
+    ]
   },
   {
     "id": "c-acr-005",
@@ -108,22 +195,42 @@
     "stem": "You must copy a vendor image from a partner's Azure Container Registry into yours. The build agent has limited disk space and a metered network connection. Which command is most appropriate?",
     "code": "# Registry: partner.azurecr.io/vendor/embedder:2.1\n# Target:   contoso.azurecr.io/vendor/embedder:2.1",
     "options": [
-      { "id": "A", "text": "docker pull, docker tag, docker push" },
-      { "id": "B", "text": "az acr import --name contoso --source partner.azurecr.io/vendor/embedder:2.1" },
-      { "id": "C", "text": "az acr build --registry contoso --image vendor/embedder:2.1 ." },
-      { "id": "D", "text": "az acr repository update --name contoso --image vendor/embedder:2.1" }
+      {
+        "id": "A",
+        "text": "`docker pull, docker tag, docker push`"
+      },
+      {
+        "id": "B",
+        "text": "`az acr import --name contoso --source partner.azurecr.io/vendor/embedder:2.1`"
+      },
+      {
+        "id": "C",
+        "text": "`az acr build --registry` contoso --image vendor/embedder:2.1 ."
+      },
+      {
+        "id": "D",
+        "text": "`az acr repository update --name contoso --image vendor/embedder:2.1`"
+      }
     ],
-    "correct": ["B"],
-    "explanation": "az acr import moves the image registry-to-registry inside Azure. Nothing is transferred through the agent, so neither disk nor bandwidth is consumed there — and it does not require Docker.",
+    "correct": [
+      "B"
+    ],
+    "explanation": "`az acr import` moves the image registry-to-registry inside Azure. Nothing is transferred through the agent, so neither disk nor bandwidth is consumed there — and it does not require Docker.",
     "whyWrong": {
       "A": "This is exactly the pull-through-the-agent path the constraints rule out.",
       "C": "az acr build builds from a Dockerfile. There is no Dockerfile here, just an existing image.",
       "D": "az acr repository update changes attributes such as write-enabled on an existing repository. It does not copy anything."
     },
     "docs": [
-      { "title": "Import container images", "url": "https://learn.microsoft.com/azure/container-registry/container-registry-import-images" }
+      {
+        "title": "Import container images",
+        "url": "https://learn.microsoft.com/azure/container-registry/container-registry-import-images"
+      }
     ],
-    "tags": ["acr", "import"]
+    "tags": [
+      "acr",
+      "import"
+    ]
   },
   {
     "id": "c-acr-006",
@@ -131,24 +238,46 @@
     "objective": "Implement container application hosting",
     "kind": "single",
     "difficulty": 2,
-    "stem": "An AKS cluster fails to start pods with ImagePullBackOff after you moved images to a new Azure Container Registry. You want the cluster to authenticate without storing any credentials in Kubernetes secrets. What do you do?",
+    "stem": "An AKS cluster fails to start pods with `ImagePullBackOff` after you moved images to a new Azure Container Registry. You want the cluster to authenticate without storing any credentials in Kubernetes secrets. What do you do?",
     "options": [
-      { "id": "A", "text": "Enable the registry admin user and create an imagePullSecret from those credentials" },
-      { "id": "B", "text": "Run az aks update --attach-acr, granting the cluster's kubelet identity the AcrPull role" },
-      { "id": "C", "text": "Create a service principal with AcrPush and add it as an imagePullSecret" },
-      { "id": "D", "text": "Add a repository-scoped token to the deployment manifest" }
+      {
+        "id": "A",
+        "text": "Enable the registry admin user and create an imagePullSecret from those credentials"
+      },
+      {
+        "id": "B",
+        "text": "Run `az aks update --attach-acr`, granting the cluster's kubelet identity the `AcrPull` role"
+      },
+      {
+        "id": "C",
+        "text": "Create a service principal with `AcrPush` and add it as an imagePullSecret"
+      },
+      {
+        "id": "D",
+        "text": "Add a repository-scoped token to the deployment manifest"
+      }
     ],
-    "correct": ["B"],
-    "explanation": "az aks update --attach-acr assigns AcrPull to the cluster's kubelet managed identity. Pulls are then authorised by Entra ID with no secret material anywhere in the cluster.",
+    "correct": [
+      "B"
+    ],
+    "explanation": "`az aks update --attach-acr` assigns `AcrPull` to the cluster's kubelet managed identity. Pulls are then authorised by Entra ID with no secret material anywhere in the cluster.",
     "whyWrong": {
       "A": "The admin account is a single shared credential, disabled by default, and this stores it as a secret — the opposite of the requirement.",
       "C": "This stores a credential as a secret, and AcrPush is more permission than a cluster that only pulls should have.",
       "D": "A repository-scoped token is still a stored credential and is not how AKS is wired to a registry."
     },
     "docs": [
-      { "title": "Authenticate with ACR from AKS", "url": "https://learn.microsoft.com/azure/aks/cluster-container-registry-integration" }
+      {
+        "title": "Authenticate with ACR from AKS",
+        "url": "https://learn.microsoft.com/azure/aks/cluster-container-registry-integration"
+      }
     ],
-    "tags": ["acr", "aks", "managed-identity", "authentication"]
+    "tags": [
+      "acr",
+      "aks",
+      "managed-identity",
+      "authentication"
+    ]
   },
   {
     "id": "c-acr-007",
@@ -158,12 +287,26 @@
     "difficulty": 3,
     "stem": "A CI pipeline must push images to one repository in a shared registry, and must not be able to read or write any other repository. Which authentication option fits the requirement most precisely?",
     "options": [
-      { "id": "A", "text": "A service principal granted AcrPush on the registry" },
-      { "id": "B", "text": "A repository-scoped token with the content/write action on that repository" },
-      { "id": "C", "text": "The registry admin account" },
-      { "id": "D", "text": "A user-assigned managed identity granted Contributor on the registry" }
+      {
+        "id": "A",
+        "text": "A service principal granted `AcrPush` on the registry"
+      },
+      {
+        "id": "B",
+        "text": "A repository-scoped token with the content/write action on that repository"
+      },
+      {
+        "id": "C",
+        "text": "The registry admin account"
+      },
+      {
+        "id": "D",
+        "text": "A user-assigned managed identity granted Contributor on the registry"
+      }
     ],
-    "correct": ["B"],
+    "correct": [
+      "B"
+    ],
     "explanation": "Repository-scoped tokens are the only ACR mechanism that grants permissions on an individual repository rather than the whole registry. They are a Premium feature and exist precisely for this least-privilege case.",
     "whyWrong": {
       "A": "AcrPush is registry-wide — the pipeline could push to every repository.",
@@ -171,9 +314,16 @@
       "D": "Contributor is a control-plane role that is far broader than push, and it is not scoped per repository."
     },
     "docs": [
-      { "title": "Repository-scoped permissions", "url": "https://learn.microsoft.com/azure/container-registry/container-registry-repository-scoped-permissions" }
+      {
+        "title": "Repository-scoped permissions",
+        "url": "https://learn.microsoft.com/azure/container-registry/container-registry-repository-scoped-permissions"
+      }
     ],
-    "tags": ["acr", "authentication", "least-privilege"]
+    "tags": [
+      "acr",
+      "authentication",
+      "least-privilege"
+    ]
   },
   {
     "id": "c-app-001",
@@ -183,22 +333,43 @@
     "difficulty": 1,
     "stem": "You deploy a custom Linux container to Azure App Service. The container starts successfully according to the log stream, but every HTTP request returns a 504 gateway timeout. Your application listens on port 8000. What is the most likely fix?",
     "options": [
-      { "id": "A", "text": "Set the app setting WEBSITES_PORT to 8000" },
-      { "id": "B", "text": "Set the app setting WEBSITES_ENABLE_APP_SERVICE_STORAGE to true" },
-      { "id": "C", "text": "Scale the App Service plan to a tier that supports Always On" },
-      { "id": "D", "text": "Add a health check path in the App Service configuration" }
+      {
+        "id": "A",
+        "text": "Set the app setting `WEBSITES_PORT` to 8000"
+      },
+      {
+        "id": "B",
+        "text": "Set the app setting `WEBSITES_ENABLE_APP_SERVICE_STORAGE` to true"
+      },
+      {
+        "id": "C",
+        "text": "Scale the App Service plan to a tier that supports Always On"
+      },
+      {
+        "id": "D",
+        "text": "Add a health check path in the App Service configuration"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "App Service forwards requests to port 80 by default for custom containers. WEBSITES_PORT tells the platform which port your container actually listens on. A container that starts fine but never answers requests is the signature of this setting missing.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "App Service forwards requests to port 80 by default for custom containers. `WEBSITES_PORT` tells the platform which port your container actually listens on. A container that starts fine but never answers requests is the signature of this setting missing.",
     "whyWrong": {
       "B": "That setting controls whether /home is persisted across restarts. It has no effect on request routing.",
       "C": "Always On affects idle shutdown, not port mapping. The container is already running.",
       "D": "A health check changes how instances are removed from rotation. It cannot make traffic reach the right port."
     },
     "docs": [
-      { "title": "Configure a custom container for App Service", "url": "https://learn.microsoft.com/azure/app-service/configure-custom-container" }
+      {
+        "title": "Configure a custom container for App Service",
+        "url": "https://learn.microsoft.com/azure/app-service/configure-custom-container"
+      }
     ],
-    "tags": ["app-service", "containers", "troubleshooting"]
+    "tags": [
+      "app-service",
+      "containers",
+      "troubleshooting"
+    ]
   },
   {
     "id": "c-app-002",
@@ -208,12 +379,26 @@
     "difficulty": 2,
     "stem": "A .NET container on Linux App Service reads configuration from AzureOpenAI:Endpoint. Which app setting name makes that value available to the configuration system?",
     "options": [
-      { "id": "A", "text": "AzureOpenAI:Endpoint" },
-      { "id": "B", "text": "AzureOpenAI__Endpoint" },
-      { "id": "C", "text": "AzureOpenAI.Endpoint" },
-      { "id": "D", "text": "AZUREOPENAI_ENDPOINT" }
+      {
+        "id": "A",
+        "text": "AzureOpenAI:Endpoint"
+      },
+      {
+        "id": "B",
+        "text": "AzureOpenAI__Endpoint"
+      },
+      {
+        "id": "C",
+        "text": "AzureOpenAI.Endpoint"
+      },
+      {
+        "id": "D",
+        "text": "`AZUREOPENAI_ENDPOINT`"
+      }
     ],
-    "correct": ["B"],
+    "correct": [
+      "B"
+    ],
     "explanation": "App settings become environment variables, and colons are not valid in environment variable names on Linux. The .NET configuration provider maps a double underscore to the hierarchy separator, so AzureOpenAI__Endpoint binds to AzureOpenAI:Endpoint.",
     "whyWrong": {
       "A": "A colon is not legal in a Linux environment variable name; the setting will not be surfaced correctly.",
@@ -221,9 +406,15 @@
       "D": "A single underscore is read as part of the key name, producing the flat key AZUREOPENAI_ENDPOINT rather than a nested one."
     },
     "docs": [
-      { "title": "Configure an App Service app", "url": "https://learn.microsoft.com/azure/app-service/configure-common" }
+      {
+        "title": "Configure an App Service app",
+        "url": "https://learn.microsoft.com/azure/app-service/configure-common"
+      }
     ],
-    "tags": ["app-service", "configuration"]
+    "tags": [
+      "app-service",
+      "configuration"
+    ]
   },
   {
     "id": "c-app-003",
@@ -233,12 +424,26 @@
     "difficulty": 3,
     "stem": "You use App Service deployment slots for staging and production. Each slot must keep pointing at its own Cosmos DB account after a swap. How do you configure the connection setting?",
     "options": [
-      { "id": "A", "text": "Store both values in the production slot and select the right one in code" },
-      { "id": "B", "text": "Mark the setting as a deployment slot setting so it stays with the slot during a swap" },
-      { "id": "C", "text": "Leave the setting unmarked; App Service never swaps connection strings" },
-      { "id": "D", "text": "Put the value in a Key Vault reference, which is automatically slot-specific" }
+      {
+        "id": "A",
+        "text": "Store both values in the production slot and select the right one in code"
+      },
+      {
+        "id": "B",
+        "text": "Mark the setting as a deployment slot setting so it stays with the slot during a swap"
+      },
+      {
+        "id": "C",
+        "text": "Leave the setting unmarked; App Service never swaps connection strings"
+      },
+      {
+        "id": "D",
+        "text": "Put the value in a Key Vault reference, which is automatically slot-specific"
+      }
     ],
-    "correct": ["B"],
+    "correct": [
+      "B"
+    ],
     "explanation": "By default, app settings and connection strings move with the code during a swap. Ticking the deployment slot setting box makes the value sticky to the slot, so staging keeps the staging database and production keeps production.",
     "whyWrong": {
       "A": "Branching on slot identity in application code is fragile and unnecessary given a platform feature exists.",
@@ -246,9 +451,16 @@
       "D": "A Key Vault reference is just an app setting value. It follows the same swap rules unless marked sticky."
     },
     "docs": [
-      { "title": "Set up staging environments", "url": "https://learn.microsoft.com/azure/app-service/deploy-staging-slots" }
+      {
+        "title": "Set up staging environments",
+        "url": "https://learn.microsoft.com/azure/app-service/deploy-staging-slots"
+      }
     ],
-    "tags": ["app-service", "slots", "configuration"]
+    "tags": [
+      "app-service",
+      "slots",
+      "configuration"
+    ]
   },
   {
     "id": "c-app-004",
@@ -258,12 +470,26 @@
     "difficulty": 2,
     "stem": "A containerised App Service app must read an Azure OpenAI key without the key ever appearing in the app configuration blade. Which app setting value achieves this?",
     "options": [
-      { "id": "A", "text": "@Microsoft.KeyVault(SecretUri=https://kv-contoso.vault.azure.net/secrets/openai-key/)" },
-      { "id": "B", "text": "$(KeyVault:kv-contoso:openai-key)" },
-      { "id": "C", "text": "%KEYVAULT_openai-key%" },
-      { "id": "D", "text": "#{kv-contoso/openai-key}#" }
+      {
+        "id": "A",
+        "text": "@Microsoft.KeyVault(SecretUri=https://kv-contoso.vault.azure.net/secrets/openai-key/)"
+      },
+      {
+        "id": "B",
+        "text": "$(KeyVault:kv-contoso:openai-key)"
+      },
+      {
+        "id": "C",
+        "text": "%KEYVAULT_openai-key%"
+      },
+      {
+        "id": "D",
+        "text": "#{kv-contoso/openai-key}#"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Key Vault references use the @Microsoft.KeyVault(...) syntax with either SecretUri or VaultName/SecretName. App Service resolves them at startup using the app's managed identity, which needs the Key Vault Secrets User role. Omitting the version from the URI means rotation is picked up without a config change.",
     "whyWrong": {
       "B": "Not a syntax App Service recognises.",
@@ -271,9 +497,16 @@
       "D": "This is a token-replacement convention used by some deployment tools, not an App Service feature."
     },
     "docs": [
-      { "title": "Use Key Vault references", "url": "https://learn.microsoft.com/azure/app-service/app-service-key-vault-references" }
+      {
+        "title": "Use Key Vault references",
+        "url": "https://learn.microsoft.com/azure/app-service/app-service-key-vault-references"
+      }
     ],
-    "tags": ["app-service", "key-vault", "secrets"]
+    "tags": [
+      "app-service",
+      "key-vault",
+      "secrets"
+    ]
   },
   {
     "id": "c-aca-001",
@@ -283,12 +516,26 @@
     "difficulty": 2,
     "stem": "You deploy a new revision of a Container App and configure traffic weights of 90% to the previous revision and 10% to the new one. All traffic still reaches the new revision. What is wrong?",
     "options": [
-      { "id": "A", "text": "The app is in single revision mode, so traffic always goes to the latest revision" },
-      { "id": "B", "text": "The previous revision was deactivated automatically after 24 hours" },
-      { "id": "C", "text": "Traffic weights only apply to internal ingress, not external" },
-      { "id": "D", "text": "Traffic splitting requires the Dapr sidecar to be enabled" }
+      {
+        "id": "A",
+        "text": "The app is in single revision mode, so traffic always goes to the latest revision"
+      },
+      {
+        "id": "B",
+        "text": "The previous revision was deactivated automatically after 24 hours"
+      },
+      {
+        "id": "C",
+        "text": "Traffic weights only apply to internal ingress, not external"
+      },
+      {
+        "id": "D",
+        "text": "Traffic splitting requires the Dapr sidecar to be enabled"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Traffic splitting is only honoured in multiple revision mode. In single revision mode Container Apps deactivates the old revision and sends everything to the latest one, so any weights you set are ignored. This is the standard blue/green and canary trap.",
     "whyWrong": {
       "B": "Revisions are not deactivated on a 24-hour timer; in multiple revision mode they stay until you deactivate them or hit the revision limit.",
@@ -296,9 +543,16 @@
       "D": "Dapr is a separate optional feature and has nothing to do with revision traffic weights."
     },
     "docs": [
-      { "title": "Container Apps revisions", "url": "https://learn.microsoft.com/azure/container-apps/revisions" }
+      {
+        "title": "Container Apps revisions",
+        "url": "https://learn.microsoft.com/azure/container-apps/revisions"
+      }
     ],
-    "tags": ["container-apps", "revisions", "traffic-splitting"]
+    "tags": [
+      "container-apps",
+      "revisions",
+      "traffic-splitting"
+    ]
   },
   {
     "id": "c-aca-002",
@@ -308,13 +562,31 @@
     "difficulty": 3,
     "stem": "Which changes to an Azure Container App create a new revision? Choose two.",
     "options": [
-      { "id": "A", "text": "Changing the container image tag" },
-      { "id": "B", "text": "Changing the value of a secret" },
-      { "id": "C", "text": "Changing CPU and memory allocation for a container" },
-      { "id": "D", "text": "Changing the ingress target port" },
-      { "id": "E", "text": "Updating registry credentials" }
+      {
+        "id": "A",
+        "text": "Changing the container image tag"
+      },
+      {
+        "id": "B",
+        "text": "Changing the value of a secret"
+      },
+      {
+        "id": "C",
+        "text": "Changing CPU and memory allocation for a container"
+      },
+      {
+        "id": "D",
+        "text": "Changing the ingress target port"
+      },
+      {
+        "id": "E",
+        "text": "Updating registry credentials"
+      }
     ],
-    "correct": ["A", "C"],
+    "correct": [
+      "A",
+      "C"
+    ],
     "explanation": "Revision-scope changes are those inside the template — image, environment variables, CPU/memory, scale rules, and container commands. They produce a new immutable revision. App-scope changes such as ingress, secret values and registry credentials apply across all existing revisions in place.",
     "whyWrong": {
       "B": "Secret values are app-scope. Note the consequence: containers must restart to pick up a changed secret value.",
@@ -322,9 +594,15 @@
       "E": "Registry credentials are app-scope."
     },
     "docs": [
-      { "title": "Container Apps revisions", "url": "https://learn.microsoft.com/azure/container-apps/revisions" }
+      {
+        "title": "Container Apps revisions",
+        "url": "https://learn.microsoft.com/azure/container-apps/revisions"
+      }
     ],
-    "tags": ["container-apps", "revisions"]
+    "tags": [
+      "container-apps",
+      "revisions"
+    ]
   },
   {
     "id": "c-aca-003",
@@ -334,22 +612,44 @@
     "difficulty": 2,
     "stem": "A Container App runs a worker that reads documents from an Azure Service Bus queue, generates embeddings and writes them to a vector store. The queue is empty most of the night. You need the app to cost nothing while idle and to scale out as the queue grows. What do you configure?",
     "options": [
-      { "id": "A", "text": "minReplicas 1 with an HTTP scale rule based on concurrent requests" },
-      { "id": "B", "text": "minReplicas 0 with a custom KEDA scale rule of type azure-servicebus on the queue" },
-      { "id": "C", "text": "minReplicas 0 with no scale rule, relying on the default HTTP rule" },
-      { "id": "D", "text": "A Container Apps scheduled job that runs every five minutes" }
+      {
+        "id": "A",
+        "text": "`minReplicas` 1 with an HTTP scale rule based on concurrent requests"
+      },
+      {
+        "id": "B",
+        "text": "`minReplicas` 0 with a custom KEDA scale rule of type `azure-servicebus` on the queue"
+      },
+      {
+        "id": "C",
+        "text": "`minReplicas` 0 with no scale rule, relying on the default HTTP rule"
+      },
+      {
+        "id": "D",
+        "text": "A Container Apps scheduled job that runs every five minutes"
+      }
     ],
-    "correct": ["B"],
-    "explanation": "A KEDA azure-servicebus scaler drives replica count from queue length, and minReplicas 0 lets the app scale fully to zero when the queue drains. This is the canonical event-driven worker configuration on Container Apps.",
+    "correct": [
+      "B"
+    ],
+    "explanation": "A KEDA `azure-servicebus` scaler drives replica count from queue length, and `minReplicas` 0 lets the app scale fully to zero when the queue drains. This is the canonical event-driven worker configuration on Container Apps.",
     "whyWrong": {
       "A": "The worker has no HTTP ingress, so an HTTP rule never fires, and minReplicas 1 means you pay all night.",
       "C": "With no ingress and no scale rule there is nothing to wake the app — it stays at zero and the queue backs up forever.",
       "D": "A scheduled job adds up to five minutes of latency and does not scale with queue depth. An event-driven job or a scaled app is the better fit."
     },
     "docs": [
-      { "title": "Set scaling rules in Container Apps", "url": "https://learn.microsoft.com/azure/container-apps/scale-app" }
+      {
+        "title": "Set scaling rules in Container Apps",
+        "url": "https://learn.microsoft.com/azure/container-apps/scale-app"
+      }
     ],
-    "tags": ["container-apps", "keda", "scaling", "service-bus"]
+    "tags": [
+      "container-apps",
+      "keda",
+      "scaling",
+      "service-bus"
+    ]
   },
   {
     "id": "c-aca-004",
@@ -360,22 +660,42 @@
     "stem": "Complete the Container Apps YAML so the container reads the connection string from the app's secret store.",
     "code": "properties:\n  configuration:\n    secrets:\n      - name: sb-connection\n        value: Endpoint=sb://...\n  template:\n    containers:\n      - name: worker\n        image: contoso.azurecr.io/worker:1.4\n        env:\n          - name: SERVICEBUS_CONNECTION\n            value: <?>",
     "options": [
-      { "id": "A", "text": "secretref:sb-connection" },
-      { "id": "B", "text": "$(secrets.sb-connection)" },
-      { "id": "C", "text": "@secret(sb-connection)" },
-      { "id": "D", "text": "keyvault:sb-connection" }
+      {
+        "id": "A",
+        "text": "`secretref`:sb-connection"
+      },
+      {
+        "id": "B",
+        "text": "$(secrets.sb-connection)"
+      },
+      {
+        "id": "C",
+        "text": "@secret(sb-connection)"
+      },
+      {
+        "id": "D",
+        "text": "keyvault:sb-connection"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "Container Apps environment variables reference secrets with the secretref: prefix, which resolves to the named secret defined in configuration.secrets. Note that the env entry uses secretRef in ARM/Bicep and secretref: in the YAML value form depending on schema — the identifier is always the secret name.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "Container Apps environment variables reference secrets with the `secretref`: prefix, which resolves to the named secret defined in configuration.secrets. Note that the env entry uses secretRef in ARM/Bicep and `secretref`: in the YAML value form depending on schema — the identifier is always the secret name.",
     "whyWrong": {
       "B": "Not a Container Apps syntax.",
       "C": "Not a Container Apps syntax.",
       "D": "Key Vault integration is done by defining the secret with a keyVaultUrl and identity, then still referencing it by name — not with this prefix."
     },
     "docs": [
-      { "title": "Manage secrets in Container Apps", "url": "https://learn.microsoft.com/azure/container-apps/manage-secrets" }
+      {
+        "title": "Manage secrets in Container Apps",
+        "url": "https://learn.microsoft.com/azure/container-apps/manage-secrets"
+      }
     ],
-    "tags": ["container-apps", "secrets"]
+    "tags": [
+      "container-apps",
+      "secrets"
+    ]
   },
   {
     "id": "c-aca-005",
@@ -385,12 +705,26 @@
     "difficulty": 3,
     "stem": "A new revision of a Container App never becomes healthy and serves no traffic. The console log stream is empty. Where do you look first to find out why the revision failed to start?",
     "options": [
-      { "id": "A", "text": "ContainerAppConsoleLogs_CL in the Log Analytics workspace" },
-      { "id": "B", "text": "ContainerAppSystemLogs_CL in the Log Analytics workspace" },
-      { "id": "C", "text": "AppTraces in Application Insights" },
-      { "id": "D", "text": "The activity log for the Container Apps environment" }
+      {
+        "id": "A",
+        "text": "ContainerAppConsoleLogs_CL in the Log Analytics workspace"
+      },
+      {
+        "id": "B",
+        "text": "ContainerAppSystemLogs_CL in the Log Analytics workspace"
+      },
+      {
+        "id": "C",
+        "text": "AppTraces in Application Insights"
+      },
+      {
+        "id": "D",
+        "text": "The activity log for the Container Apps environment"
+      }
     ],
-    "correct": ["B"],
+    "correct": [
+      "B"
+    ],
     "explanation": "System logs are the platform's own account of provisioning a revision — image pull failures, probe failures, and container exits. An empty console stream is itself the clue: the container never produced stdout, so the failure happened before your code ran.",
     "whyWrong": {
       "A": "Console logs carry your application's stdout and stderr, which is exactly what is missing here.",
@@ -398,9 +732,16 @@
       "D": "The activity log records control-plane operations such as the deployment request, not why a container exited."
     },
     "docs": [
-      { "title": "Application logging in Container Apps", "url": "https://learn.microsoft.com/azure/container-apps/logging" }
+      {
+        "title": "Application logging in Container Apps",
+        "url": "https://learn.microsoft.com/azure/container-apps/logging"
+      }
     ],
-    "tags": ["container-apps", "troubleshooting", "logs"]
+    "tags": [
+      "container-apps",
+      "troubleshooting",
+      "logs"
+    ]
   },
   {
     "id": "c-aca-006",
@@ -410,12 +751,26 @@
     "difficulty": 2,
     "stem": "Two Container Apps must call each other over the internal network and must not be reachable from the internet. What is the correct configuration?",
     "options": [
-      { "id": "A", "text": "Deploy them to the same Container Apps environment and set ingress to internal on both" },
-      { "id": "B", "text": "Deploy them to separate environments and peer the virtual networks" },
-      { "id": "C", "text": "Deploy them to the same environment and disable ingress on both" },
-      { "id": "D", "text": "Deploy them to the same environment with external ingress and an IP restriction list" }
+      {
+        "id": "A",
+        "text": "Deploy them to the same Container Apps environment and set ingress to internal on both"
+      },
+      {
+        "id": "B",
+        "text": "Deploy them to separate environments and peer the virtual networks"
+      },
+      {
+        "id": "C",
+        "text": "Deploy them to the same environment and disable ingress on both"
+      },
+      {
+        "id": "D",
+        "text": "Deploy them to the same environment with external ingress and an IP restriction list"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "A Container Apps environment is the network boundary; apps inside it resolve each other by app name. Internal ingress publishes the app on the environment's internal endpoint only, which satisfies both requirements.",
     "whyWrong": {
       "B": "Cross-environment peering is unnecessary complexity when one environment already provides the private boundary.",
@@ -423,9 +778,16 @@
       "D": "External ingress still creates a public endpoint. IP restrictions narrow it but do not make it private."
     },
     "docs": [
-      { "title": "Container Apps environments", "url": "https://learn.microsoft.com/azure/container-apps/environment" }
+      {
+        "title": "Container Apps environments",
+        "url": "https://learn.microsoft.com/azure/container-apps/environment"
+      }
     ],
-    "tags": ["container-apps", "networking", "ingress"]
+    "tags": [
+      "container-apps",
+      "networking",
+      "ingress"
+    ]
   },
   {
     "id": "c-aca-007",
@@ -433,14 +795,28 @@
     "objective": "Implement container-orchestrated solutions",
     "kind": "single",
     "difficulty": 3,
-    "stem": "You add a KEDA scale rule of type azure-servicebus to a Container App. The rule needs the Service Bus connection string. How is that credential supplied?",
+    "stem": "You add a KEDA scale rule of type `azure-servicebus` to a Container App. The rule needs the Service Bus connection string. How is that credential supplied?",
     "options": [
-      { "id": "A", "text": "As a plain-text connectionString property inside the scale rule metadata" },
-      { "id": "B", "text": "Through an auth block on the scale rule that maps a trigger parameter to an app secret name" },
-      { "id": "C", "text": "By an environment variable on the container, which KEDA reads at scale time" },
-      { "id": "D", "text": "It is not needed; KEDA uses the Container App's managed identity automatically" }
+      {
+        "id": "A",
+        "text": "As a plain-text connectionString property inside the scale rule metadata"
+      },
+      {
+        "id": "B",
+        "text": "Through an auth block on the scale rule that maps a trigger parameter to an app secret name"
+      },
+      {
+        "id": "C",
+        "text": "By an environment variable on the container, which KEDA reads at scale time"
+      },
+      {
+        "id": "D",
+        "text": "It is not needed; KEDA uses the Container App's managed identity automatically"
+      }
     ],
-    "correct": ["B"],
+    "correct": [
+      "B"
+    ],
     "explanation": "Scale rules are evaluated by the platform outside your container, so they cannot read your container's environment. The rule declares an auth block that binds a trigger parameter (such as connection) to a secret defined on the app.",
     "whyWrong": {
       "A": "Metadata is not a secret store; credentials belong in the app's secrets and are referenced from auth.",
@@ -448,9 +824,17 @@
       "D": "Managed identity for scalers must be configured explicitly; it is not the automatic default."
     },
     "docs": [
-      { "title": "Set scaling rules in Container Apps", "url": "https://learn.microsoft.com/azure/container-apps/scale-app" }
+      {
+        "title": "Set scaling rules in Container Apps",
+        "url": "https://learn.microsoft.com/azure/container-apps/scale-app"
+      }
     ],
-    "tags": ["container-apps", "keda", "secrets", "scaling"]
+    "tags": [
+      "container-apps",
+      "keda",
+      "secrets",
+      "scaling"
+    ]
   },
   {
     "id": "c-aca-008",
@@ -460,12 +844,26 @@
     "difficulty": 2,
     "stem": "A nightly batch must re-embed a document corpus. It runs for about 40 minutes and must not keep a replica alive between runs. Which Container Apps feature fits best?",
     "options": [
-      { "id": "A", "text": "A Container Apps job with a schedule trigger" },
-      { "id": "B", "text": "A Container App with minReplicas 0 and a cron KEDA scaler" },
-      { "id": "C", "text": "A Container App with an HTTP scale rule invoked by a Logic App" },
-      { "id": "D", "text": "A Container Apps job with an event trigger on Service Bus" }
+      {
+        "id": "A",
+        "text": "A Container Apps job with a schedule trigger"
+      },
+      {
+        "id": "B",
+        "text": "A Container App with `minReplicas` 0 and a cron KEDA scaler"
+      },
+      {
+        "id": "C",
+        "text": "A Container App with an HTTP scale rule invoked by a Logic App"
+      },
+      {
+        "id": "D",
+        "text": "A Container Apps job with an event trigger on Service Bus"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Container Apps jobs are for work that starts, runs to completion and exits — exactly a nightly batch. A scheduled job trigger uses a cron expression and creates an execution per run, with no replica retained afterwards.",
     "whyWrong": {
       "B": "A cron scaler on a regular app keeps a replica running for the whole scaling window and is designed for services, not run-to-completion work.",
@@ -473,9 +871,16 @@
       "D": "An event trigger is right for queue-driven work, but the requirement here is a schedule."
     },
     "docs": [
-      { "title": "Jobs in Azure Container Apps", "url": "https://learn.microsoft.com/azure/container-apps/jobs" }
+      {
+        "title": "Jobs in Azure Container Apps",
+        "url": "https://learn.microsoft.com/azure/container-apps/jobs"
+      }
     ],
-    "tags": ["container-apps", "jobs", "scheduling"]
+    "tags": [
+      "container-apps",
+      "jobs",
+      "scheduling"
+    ]
   },
   {
     "id": "c-aks-001",
@@ -483,24 +888,45 @@
     "objective": "Implement container-orchestrated solutions",
     "kind": "single",
     "difficulty": 2,
-    "stem": "A pod on AKS shows status CrashLoopBackOff. Which command gives you the output of the run that just failed?",
+    "stem": "A pod on AKS shows status `CrashLoopBackOff`. Which command gives you the output of the run that just failed?",
     "options": [
-      { "id": "A", "text": "kubectl logs <pod> --previous" },
-      { "id": "B", "text": "kubectl describe pod <pod>" },
-      { "id": "C", "text": "kubectl get events --field-selector involvedObject.name=<pod>" },
-      { "id": "D", "text": "kubectl exec <pod> -- cat /var/log/app.log" }
+      {
+        "id": "A",
+        "text": "`kubectl logs <pod> --previous`"
+      },
+      {
+        "id": "B",
+        "text": "`kubectl describe pod <pod>`"
+      },
+      {
+        "id": "C",
+        "text": "`kubectl get events --field-selector involvedObject.name=<pod>`"
+      },
+      {
+        "id": "D",
+        "text": "`kubectl exec <pod> -- cat /var/log/app.log`"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "CrashLoopBackOff means the container starts and exits repeatedly. By the time you look, the current container is a fresh attempt, so --previous is what retrieves stdout/stderr from the instance that actually crashed.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "`CrashLoopBackOff` means the container starts and exits repeatedly. By the time you look, the current container is a fresh attempt, so --previous is what retrieves stdout/stderr from the instance that actually crashed.",
     "whyWrong": {
       "B": "describe shows events, image, probes and restart counts — useful context, but not the application's own error output.",
       "C": "Events tell you the pod is restarting; they do not contain the application log.",
       "D": "exec requires a running container. A crash-looping pod usually will not stay up long enough to attach."
     },
     "docs": [
-      { "title": "Troubleshoot common AKS issues", "url": "https://learn.microsoft.com/troubleshoot/azure/azure-kubernetes/welcome-azure-kubernetes" }
+      {
+        "title": "Troubleshoot common AKS issues",
+        "url": "https://learn.microsoft.com/troubleshoot/azure/azure-kubernetes/welcome-azure-kubernetes"
+      }
     ],
-    "tags": ["aks", "troubleshooting", "kubectl"]
+    "tags": [
+      "aks",
+      "troubleshooting",
+      "kubectl"
+    ]
   },
   {
     "id": "c-aks-002",
@@ -508,24 +934,45 @@
     "objective": "Implement container-orchestrated solutions",
     "kind": "single",
     "difficulty": 2,
-    "stem": "An inference pod is terminated repeatedly and kubectl describe pod shows the last state as Terminated with reason OOMKilled and exit code 137. What should you change?",
+    "stem": "An inference pod is terminated repeatedly and `kubectl describe pod` shows the last state as Terminated with reason `OOMKilled` and exit code 137. What should you change?",
     "options": [
-      { "id": "A", "text": "Increase the container's memory limit in the deployment manifest" },
-      { "id": "B", "text": "Increase the liveness probe's initialDelaySeconds" },
-      { "id": "C", "text": "Add more nodes to the cluster" },
-      { "id": "D", "text": "Set imagePullPolicy to Always" }
+      {
+        "id": "A",
+        "text": "Increase the container's memory limit in the deployment manifest"
+      },
+      {
+        "id": "B",
+        "text": "Increase the liveness probe's `initialDelaySeconds`"
+      },
+      {
+        "id": "C",
+        "text": "Add more nodes to the cluster"
+      },
+      {
+        "id": "D",
+        "text": "Set `imagePullPolicy` to Always"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "Exit code 137 with reason OOMKilled means the kernel killed the container for exceeding its memory limit. The fix is raising the limit — or reducing the model or batch size so it fits within the current one.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "Exit code 137 with reason `OOMKilled` means the kernel killed the container for exceeding its memory limit. The fix is raising the limit — or reducing the model or batch size so it fits within the current one.",
     "whyWrong": {
       "B": "Probe timing addresses slow startup, not memory exhaustion.",
       "C": "More nodes help with unschedulable pods. A per-container memory limit is enforced regardless of how much cluster capacity exists.",
       "D": "Image pull policy is unrelated to a running container being killed."
     },
     "docs": [
-      { "title": "Resource management for pods", "url": "https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/" }
+      {
+        "title": "Resource management for pods",
+        "url": "https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+      }
     ],
-    "tags": ["aks", "troubleshooting", "resources"]
+    "tags": [
+      "aks",
+      "troubleshooting",
+      "resources"
+    ]
   },
   {
     "id": "c-aks-003",
@@ -535,12 +982,26 @@
     "difficulty": 3,
     "stem": "Your AKS deployment reports all replicas ready, but the Service in front of it intermittently returns connection errors during rollouts. Pods take about 20 seconds to load a model before they can serve. Which change fixes it?",
     "options": [
-      { "id": "A", "text": "Add a readiness probe that only succeeds once the model is loaded" },
-      { "id": "B", "text": "Add a liveness probe with a 20-second period" },
-      { "id": "C", "text": "Change the Service type from ClusterIP to LoadBalancer" },
-      { "id": "D", "text": "Increase the deployment's replica count" }
+      {
+        "id": "A",
+        "text": "Add a readiness probe that only succeeds once the model is loaded"
+      },
+      {
+        "id": "B",
+        "text": "Add a liveness probe with a 20-second period"
+      },
+      {
+        "id": "C",
+        "text": "Change the Service type from `ClusterIP` to `LoadBalancer`"
+      },
+      {
+        "id": "D",
+        "text": "Increase the deployment's replica count"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "A pod is added to the Service endpoints as soon as it is ready. Without a readiness probe that reflects model load, Kubernetes marks the pod ready immediately and traffic arrives before the app can serve it.",
     "whyWrong": {
       "B": "A liveness probe restarts unhealthy containers. Used here it would kill pods mid-load, making things worse.",
@@ -548,9 +1009,16 @@
       "D": "More replicas means more pods entering rotation too early — the same error, just more of it."
     },
     "docs": [
-      { "title": "Configure liveness and readiness probes", "url": "https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/" }
+      {
+        "title": "Configure liveness and readiness probes",
+        "url": "https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/"
+      }
     ],
-    "tags": ["aks", "probes", "troubleshooting"]
+    "tags": [
+      "aks",
+      "probes",
+      "troubleshooting"
+    ]
   },
   {
     "id": "c-aks-004",
@@ -558,14 +1026,28 @@
     "objective": "Implement container-orchestrated solutions",
     "kind": "single",
     "difficulty": 2,
-    "stem": "A pod stays in Pending for several minutes and kubectl describe pod shows a FailedScheduling event mentioning insufficient cpu. What is happening?",
+    "stem": "A pod stays in Pending for several minutes and `kubectl describe pod` shows a FailedScheduling event mentioning insufficient cpu. What is happening?",
     "options": [
-      { "id": "A", "text": "No node has enough unreserved CPU to satisfy the pod's CPU request" },
-      { "id": "B", "text": "The container image cannot be pulled from the registry" },
-      { "id": "C", "text": "The pod's CPU limit is lower than its CPU request" },
-      { "id": "D", "text": "The container is exceeding its CPU limit and being throttled" }
+      {
+        "id": "A",
+        "text": "No node has enough unreserved CPU to satisfy the pod's CPU request"
+      },
+      {
+        "id": "B",
+        "text": "The container image cannot be pulled from the registry"
+      },
+      {
+        "id": "C",
+        "text": "The pod's CPU limit is lower than its CPU request"
+      },
+      {
+        "id": "D",
+        "text": "The container is exceeding its CPU limit and being throttled"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "The scheduler places pods based on resource requests, not actual usage. Pending with FailedScheduling means no node has enough allocatable CPU left for the request, so you either scale the node pool, use the cluster autoscaler, or lower the request.",
     "whyWrong": {
       "B": "An unpullable image produces ImagePullBackOff after the pod has been scheduled onto a node.",
@@ -573,9 +1055,16 @@
       "D": "CPU throttling happens to a running pod and never blocks scheduling."
     },
     "docs": [
-      { "title": "Cluster autoscaler in AKS", "url": "https://learn.microsoft.com/azure/aks/cluster-autoscaler" }
+      {
+        "title": "Cluster autoscaler in AKS",
+        "url": "https://learn.microsoft.com/azure/aks/cluster-autoscaler"
+      }
     ],
-    "tags": ["aks", "troubleshooting", "scheduling"]
+    "tags": [
+      "aks",
+      "troubleshooting",
+      "scheduling"
+    ]
   },
   {
     "id": "c-aks-005",
@@ -585,12 +1074,26 @@
     "difficulty": 3,
     "stem": "A pod on AKS must call Azure Key Vault using an Entra ID identity, with no secrets stored in the cluster. Which approach is current best practice?",
     "options": [
-      { "id": "A", "text": "Microsoft Entra Workload ID with a federated identity credential bound to the pod's service account" },
-      { "id": "B", "text": "Pod-managed identity (aad-pod-identity)" },
-      { "id": "C", "text": "A Kubernetes Secret containing a service principal client secret" },
-      { "id": "D", "text": "The kubelet identity, shared by every pod on the node" }
+      {
+        "id": "A",
+        "text": "Microsoft Entra Workload ID with a federated identity credential bound to the pod's service account"
+      },
+      {
+        "id": "B",
+        "text": "Pod-managed identity (aad-pod-identity)"
+      },
+      {
+        "id": "C",
+        "text": "A Kubernetes Secret containing a service principal client secret"
+      },
+      {
+        "id": "D",
+        "text": "The kubelet identity, shared by every pod on the node"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Workload identity federates the Kubernetes service account token with Entra ID, so a pod gets a token for a user-assigned managed identity with no secret material in the cluster. It is the supported replacement for pod-managed identity.",
     "whyWrong": {
       "B": "aad-pod-identity is deprecated in favour of workload identity.",
@@ -598,9 +1101,17 @@
       "D": "The kubelet identity is node-scoped and shared by every workload — the opposite of per-pod least privilege."
     },
     "docs": [
-      { "title": "Microsoft Entra Workload ID with AKS", "url": "https://learn.microsoft.com/azure/aks/workload-identity-overview" }
+      {
+        "title": "Microsoft Entra Workload ID with AKS",
+        "url": "https://learn.microsoft.com/azure/aks/workload-identity-overview"
+      }
     ],
-    "tags": ["aks", "managed-identity", "security", "workload-identity"]
+    "tags": [
+      "aks",
+      "managed-identity",
+      "security",
+      "workload-identity"
+    ]
   },
   {
     "id": "c-aks-006",
@@ -610,12 +1121,26 @@
     "difficulty": 2,
     "stem": "You need to confirm whether a failing request is caused by the application container or by the Service and Ingress in front of it. Which command isolates the container?",
     "options": [
-      { "id": "A", "text": "kubectl port-forward pod/<pod> 8080:8080 and call localhost:8080 directly" },
-      { "id": "B", "text": "kubectl get svc and check the external IP" },
-      { "id": "C", "text": "kubectl rollout restart deployment/<name>" },
-      { "id": "D", "text": "kubectl top pod <pod>" }
+      {
+        "id": "A",
+        "text": "`kubectl port-forward` pod/<pod> 8080:8080 and call localhost:8080 directly"
+      },
+      {
+        "id": "B",
+        "text": "`kubectl get svc` and check the external IP"
+      },
+      {
+        "id": "C",
+        "text": "`kubectl rollout restart deployment/<name>`"
+      },
+      {
+        "id": "D",
+        "text": "`kubectl top pod <pod>`"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "port-forward tunnels straight to the pod, bypassing Service selection and Ingress routing. If the request succeeds there and fails through the Ingress, the problem is in the networking layer rather than the app.",
     "whyWrong": {
       "B": "Knowing the external IP tells you nothing about where in the path the request breaks.",
@@ -623,9 +1148,16 @@
       "D": "top shows CPU and memory usage, not request behaviour."
     },
     "docs": [
-      { "title": "Connectivity troubleshooting in AKS", "url": "https://learn.microsoft.com/troubleshoot/azure/azure-kubernetes/welcome-azure-kubernetes" }
+      {
+        "title": "Connectivity troubleshooting in AKS",
+        "url": "https://learn.microsoft.com/troubleshoot/azure/azure-kubernetes/welcome-azure-kubernetes"
+      }
     ],
-    "tags": ["aks", "troubleshooting", "networking"]
+    "tags": [
+      "aks",
+      "troubleshooting",
+      "networking"
+    ]
   },
   {
     "id": "c-aks-007",
@@ -636,22 +1168,43 @@
     "stem": "Which manifest snippet correctly injects a value from a ConfigMap named app-config into an environment variable?",
     "code": "env:\n  - name: MODEL_NAME\n    <?>",
     "options": [
-      { "id": "A", "text": "valueFrom:\n  configMapKeyRef:\n    name: app-config\n    key: modelName" },
-      { "id": "B", "text": "configMap:\n  name: app-config\n  key: modelName" },
-      { "id": "C", "text": "valueFrom:\n  secretKeyRef:\n    name: app-config\n    key: modelName" },
-      { "id": "D", "text": "value: $(app-config.modelName)" }
+      {
+        "id": "A",
+        "text": "valueFrom:\n  `configMapKeyRef`:\n    name: app-config\n    key: modelName"
+      },
+      {
+        "id": "B",
+        "text": "configMap:\n  name: app-config\n  key: modelName"
+      },
+      {
+        "id": "C",
+        "text": "valueFrom:\n  `secretKeyRef`:\n    name: app-config\n    key: modelName"
+      },
+      {
+        "id": "D",
+        "text": "value: $(app-config.modelName)"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "Environment variables sourced from a ConfigMap use valueFrom.configMapKeyRef with the ConfigMap name and key. The parallel form for Secrets is secretKeyRef, and envFrom pulls in every key at once.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "Environment variables sourced from a ConfigMap use valueFrom.`configMapKeyRef` with the ConfigMap name and key. The parallel form for Secrets is `secretKeyRef`, and envFrom pulls in every key at once.",
     "whyWrong": {
       "B": "configMap as a direct child of an env entry is not part of the pod spec schema.",
       "C": "secretKeyRef reads a Secret, not a ConfigMap.",
       "D": "Kubernetes $(VAR) expansion only substitutes other environment variables in the same container spec."
     },
     "docs": [
-      { "title": "Configure a pod to use a ConfigMap", "url": "https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/" }
+      {
+        "title": "Configure a pod to use a ConfigMap",
+        "url": "https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/"
+      }
     ],
-    "tags": ["aks", "manifests", "configuration"]
+    "tags": [
+      "aks",
+      "manifests",
+      "configuration"
+    ]
   },
   {
     "id": "c-aks-008",
@@ -661,22 +1214,44 @@
     "difficulty": 2,
     "stem": "You want an AKS deployment to scale out when Service Bus queue depth grows, rather than on CPU. What do you install and configure?",
     "options": [
-      { "id": "A", "text": "The KEDA add-on, with a ScaledObject using the azure-servicebus trigger" },
-      { "id": "B", "text": "A HorizontalPodAutoscaler targeting CPU with a lower threshold" },
-      { "id": "C", "text": "The cluster autoscaler with a custom node pool" },
-      { "id": "D", "text": "A VerticalPodAutoscaler in Auto mode" }
+      {
+        "id": "A",
+        "text": "The KEDA add-on, with a ScaledObject using the `azure-servicebus` trigger"
+      },
+      {
+        "id": "B",
+        "text": "A HorizontalPodAutoscaler targeting CPU with a lower threshold"
+      },
+      {
+        "id": "C",
+        "text": "The cluster autoscaler with a custom node pool"
+      },
+      {
+        "id": "D",
+        "text": "A VerticalPodAutoscaler in Auto mode"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "KEDA extends autoscaling to external event sources. A ScaledObject with the azure-servicebus trigger scales the deployment on queue length, and can scale to zero when the queue is empty.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "KEDA extends autoscaling to external event sources. A ScaledObject with the `azure-servicebus` trigger scales the deployment on queue length, and can scale to zero when the queue is empty.",
     "whyWrong": {
       "B": "CPU is a poor proxy for queue depth — a worker blocked on I/O looks idle while the backlog grows.",
       "C": "The cluster autoscaler adds nodes when pods cannot be scheduled. It does not decide how many pods you need.",
       "D": "VPA resizes a pod's resource requests. It does not change replica count."
     },
     "docs": [
-      { "title": "KEDA add-on for AKS", "url": "https://learn.microsoft.com/azure/aks/keda-about" }
+      {
+        "title": "KEDA add-on for AKS",
+        "url": "https://learn.microsoft.com/azure/aks/keda-about"
+      }
     ],
-    "tags": ["aks", "keda", "scaling", "service-bus"]
+    "tags": [
+      "aks",
+      "keda",
+      "scaling",
+      "service-bus"
+    ]
   },
   {
     "id": "c-aks-009",
@@ -686,22 +1261,43 @@
     "difficulty": 1,
     "stem": "Which Kubernetes Service type exposes a workload only to other workloads inside the cluster?",
     "options": [
-      { "id": "A", "text": "ClusterIP" },
-      { "id": "B", "text": "NodePort" },
-      { "id": "C", "text": "LoadBalancer" },
-      { "id": "D", "text": "ExternalName" }
+      {
+        "id": "A",
+        "text": "`ClusterIP`"
+      },
+      {
+        "id": "B",
+        "text": "`NodePort`"
+      },
+      {
+        "id": "C",
+        "text": "`LoadBalancer`"
+      },
+      {
+        "id": "D",
+        "text": "`ExternalName`"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "ClusterIP is the default type and allocates an address reachable only from within the cluster. NodePort and LoadBalancer both build on it to add external reachability.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "`ClusterIP` is the default type and allocates an address reachable only from within the cluster. `NodePort` and `LoadBalancer` both build on it to add external reachability.",
     "whyWrong": {
       "B": "NodePort opens a port on every node, making the service reachable from outside.",
       "C": "LoadBalancer provisions an Azure load balancer with an external IP.",
       "D": "ExternalName maps the service name to an external DNS name — it points outward rather than exposing anything."
     },
     "docs": [
-      { "title": "Kubernetes Services", "url": "https://kubernetes.io/docs/concepts/services-networking/service/" }
+      {
+        "title": "Kubernetes Services",
+        "url": "https://kubernetes.io/docs/concepts/services-networking/service/"
+      }
     ],
-    "tags": ["aks", "networking", "manifests"]
+    "tags": [
+      "aks",
+      "networking",
+      "manifests"
+    ]
   },
   {
     "id": "c-aks-010",
@@ -711,12 +1307,26 @@
     "difficulty": 3,
     "stem": "During a rolling update, requests fail for a few seconds each time an old pod is removed. The application needs about three seconds to drain in-flight requests. Which combination addresses this?",
     "options": [
-      { "id": "A", "text": "A preStop hook with a short sleep, plus handling SIGTERM to stop accepting new connections and finish in-flight ones" },
-      { "id": "B", "text": "Setting terminationGracePeriodSeconds to 0 so pods exit immediately" },
-      { "id": "C", "text": "Increasing maxUnavailable in the rolling update strategy" },
-      { "id": "D", "text": "Adding a startup probe to the container" }
+      {
+        "id": "A",
+        "text": "A preStop hook with a short sleep, plus handling SIGTERM to stop accepting new connections and finish in-flight ones"
+      },
+      {
+        "id": "B",
+        "text": "Setting `terminationGracePeriodSeconds` to 0 so pods exit immediately"
+      },
+      {
+        "id": "C",
+        "text": "Increasing `maxUnavailable` in the rolling update strategy"
+      },
+      {
+        "id": "D",
+        "text": "Adding a startup probe to the container"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Endpoint removal and SIGTERM delivery race each other. A preStop hook holds the container open long enough for the endpoint change to propagate, while handling SIGTERM lets in-flight work complete before exit.",
     "whyWrong": {
       "B": "A zero grace period kills the container instantly, guaranteeing dropped requests.",
@@ -724,9 +1334,16 @@
       "D": "Startup probes govern how a container comes up, not how it shuts down."
     },
     "docs": [
-      { "title": "Pod lifecycle and termination", "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/" }
+      {
+        "title": "Pod lifecycle and termination",
+        "url": "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/"
+      }
     ],
-    "tags": ["aks", "deployments", "troubleshooting"]
+    "tags": [
+      "aks",
+      "deployments",
+      "troubleshooting"
+    ]
   },
   {
     "id": "c-aks-011",
@@ -736,12 +1353,26 @@
     "difficulty": 2,
     "stem": "Which command applies every manifest in a directory and is safe to re-run as part of a deployment pipeline?",
     "options": [
-      { "id": "A", "text": "kubectl apply -f ./manifests/" },
-      { "id": "B", "text": "kubectl create -f ./manifests/" },
-      { "id": "C", "text": "kubectl replace -f ./manifests/" },
-      { "id": "D", "text": "kubectl patch -f ./manifests/" }
+      {
+        "id": "A",
+        "text": "`kubectl apply -f ./manifests/`"
+      },
+      {
+        "id": "B",
+        "text": "`kubectl create -f ./manifests/`"
+      },
+      {
+        "id": "C",
+        "text": "`kubectl replace -f ./manifests/`"
+      },
+      {
+        "id": "D",
+        "text": "`kubectl patch -f ./manifests/`"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "apply is declarative and idempotent: it creates resources that do not exist and updates those that do, which is what a pipeline needs when it runs repeatedly.",
     "whyWrong": {
       "B": "create fails with AlreadyExists on the second run.",
@@ -749,9 +1380,16 @@
       "D": "patch modifies a named existing resource with a partial change; it is not a directory-wide deployment command."
     },
     "docs": [
-      { "title": "Declarative management of Kubernetes objects", "url": "https://kubernetes.io/docs/tasks/manage-kubernetes-objects/declarative-config/" }
+      {
+        "title": "Declarative management of Kubernetes objects",
+        "url": "https://kubernetes.io/docs/tasks/manage-kubernetes-objects/declarative-config/"
+      }
     ],
-    "tags": ["aks", "kubectl", "manifests"]
+    "tags": [
+      "aks",
+      "kubectl",
+      "manifests"
+    ]
   },
   {
     "id": "c-aca-009",
@@ -761,12 +1399,26 @@
     "difficulty": 2,
     "stem": "You updated the value of a secret on a Container App. The running containers still see the old value. Why?",
     "options": [
-      { "id": "A", "text": "Secret values are app-scope, so existing containers must be restarted or a new revision created to pick them up" },
-      { "id": "B", "text": "Secret updates take up to 24 hours to propagate" },
-      { "id": "C", "text": "Secrets can only be read at build time, not at runtime" },
-      { "id": "D", "text": "The secret must be re-created rather than updated" }
+      {
+        "id": "A",
+        "text": "Secret values are app-scope, so existing containers must be restarted or a new revision created to pick them up"
+      },
+      {
+        "id": "B",
+        "text": "Secret updates take up to 24 hours to propagate"
+      },
+      {
+        "id": "C",
+        "text": "Secrets can only be read at build time, not at runtime"
+      },
+      {
+        "id": "D",
+        "text": "The secret must be re-created rather than updated"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Changing a secret value is an app-scope change, so it does not create a new revision. The value is injected into the container's environment at start, so containers keep the old value until they restart or a new revision rolls out.",
     "whyWrong": {
       "B": "There is no 24-hour propagation delay; the change is applied immediately at the app level.",
@@ -774,9 +1426,17 @@
       "D": "Re-creating makes no difference — the containers still need to restart."
     },
     "docs": [
-      { "title": "Manage secrets in Container Apps", "url": "https://learn.microsoft.com/azure/container-apps/manage-secrets" }
+      {
+        "title": "Manage secrets in Container Apps",
+        "url": "https://learn.microsoft.com/azure/container-apps/manage-secrets"
+      }
     ],
-    "tags": ["container-apps", "secrets", "revisions", "troubleshooting"]
+    "tags": [
+      "container-apps",
+      "secrets",
+      "revisions",
+      "troubleshooting"
+    ]
   },
   {
     "id": "c-acr-008",
@@ -786,12 +1446,26 @@
     "difficulty": 2,
     "stem": "Your registry is filling up with untagged manifests left behind by repeated CI pushes to the same tag. You want them cleaned up automatically. What do you configure?",
     "options": [
-      { "id": "A", "text": "A retention policy for untagged manifests on the registry" },
-      { "id": "B", "text": "A lifecycle management rule on the registry's storage account" },
-      { "id": "C", "text": "az acr repository delete run from a scheduled pipeline" },
-      { "id": "D", "text": "Content trust, which rejects duplicate pushes" }
+      {
+        "id": "A",
+        "text": "A retention policy for untagged manifests on the registry"
+      },
+      {
+        "id": "B",
+        "text": "A lifecycle management rule on the registry's storage account"
+      },
+      {
+        "id": "C",
+        "text": "`az acr repository delete` run from a scheduled pipeline"
+      },
+      {
+        "id": "D",
+        "text": "Content trust, which rejects duplicate pushes"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "ACR has a retention policy specifically for untagged manifests, expressed in days. Setting it makes cleanup automatic rather than a scheduled scripting job.",
     "whyWrong": {
       "B": "The storage backing a registry is managed by the service and is not exposed to you as a storage account.",
@@ -799,9 +1473,16 @@
       "D": "Content trust signs images. It does not delete anything."
     },
     "docs": [
-      { "title": "Retention policy for untagged manifests", "url": "https://learn.microsoft.com/azure/container-registry/container-registry-retention-policy" }
+      {
+        "title": "Retention policy for untagged manifests",
+        "url": "https://learn.microsoft.com/azure/container-registry/container-registry-retention-policy"
+      }
     ],
-    "tags": ["acr", "retention", "cost"]
+    "tags": [
+      "acr",
+      "retention",
+      "cost"
+    ]
   },
   {
     "id": "c-app-005",
@@ -811,12 +1492,26 @@
     "difficulty": 2,
     "stem": "You want App Service to pull and deploy a new image automatically whenever a new tag is pushed to Azure Container Registry. What do you enable?",
     "options": [
-      { "id": "A", "text": "Continuous deployment on the App Service, which registers a webhook in the registry" },
-      { "id": "B", "text": "An ACR task with a base image update trigger" },
-      { "id": "C", "text": "A deployment slot auto-swap rule" },
-      { "id": "D", "text": "Always On in the App Service configuration" }
+      {
+        "id": "A",
+        "text": "Continuous deployment on the App Service, which registers a webhook in the registry"
+      },
+      {
+        "id": "B",
+        "text": "An ACR task with a base image update trigger"
+      },
+      {
+        "id": "C",
+        "text": "A deployment slot auto-swap rule"
+      },
+      {
+        "id": "D",
+        "text": "Always On in the App Service configuration"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Turning on continuous deployment for a container-based App Service creates a webhook in the registry that notifies the app on push, and the app pulls the new image.",
     "whyWrong": {
       "B": "A base image trigger rebuilds your image when its base changes. It does not deploy anything to App Service.",
@@ -824,8 +1519,15 @@
       "D": "Always On keeps the app warm and is unrelated to deployment."
     },
     "docs": [
-      { "title": "CI/CD for custom containers", "url": "https://learn.microsoft.com/azure/app-service/deploy-ci-cd-custom-container" }
+      {
+        "title": "CI/CD for custom containers",
+        "url": "https://learn.microsoft.com/azure/app-service/deploy-ci-cd-custom-container"
+      }
     ],
-    "tags": ["app-service", "acr", "deployment"]
+    "tags": [
+      "app-service",
+      "acr",
+      "deployment"
+    ]
   }
 ]

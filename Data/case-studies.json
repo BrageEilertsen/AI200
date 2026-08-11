@@ -1,0 +1,12 @@
+[
+  {
+    "id": "cs-contoso-rag",
+    "title": "Contoso Support Copilot",
+    "body": "Contoso is building a support copilot that answers customer questions from a corpus of about four million product documents.\n\nCurrent architecture\n• Documents land in Azure Blob Storage as PDFs, uploaded continuously by a content team.\n• A Python worker chunks each document, calls Azure OpenAI for embeddings, and writes chunks plus vectors to a store.\n• A front-end API retrieves the closest chunks for a question and passes them to a chat model.\n• Everything runs in Azure Container Apps in a single region.\n\nRequirements\n• Ingestion must survive a multi-hour outage of the embedding worker without losing documents.\n• Retrieval must be filtered to the customer's own tenant, and tenants vary from 50 to 400,000 chunks.\n• The p95 retrieval latency budget is 150 ms.\n• The embedding worker must cost nothing when no documents are waiting.\n• Support engineers must be able to trace one customer question end to end across the API, retrieval and the model call.\n\nConstraints\n• No secrets may be stored in application configuration.\n• The team has no Kubernetes experience and wants to keep it that way."
+  },
+  {
+    "id": "cs-fabrikam-migration",
+    "title": "Fabrikam ingestion rebuild",
+    "body": "Fabrikam runs a nightly batch that re-embeds its entire catalogue. The job currently runs as a single Azure Function on the Consumption plan and has started failing.\n\nSymptoms\n• The function is terminated part-way through, always at roughly the same elapsed time.\n• Cosmos DB returns HTTP 429 in bursts during the run, concentrated on the largest publisher.\n• A downstream search index still lists products that were deleted from Cosmos DB weeks ago.\n• Application Insights shows the ingestion worker as a separate operation from the API that triggers it.\n\nRequirements\n• The nightly job must complete in one run and must not keep a replica alive between runs.\n• Deleted products must disappear from the search index within an hour.\n• The team wants to keep the existing Cosmos DB account and partition key if at all possible."
+  }
+]

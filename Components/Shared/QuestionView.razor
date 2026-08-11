@@ -1,8 +1,19 @@
-@* Renders one question: metadata, stem, optional code block, options, and — once
-   revealed — the explanation, per-distractor notes and doc links. *@
+@* Renders one question: case-study scenario, metadata, stem, optional code block, the
+   answer control for its kind, and — once revealed — the explanation and doc links. *@
 
 @{
     var domain = ExamDomains.Get(Question.Domain);
+}
+
+@if (CaseStudy is { } study)
+{
+    <details class="scenario" open="@ScenarioOpen">
+        <summary>
+            <span class="scenario-tag">Case study</span>
+            <span class="scenario-title">@study.Title</span>
+        </summary>
+        <div class="scenario-body">@Markup.InlineCode(study.Body)</div>
+    </details>
 }
 
 <div class="q-meta">
@@ -13,53 +24,117 @@
     <span>@Question.Objective</span>
     <span class="q-sep">/</span>
     <span>@DifficultyLabel(Question.Difficulty)</span>
-    @if (Question.Kind == QuestionKind.Multi)
+    @if (KindHint is { } hint)
     {
         <span class="q-sep">/</span>
-        <span class="q-multi">Select @Question.Correct.Count</span>
+        <span class="q-multi">@hint</span>
     }
     <span class="spacer"></span>
     <span class="tag">@Question.Id</span>
 </div>
 
-<div class="q-stem">@Question.Stem</div>
+<div class="q-stem">@Markup.InlineCode(Question.Stem)</div>
 
 @if (!string.IsNullOrWhiteSpace(Question.Code))
 {
     <pre class="code">@Question.Code</pre>
 }
 
-<div class="options">
-    @foreach (var option in Question.Options)
-    {
-        var isPicked = Selected.Contains(option.Id);
-        var isCorrect = Question.Correct.Contains(option.Id);
-
-        var css = "option";
-        if (Revealed)
+@if (Question.Kind == QuestionKind.Blanks)
+{
+    <div class="blanks">
+        @foreach (var (blank, index) in Question.Blanks.Select((b, i) => (b, i + 1)))
         {
-            if (isCorrect) css += " right";
-            else if (isPicked) css += " wrong";
-        }
-        else if (isPicked)
-        {
-            css += " picked";
-        }
+            var picked = ChoiceFor(blank.Id);
+            var isRight = Revealed && picked == blank.Correct;
+            var isWrong = Revealed && picked is not null && picked != blank.Correct;
+            var css = "blank" + (isRight ? " right" : isWrong ? " wrong" : "");
 
-        <button type="button" class="@css" disabled="@Revealed" @onclick="() => OnToggle.InvokeAsync(option.Id)">
-            <span class="option-key">@option.Id</span>
-            <span class="option-text">@option.Text</span>
-            @if (Revealed && isCorrect)
+            <div class="@css">
+                <span class="blank-index">@index</span>
+                <span class="blank-label">@Markup.InlineCode(blank.Label)</span>
+                <span class="blank-control">
+                    <select disabled="@Revealed"
+                            value="@picked"
+                            @onchange="e => OnSetBlank.InvokeAsync(new BlankChoice(blank.Id, e.Value?.ToString()))">
+                        <option value="">— choose —</option>
+                        @foreach (var choice in blank.Choices)
+                        {
+                            <option value="@choice.Id" selected="@(picked == choice.Id)">@Markup.Plain(choice.Text)</option>
+                        }
+                    </select>
+                    @if (isWrong)
+                    {
+                        <span class="blank-answer">→ @Markup.Plain(ChoiceText(blank, blank.Correct))</span>
+                    }
+                </span>
+            </div>
+        }
+    </div>
+}
+else if (Question.Kind == QuestionKind.Ordering)
+{
+    <p class="xs faint" style="margin-bottom:10px">
+        Click the steps in order. Click a placed step again to pull it back out.
+    </p>
+    <div class="options">
+        @foreach (var option in Question.Options)
+        {
+            var position = PositionOf(option.Id);
+            var correctPosition = Question.Correct.IndexOf(option.Id) + 1;
+            var isRight = Revealed && position == correctPosition;
+            var isWrong = Revealed && position is not null && position != correctPosition;
+
+            var css = "option";
+            if (isRight) css += " right";
+            else if (isWrong) css += " wrong";
+            else if (position is not null) css += " picked";
+
+            <button type="button" class="@css" disabled="@Revealed" @onclick="() => OnToggle.InvokeAsync(option.Id)">
+                <span class="option-key">@(position?.ToString() ?? "·")</span>
+                <span class="option-text">@Markup.InlineCode(option.Text)</span>
+                @if (Revealed)
+                {
+                    <span class="option-mark faint">#@correctPosition</span>
+                }
+            </button>
+        }
+    </div>
+}
+else
+{
+    <div class="options">
+        @foreach (var option in Question.Options)
+        {
+            var isPicked = Selected.Contains(option.Id);
+            var isCorrect = Question.Correct.Contains(option.Id);
+
+            var css = "option";
+            if (Revealed)
             {
-                <span class="option-mark" style="color:var(--good)">✓</span>
+                if (isCorrect) css += " right";
+                else if (isPicked) css += " wrong";
             }
-            else if (Revealed && isPicked)
+            else if (isPicked)
             {
-                <span class="option-mark" style="color:var(--bad)">✕</span>
+                css += " picked";
             }
-        </button>
-    }
-</div>
+
+            <button type="button" class="@css" disabled="@Revealed" @onclick="() => OnToggle.InvokeAsync(option.Id)">
+                <span class="option-key">@option.Id</span>
+                <span class="option-text">@Markup.InlineCode(option.Text)</span>
+                @if (Revealed && isCorrect)
+                {
+                    <span class="option-mark" style="color:var(--good)">✓</span>
+                }
+                else if (Revealed && isPicked)
+                {
+                    <span class="option-mark" style="color:var(--bad)">✕</span>
+                }
+            </button>
+        }
+    </div>
+}
 
 @if (Revealed)
 {
@@ -83,14 +158,14 @@
             }
         </div>
 
-        <p>@Question.Explanation</p>
+        <p>@Markup.InlineCode(Question.Explanation)</p>
 
         @if (Question.WhyWrong.Count > 0)
         {
             <ul class="why-wrong">
                 @foreach (var (key, reason) in Question.WhyWrong.OrderBy(kv => kv.Key))
                 {
-                    <li><span class="k">@key</span><span>@reason</span></li>
+                    <li><span class="k">@key</span><span>@Markup.InlineCode(reason)</span></li>
                 }
             </ul>
         }
@@ -122,10 +197,42 @@
 
     [Parameter] public IReadOnlyCollection<string> Selected { get; set; } = [];
 
-    /// <summary>When true the options are locked and the explanation is shown.</summary>
+    /// <summary>When true the answer controls are locked and the explanation is shown.</summary>
     [Parameter] public bool Revealed { get; set; }
 
+    /// <summary>Shared scenario, when this question belongs to a case study.</summary>
+    [Parameter] public CaseStudy? CaseStudy { get; set; }
+
+    /// <summary>Whether the scenario panel starts expanded. Collapsed on review lists.</summary>
+    [Parameter] public bool ScenarioOpen { get; set; } = true;
+
     [Parameter] public EventCallback<string> OnToggle { get; set; }
+
+    [Parameter] public EventCallback<BlankChoice> OnSetBlank { get; set; }
+
+    private string? KindHint => Question.Kind switch
+    {
+        QuestionKind.Multi => $"Select {Question.Correct.Count}",
+        QuestionKind.Ordering => $"Order all {Question.Options.Count}",
+        QuestionKind.Blanks => Question.Blanks.Count == 1 ? "Fill the blank" : $"Answer all {Question.Blanks.Count}",
+        _ => null
+    };
+
+    private string? ChoiceFor(string blankId)
+    {
+        var prefix = blankId + "=";
+        var hit = Selected.FirstOrDefault(s => s.StartsWith(prefix, StringComparison.Ordinal));
+        return hit?[prefix.Length..];
+    }
+
+    private int? PositionOf(string optionId)
+    {
+        var index = Selected.ToList().IndexOf(optionId);
+        return index < 0 ? null : index + 1;
+    }
+
+    private static string ChoiceText(Blank blank, string choiceId) =>
+        blank.Choices.FirstOrDefault(c => c.Id == choiceId)?.Text ?? choiceId;
 
     private static string DifficultyLabel(int difficulty) => difficulty switch
     {

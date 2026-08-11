@@ -23,11 +23,21 @@ public sealed class QuestionBank(IWebHostEnvironment env, ILogger<QuestionBank> 
     private readonly Lock _gate = new();
     private List<Question> _questions = [];
     private List<string> _problems = [];
+    private Dictionary<string, CaseStudy> _caseStudies = [];
 
     public IReadOnlyList<Question> All
     {
         get { lock (_gate) return _questions; }
     }
+
+    /// <summary>Shared case-study scenarios, keyed by id.</summary>
+    public IReadOnlyDictionary<string, CaseStudy> CaseStudies
+    {
+        get { lock (_gate) return _caseStudies; }
+    }
+
+    public CaseStudy? CaseStudyFor(Question question) =>
+        question.CaseStudyId is { } id && CaseStudies.TryGetValue(id, out var cs) ? cs : null;
 
     /// <summary>Validation messages from the last load. Surfaced on the Home screen.</summary>
     public IReadOnlyList<string> Problems
@@ -39,9 +49,13 @@ public sealed class QuestionBank(IWebHostEnvironment env, ILogger<QuestionBank> 
 
     public string DataDirectory => Path.Combine(env.ContentRootPath, "Data");
 
+    /// <summary>Scenario file, kept apart from the question files so its text is written once.</summary>
+    private const string CaseStudyFile = "case-studies.json";
+
     public void Load()
     {
         var questions = new List<Question>();
+        var caseStudies = new Dictionary<string, CaseStudy>();
         var problems = new List<string>();
 
         if (!Directory.Exists(DataDirectory))
@@ -55,6 +69,13 @@ public sealed class QuestionBank(IWebHostEnvironment env, ILogger<QuestionBank> 
                 var name = Path.GetFileName(path);
                 try
                 {
+                    if (name.Equals(CaseStudyFile, StringComparison.OrdinalIgnoreCase))
+                    {
+                        var studies = JsonSerializer.Deserialize<List<CaseStudy>>(File.ReadAllText(path), JsonOptions) ?? [];
+                        foreach (var study in studies) caseStudies[study.Id] = study;
+                        continue;
+                    }
+
                     var parsed = JsonSerializer.Deserialize<List<Question>>(File.ReadAllText(path), JsonOptions);
                     if (parsed is null)
                     {
@@ -71,19 +92,31 @@ public sealed class QuestionBank(IWebHostEnvironment env, ILogger<QuestionBank> 
             }
         }
 
-        problems.AddRange(Validate(questions));
+        // Blanks questions carry their answers on the blanks themselves; mirror them into
+        // Correct so downstream code (counts, labels) does not need to special-case them.
+        foreach (var q in questions.Where(q => q.Kind == QuestionKind.Blanks))
+        {
+            q.Correct = [.. q.Blanks.Select(b => Question.BlankToken(b.Id, b.Correct))];
+        }
+
+        problems.AddRange(Validate(questions, caseStudies));
 
         lock (_gate)
         {
             _questions = questions;
+            _caseStudies = caseStudies;
             _problems = problems;
         }
         LoadedAt = DateTimeOffset.Now;
 
-        logger.LogInformation("Loaded {Count} questions with {Problems} problem(s).", questions.Count, problems.Count);
+        logger.LogInformation(
+            "Loaded {Count} questions and {Studies} case study/studies with {Problems} problem(s).",
+            questions.Count, caseStudies.Count, problems.Count);
     }
 
-    private static IEnumerable<string> Validate(List<Question> questions)
+    private static IEnumerable<string> Validate(
+        List<Question> questions,
+        Dictionary<string, CaseStudy> caseStudies)
     {
         foreach (var duplicate in questions.GroupBy(q => q.Id).Where(g => g.Count() > 1))
         {
@@ -95,6 +128,48 @@ public sealed class QuestionBank(IWebHostEnvironment env, ILogger<QuestionBank> 
             if (ExamDomains.All.All(d => d.Key != q.Domain))
             {
                 yield return $"{q.Id}: unknown domain '{q.Domain}'.";
+            }
+
+            if (string.IsNullOrWhiteSpace(q.Explanation))
+            {
+                yield return $"{q.Id}: missing an explanation.";
+            }
+
+            if (q.CaseStudyId is { Length: > 0 } csId && !caseStudies.ContainsKey(csId))
+            {
+                yield return $"{q.Id}: references unknown case study '{csId}'.";
+            }
+
+            if (q.Kind == QuestionKind.Blanks)
+            {
+                if (q.Blanks.Count == 0)
+                {
+                    yield return $"{q.Id}: a blanks question needs at least one blank.";
+                }
+
+                foreach (var duplicate in q.Blanks.GroupBy(b => b.Id).Where(g => g.Count() > 1))
+                {
+                    yield return $"{q.Id}: duplicate blank id '{duplicate.Key}'.";
+                }
+
+                foreach (var b in q.Blanks)
+                {
+                    if (b.Choices.Count < 2)
+                    {
+                        yield return $"{q.Id}/{b.Id}: needs at least two choices.";
+                    }
+                    if (b.Choices.All(c => c.Id != b.Correct))
+                    {
+                        yield return $"{q.Id}/{b.Id}: correct choice '{b.Correct}' is not one of its choices.";
+                    }
+                }
+
+                if (q.Options.Count > 0)
+                {
+                    yield return $"{q.Id}: a blanks question should not also define top-level options.";
+                }
+
+                continue;
             }
 
             if (q.Options.Count < 2)
@@ -113,14 +188,19 @@ public sealed class QuestionBank(IWebHostEnvironment env, ILogger<QuestionBank> 
                 case QuestionKind.Single when q.Correct.Count != 1:
                     yield return $"{q.Id}: single-answer question has {q.Correct.Count} correct answers.";
                     break;
+
                 case QuestionKind.Multi when q.Correct.Count < 2:
                     yield return $"{q.Id}: multi-answer question has fewer than two correct answers.";
                     break;
-            }
 
-            if (string.IsNullOrWhiteSpace(q.Explanation))
-            {
-                yield return $"{q.Id}: missing an explanation.";
+                // An ordering answer is the whole sequence, so every step must appear exactly once.
+                case QuestionKind.Ordering when q.Correct.Count != q.Options.Count:
+                    yield return $"{q.Id}: ordering question lists {q.Correct.Count} steps but has {q.Options.Count} options.";
+                    break;
+
+                case QuestionKind.Ordering when q.Correct.Distinct().Count() != q.Correct.Count:
+                    yield return $"{q.Id}: ordering question repeats a step in its sequence.";
+                    break;
             }
         }
     }

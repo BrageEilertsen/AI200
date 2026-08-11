@@ -98,6 +98,26 @@ Edit the JSON and hit **Reload bank** on the dashboard — no rebuild needed whe
 that aren't options, single-answer questions with two correct answers, missing explanations)
 in a banner on the dashboard.
 
+### Inline code
+
+Wrap code in `` `backticks` `` anywhere in a stem, option, explanation, distractor note, blank
+label or case-study body and it renders as a code span. Everything outside the backticks is
+HTML-encoded, so text can safely contain `<=>`, `<->` and `<#>` without being read as markup.
+Dropdown choices strip the backticks instead of rendering them — an `<option>` cannot contain
+elements.
+
+### Question kinds
+
+| `kind` | Answer | Notes |
+| --- | --- | --- |
+| `single` | one option | the default |
+| `multi` | two or more options | stem says how many |
+| `ordering` | every option, in sequence | order-sensitive; `correct` is the full sequence |
+| `blanks` | one choice per blank | dropdown completion, or yes/no series when the choices are Yes and No |
+
+`ordering` and `blanks` questions need every slot filled before they can be graded. A question
+can also set `caseStudyId` to hang off a shared scenario in `case-studies.json`.
+
 ### Question format
 
 ```jsonc

@@ -1,5 +1,6 @@
 @* Post-run summary: headline score, per-domain breakdown, and a reviewable list of
    everything that was missed. Shared by practice sets and exam simulations. *@
+@inject QuestionBank Bank
 
 <div class="page-head">
     <div class="eyebrow">@(Session.Mode == SessionMode.Exam ? "Exam simulation" : "Practice set")</div>
@@ -131,7 +132,11 @@ else
             <div class="xs faint" style="margin-bottom:8px">
                 Question @(Session.Items.IndexOf(item) + 1) of @Session.Total
             </div>
-            <QuestionView Question="item.Question" Selected="item.Selected" Revealed="true" />
+            <QuestionView Question="item.Question"
+                          Selected="item.Selected"
+                          Revealed="true"
+                          CaseStudy="Bank.CaseStudyFor(item.Question)"
+                          ScenarioOpen="false" />
         </div>
     }
 }

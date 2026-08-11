@@ -1,0 +1,1220 @@
+[
+  {
+    "id": "d2-red-001",
+    "domain": "data",
+    "objective": "Integrate Azure Managed Redis in AI solutions",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Your semantic cache stores embeddings as Redis hashes. Which command creates the index needed before any KNN query can run?",
+    "options": [
+      {
+        "id": "A",
+        "text": "`FT.CREATE`, defining a VECTOR field with the algorithm, dimension and distance metric"
+      },
+      {
+        "id": "B",
+        "text": "`HSET`, which indexes any numeric field automatically"
+      },
+      {
+        "id": "C",
+        "text": "`CLUSTER ADDSLOTS`, which partitions the vector space"
+      },
+      {
+        "id": "D",
+        "text": "`BF.RESERVE`, which reserves space for the vectors"
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation": "Vector search in Redis comes from the RediSearch module, and `FT.CREATE` is what declares the index. A VECTOR field needs the algorithm (HNSW or FLAT), the element type, the dimension and the distance metric before the data will be searchable.",
+    "whyWrong": {
+      "B": "HSET writes hash fields. Redis does not index anything implicitly.",
+      "C": "CLUSTER ADDSLOTS assigns hash slots to nodes and has nothing to do with search.",
+      "D": "BF.RESERVE creates a Bloom filter, a probabilistic set-membership structure."
+    },
+    "docs": [
+      {
+        "title": "Vector search in Azure Managed Redis",
+        "url": "https://learn.microsoft.com/azure/redis/how-to-vector-search"
+      }
+    ],
+    "tags": [
+      "redis",
+      "vector-search",
+      "redisearch"
+    ]
+  },
+  {
+    "id": "d2-red-002",
+    "domain": "data",
+    "objective": "Integrate Azure Managed Redis in AI solutions",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "A vector index is declared with FLAT rather than HNSW. What is the practical consequence?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Search is exact but scans every vector, so latency grows linearly with the dataset"
+      },
+      {
+        "id": "B",
+        "text": "Search is approximate and cannot be tuned for recall"
+      },
+      {
+        "id": "C",
+        "text": "Only cosine distance is supported"
+      },
+      {
+        "id": "D",
+        "text": "The index cannot be queried until it is fully rebuilt"
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation": "FLAT performs a brute-force comparison against every indexed vector. That gives perfect recall and is entirely reasonable for small collections, but cost scales with the number of vectors. HNSW trades a little recall for a graph traversal that scales far better.",
+    "whyWrong": {
+      "B": "FLAT is the exact option; HNSW is the approximate one.",
+      "C": "Both algorithms support cosine, L2 and inner product.",
+      "D": "FLAT needs no build step, which is part of its appeal."
+    },
+    "docs": [
+      {
+        "title": "Vector search in Azure Managed Redis",
+        "url": "https://learn.microsoft.com/azure/redis/how-to-vector-search"
+      }
+    ],
+    "tags": [
+      "redis",
+      "vector-search",
+      "indexing"
+    ]
+  },
+  {
+    "id": "d2-red-003",
+    "domain": "data",
+    "objective": "Integrate Azure Managed Redis in AI solutions",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Which eviction policy should a pure cache use, where every key may be discarded under memory pressure?",
+    "options": [
+      {
+        "id": "A",
+        "text": "`allkeys-lru`"
+      },
+      {
+        "id": "B",
+        "text": "`volatile-lru`"
+      },
+      {
+        "id": "C",
+        "text": "`noeviction`"
+      },
+      {
+        "id": "D",
+        "text": "`volatile-ttl`"
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation": "`allkeys-lru` considers every key for eviction, which is what you want when the whole dataset is disposable and can be rebuilt from the source of truth.",
+    "whyWrong": {
+      "B": "volatile-lru only evicts keys that carry a TTL. Keys written without one become immortal and the cache fills up.",
+      "C": "noeviction makes writes fail once memory is exhausted — appropriate for a data store, not a cache.",
+      "D": "volatile-ttl is also limited to keys with an expiry, and evicts by nearest expiry rather than by use."
+    },
+    "docs": [
+      {
+        "title": "Best practices for Azure Managed Redis",
+        "url": "https://learn.microsoft.com/azure/redis/best-practices-development"
+      }
+    ],
+    "tags": [
+      "redis",
+      "eviction",
+      "memory"
+    ]
+  },
+  {
+    "id": "d2-red-004",
+    "domain": "data",
+    "objective": "Integrate Azure Managed Redis in AI solutions",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "A semantic cache returns a confidently wrong answer: the user asked about refunds and got a shipping answer. The KNN query is correct. What is missing?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A similarity threshold, so a nearest match that is not close enough is treated as a miss"
+      },
+      {
+        "id": "B",
+        "text": "A larger K, so more candidates are considered"
+      },
+      {
+        "id": "C",
+        "text": "A longer TTL on cached answers"
+      },
+      {
+        "id": "D",
+        "text": "Clustering enabled on the cache"
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation": "A nearest-neighbour query always returns a nearest neighbour — there is no notion of 'no match'. Without a threshold on the returned distance, the closest entry is served no matter how unrelated it is. The threshold is what turns a KNN lookup into a cache.",
+    "whyWrong": {
+      "B": "More candidates does not help if you still accept the closest one unconditionally.",
+      "C": "TTL governs staleness, not relevance.",
+      "D": "Clustering distributes keys and has no bearing on match quality."
+    },
+    "docs": [
+      {
+        "title": "Vector search in Azure Managed Redis",
+        "url": "https://learn.microsoft.com/azure/redis/how-to-vector-search"
+      }
+    ],
+    "tags": [
+      "redis",
+      "semantic-cache",
+      "vector-search",
+      "rag"
+    ]
+  },
+  {
+    "id": "d2-red-005",
+    "domain": "data",
+    "objective": "Integrate Azure Managed Redis in AI solutions",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Chat sessions are stored as Redis hashes and must expire 30 minutes after the user's last message. What keeps the window rolling?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Call `EXPIRE` on the key each time a message is appended"
+      },
+      {
+        "id": "B",
+        "text": "Set the TTL once when the session is created"
+      },
+      {
+        "id": "C",
+        "text": "Rely on `volatile-lru` eviction to clear idle sessions"
+      },
+      {
+        "id": "D",
+        "text": "Use `PERSIST` after each write"
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation": "Writing to a key does not extend its TTL, so the expiry must be reset on each interaction. Re-issuing `EXPIRE` on every append gives a sliding window measured from the last activity.",
+    "whyWrong": {
+      "B": "A TTL set once counts from creation, so an active session would be dropped mid-conversation.",
+      "C": "Eviction is driven by memory pressure, not inactivity, so it provides no timing guarantee.",
+      "D": "PERSIST removes the expiry entirely, making the session permanent."
+    },
+    "docs": [
+      {
+        "title": "Best practices for Azure Managed Redis",
+        "url": "https://learn.microsoft.com/azure/redis/best-practices-development"
+      }
+    ],
+    "tags": [
+      "redis",
+      "ttl",
+      "sessions"
+    ]
+  },
+  {
+    "id": "d2-red-006",
+    "domain": "data",
+    "objective": "Integrate Azure Managed Redis in AI solutions",
+    "kind": "multi",
+    "difficulty": 3,
+    "stem": "Which two are genuine advantages of Azure Managed Redis over a self-hosted Redis instance for an AI workload? Choose two.",
+    "options": [
+      {
+        "id": "A",
+        "text": "Microsoft Entra ID authentication instead of shared access keys"
+      },
+      {
+        "id": "B",
+        "text": "Built-in tiers sized for search-heavy and memory-heavy workloads"
+      },
+      {
+        "id": "C",
+        "text": "Automatic generation of embeddings from stored text"
+      },
+      {
+        "id": "D",
+        "text": "Guaranteed exact nearest-neighbour results regardless of index type"
+      },
+      {
+        "id": "E",
+        "text": "Elimination of the need for a similarity threshold"
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation": "The managed service adds Entra ID authentication, removing shared secrets, and offers tiers tuned to different shapes of workload — Compute Optimized for search-heavy use, Memory Optimized for large caches, Flash Optimized for cold data.",
+    "whyWrong": {
+      "C": "Redis stores vectors; it does not call an embedding model for you.",
+      "D": "Exactness depends on the index algorithm, not on who operates the server.",
+      "E": "A threshold is an application-level decision in any deployment."
+    },
+    "docs": [
+      {
+        "title": "Azure Managed Redis overview",
+        "url": "https://learn.microsoft.com/azure/redis/overview"
+      }
+    ],
+    "tags": [
+      "redis",
+      "security",
+      "sizing"
+    ]
+  },
+  {
+    "id": "d2-red-007",
+    "domain": "data",
+    "objective": "Integrate Azure Managed Redis in AI solutions",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Under load the cache shows a high hit rate but overall latency is still poor, and the client reports timeouts. Server CPU is low. What should you look at first?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Client-side connection handling — a multiplexer per request or thread-pool starvation"
+      },
+      {
+        "id": "B",
+        "text": "The eviction policy"
+      },
+      {
+        "id": "C",
+        "text": "The number of shards in the cache"
+      },
+      {
+        "id": "D",
+        "text": "The TTL on cached values"
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation": "A high hit rate with low server CPU means Redis is doing its job; the delay is on the client side. Creating a `ConnectionMultiplexer` per request, or starving the thread pool so responses cannot be processed, produces exactly this pattern.",
+    "whyWrong": {
+      "B": "Eviction shows up as a falling hit rate, which is not what is happening.",
+      "C": "More shards adds capacity the server evidently does not need.",
+      "D": "TTL affects freshness and hit rate, not per-call latency."
+    },
+    "docs": [
+      {
+        "title": "Best practices for development",
+        "url": "https://learn.microsoft.com/azure/redis/best-practices-development"
+      }
+    ],
+    "tags": [
+      "redis",
+      "performance",
+      "troubleshooting",
+      "sdk"
+    ]
+  },
+  {
+    "id": "d2-red-008",
+    "domain": "data",
+    "objective": "Integrate Azure Managed Redis in AI solutions",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "You need to cache the result of an expensive Azure OpenAI call, keyed on the exact prompt text. Which key design is appropriate?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A hash of the normalised prompt plus the model and parameters that affect the output"
+      },
+      {
+        "id": "B",
+        "text": "The raw prompt text used directly as the key"
+      },
+      {
+        "id": "C",
+        "text": "A sequential counter incremented per request"
+      },
+      {
+        "id": "D",
+        "text": "The user id, so each user gets their own cached answer"
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation": "Hashing gives a bounded, safe key, and including the model name and generation parameters prevents serving an answer produced under different settings. Normalising first — trimming and collapsing whitespace — improves the hit rate without changing meaning.",
+    "whyWrong": {
+      "B": "Raw prompts can be very long and may contain characters awkward in keys; they also make keys unbounded in size.",
+      "C": "A counter never repeats, so the cache would never hit.",
+      "D": "Keying on the user means two users asking the same question both pay full price, and one user asking two questions collides."
+    },
+    "docs": [
+      {
+        "title": "Caching guidance",
+        "url": "https://learn.microsoft.com/azure/architecture/best-practices/caching"
+      }
+    ],
+    "tags": [
+      "redis",
+      "caching",
+      "azure-openai"
+    ]
+  },
+  {
+    "id": "d2-red-009",
+    "domain": "data",
+    "objective": "Integrate Azure Managed Redis in AI solutions",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "A popular cache key expires and hundreds of concurrent requests all miss and hit the database at once. What is this called, and what addresses it?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Cache stampede — have one caller rebuild the value under a lock while others wait or serve stale"
+      },
+      {
+        "id": "B",
+        "text": "Cache poisoning — validate the value before writing it"
+      },
+      {
+        "id": "C",
+        "text": "Hot partition — change the key's hash slot"
+      },
+      {
+        "id": "D",
+        "text": "Split brain — enable persistence"
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation": "A stampede (or dogpile) happens when a hot key expires and every concurrent reader misses simultaneously. The usual remedies are a short-lived lock so only one caller recomputes, serving the stale value while it refreshes, or jittering expiry times so keys do not all lapse together.",
+    "whyWrong": {
+      "B": "Poisoning is about writing untrusted data into the cache, a different problem.",
+      "C": "A hot partition is about uneven key distribution, not simultaneous expiry.",
+      "D": "Split brain describes a cluster partition and is unrelated."
+    },
+    "docs": [
+      {
+        "title": "Caching guidance",
+        "url": "https://learn.microsoft.com/azure/architecture/best-practices/caching"
+      }
+    ],
+    "tags": [
+      "redis",
+      "caching",
+      "resiliency"
+    ]
+  },
+  {
+    "id": "d2-red-010",
+    "domain": "data",
+    "objective": "Integrate Azure Managed Redis in AI solutions",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Which statement about persistence on Azure Managed Redis is correct?",
+    "options": [
+      {
+        "id": "A",
+        "text": "It protects against data loss on restart, at the cost of some throughput"
+      },
+      {
+        "id": "B",
+        "text": "It is required for vector indexes to survive a query"
+      },
+      {
+        "id": "C",
+        "text": "It removes the need to set TTLs"
+      },
+      {
+        "id": "D",
+        "text": "It converts the cache into a strongly consistent database"
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation": "Persistence writes the dataset to durable storage so it can be restored after a restart. It costs some throughput and is worth enabling when rebuilding the cache is expensive — a large vector index, for instance — but it does not change Redis's consistency model.",
+    "whyWrong": {
+      "B": "Indexes live in memory and are queryable without any persistence configured.",
+      "C": "Expiry and durability are unrelated concerns.",
+      "D": "Redis remains eventually consistent across replicas regardless of persistence."
+    },
+    "docs": [
+      {
+        "title": "Azure Managed Redis architecture",
+        "url": "https://learn.microsoft.com/azure/redis/architecture"
+      }
+    ],
+    "tags": [
+      "redis",
+      "persistence",
+      "durability"
+    ]
+  },
+  {
+    "id": "d2-pg-001",
+    "domain": "data",
+    "objective": "Develop AI solutions by using Azure Database for PostgreSQL",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "You want to see whether a similarity query used the vector index and how long each step took. Which command gives you both?",
+    "options": [
+      {
+        "id": "A",
+        "text": "`EXPLAIN ANALYZE`"
+      },
+      {
+        "id": "B",
+        "text": "EXPLAIN"
+      },
+      {
+        "id": "C",
+        "text": "VACUUM VERBOSE"
+      },
+      {
+        "id": "D",
+        "text": "`SELECT * FROM pg_stat_user_indexes`"
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation": "EXPLAIN shows the planned strategy; adding ANALYZE actually runs the query and reports real timings and row counts per node, which is what you need to confirm an `Index Scan` rather than a `Seq Scan` and see where the time goes.",
+    "whyWrong": {
+      "B": "EXPLAIN alone gives estimates without executing, so it cannot show actual timings.",
+      "C": "VACUUM reclaims space and updates statistics.",
+      "D": "That view shows cumulative index usage counters, not the plan for a specific query."
+    },
+    "docs": [
+      {
+        "title": "Query performance in flexible server",
+        "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/concepts-query-store"
+      }
+    ],
+    "tags": [
+      "postgresql",
+      "pgvector",
+      "query-plan",
+      "troubleshooting"
+    ]
+  },
+  {
+    "id": "d2-pg-002",
+    "domain": "data",
+    "objective": "Develop AI solutions by using Azure Database for PostgreSQL",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "An HNSW index exists and the operator matches its operator class, but `EXPLAIN ANALYZE` still shows a sequential scan on a table of 5,000 rows. What is the most likely explanation?",
+    "options": [
+      {
+        "id": "A",
+        "text": "The planner has judged a sequential scan cheaper at this table size, which is often correct"
+      },
+      {
+        "id": "B",
+        "text": "HNSW indexes are never used by the planner"
+      },
+      {
+        "id": "C",
+        "text": "The vector column allows NULLs"
+      },
+      {
+        "id": "D",
+        "text": "`maintenance_work_mem` is too low"
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation": "PostgreSQL is cost-based. On a small table a full scan is genuinely cheaper than traversing an index, so choosing it is the right call. This only becomes a problem at scale — if it persists on millions of rows, then suspect a mismatch or stale statistics.",
+    "whyWrong": {
+      "B": "HNSW indexes are used routinely once the table is large enough to justify them.",
+      "C": "Nullable columns do not disqualify an index from use.",
+      "D": "That parameter governs index build memory, not plan selection."
+    },
+    "docs": [
+      {
+        "title": "Optimize pgvector performance",
+        "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/how-to-optimize-performance-pgvector"
+      }
+    ],
+    "tags": [
+      "postgresql",
+      "pgvector",
+      "query-plan"
+    ]
+  },
+  {
+    "id": "d2-pg-003",
+    "domain": "data",
+    "objective": "Develop AI solutions by using Azure Database for PostgreSQL",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Which parameter raises IVFFlat recall at query time, at the cost of latency?",
+    "options": [
+      {
+        "id": "A",
+        "text": "`ivfflat.probes`"
+      },
+      {
+        "id": "B",
+        "text": "`ivfflat`.lists"
+      },
+      {
+        "id": "C",
+        "text": "`hnsw.ef_search`"
+      },
+      {
+        "id": "D",
+        "text": "work_mem"
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation": "probes controls how many of the index's lists are searched per query. Searching more lists finds more true neighbours and costs more time. lists is fixed when the index is built; `ef_search` belongs to HNSW.",
+    "whyWrong": {
+      "B": "lists is a build-time parameter and changing it requires rebuilding the index.",
+      "C": "ef_search applies to HNSW indexes only.",
+      "D": "work_mem sizes sorts and hashes and does not affect ANN search breadth."
+    },
+    "docs": [
+      {
+        "title": "Optimize pgvector performance",
+        "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/how-to-optimize-performance-pgvector"
+      }
+    ],
+    "tags": [
+      "postgresql",
+      "pgvector",
+      "tuning",
+      "ivfflat"
+    ]
+  },
+  {
+    "id": "d2-pg-004",
+    "domain": "data",
+    "objective": "Develop AI solutions by using Azure Database for PostgreSQL",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "A RAG service opens a new connection for every request and latency is dominated by connection setup. Apart from `PgBouncer`, what should the application do?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Use a client-side connection pool and reuse connections across requests"
+      },
+      {
+        "id": "B",
+        "text": "Open connections earlier in the request pipeline"
+      },
+      {
+        "id": "C",
+        "text": "Disable TLS to remove the handshake"
+      },
+      {
+        "id": "D",
+        "text": "Increase max_connections on the server"
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation": "Establishing a PostgreSQL connection involves a TCP handshake, TLS negotiation and backend process startup. A client-side pool amortises that across many requests, which is why every mature driver ships one.",
+    "whyWrong": {
+      "B": "Moving the cost earlier does not remove it.",
+      "C": "Disabling TLS trades a security control for a small gain and is not acceptable for data in transit.",
+      "D": "A higher ceiling permits more connections but makes each one no cheaper, and costs memory."
+    },
+    "docs": [
+      {
+        "title": "PgBouncer in Azure Database for PostgreSQL",
+        "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/concepts-pgbouncer"
+      }
+    ],
+    "tags": [
+      "postgresql",
+      "connections",
+      "performance"
+    ]
+  },
+  {
+    "id": "d2-pg-005",
+    "domain": "data",
+    "objective": "Develop AI solutions by using Azure Database for PostgreSQL",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "Chunks are stored with a JSONB metadata column, and queries filter on metadata->>'language' before ranking by vector distance. Filtering is slow. What helps most?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A GIN index on the metadata column, or a B-tree index on the extracted expression"
+      },
+      {
+        "id": "B",
+        "text": "A second HNSW index on the metadata column"
+      },
+      {
+        "id": "C",
+        "text": "Converting metadata to text and using LIKE"
+      },
+      {
+        "id": "D",
+        "text": "Raising `hnsw.ef_search`"
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation": "JSONB containment and key lookups are served by GIN indexes; a specific extracted field can also be indexed with an expression B-tree index, which is usually faster still for equality on one key.",
+    "whyWrong": {
+      "B": "HNSW indexes vectors. Metadata is not a vector.",
+      "C": "LIKE on serialised JSON prevents any index from being used and is slower again.",
+      "D": "That widens the vector search; the bottleneck here is the metadata predicate."
+    },
+    "docs": [
+      {
+        "title": "Optimize pgvector performance",
+        "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/how-to-optimize-performance-pgvector"
+      }
+    ],
+    "tags": [
+      "postgresql",
+      "pgvector",
+      "indexing",
+      "rag"
+    ]
+  },
+  {
+    "id": "d2-pg-006",
+    "domain": "data",
+    "objective": "Develop AI solutions by using Azure Database for PostgreSQL",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Which sizing signal most strongly indicates a vector workload needs more memory rather than more vCPUs?",
+    "options": [
+      {
+        "id": "A",
+        "text": "High disk read throughput with modest CPU utilisation"
+      },
+      {
+        "id": "B",
+        "text": "High CPU utilisation with low disk activity"
+      },
+      {
+        "id": "C",
+        "text": "A rising number of active connections"
+      },
+      {
+        "id": "D",
+        "text": "Growing table bloat"
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation": "Heavy reads with idle CPU means the working set does not fit in memory, so every ANN traversal pages from disk. Vector indexes are traversed randomly, which makes that especially punishing — the fix is enough RAM to hold the index.",
+    "whyWrong": {
+      "B": "That pattern points at compute as the bottleneck.",
+      "C": "Connection count is a pooling concern.",
+      "D": "Bloat is addressed by vacuuming, not by resizing."
+    },
+    "docs": [
+      {
+        "title": "Compute options in flexible server",
+        "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/concepts-compute"
+      }
+    ],
+    "tags": [
+      "postgresql",
+      "pgvector",
+      "sizing",
+      "performance"
+    ]
+  },
+  {
+    "id": "d2-pg-007",
+    "domain": "data",
+    "objective": "Develop AI solutions by using Azure Database for PostgreSQL",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "You must store 3,072-dimension embeddings but index memory is the constraint. Which change preserves the dimension while roughly halving index memory?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Store the column as `halfvec`(3072)"
+      },
+      {
+        "id": "B",
+        "text": "Store the column as vector(1536) and truncate"
+      },
+      {
+        "id": "C",
+        "text": "Store the embedding as a text column"
+      },
+      {
+        "id": "D",
+        "text": "Switch the index from HNSW to IVFFlat"
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation": "`halfvec` stores each component as a 16-bit float rather than 32-bit, roughly halving memory for a small recall cost while keeping every dimension.",
+    "whyWrong": {
+      "B": "Truncating discards half the dimensions and distorts distances unless the model explicitly supports shortened embeddings.",
+      "C": "Text cannot be indexed for similarity search at all.",
+      "D": "IVFFlat is smaller than HNSW but changes the recall and latency profile rather than the storage width, and this option keeps 32-bit components."
+    },
+    "docs": [
+      {
+        "title": "Optimize pgvector performance",
+        "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/how-to-optimize-performance-pgvector"
+      }
+    ],
+    "tags": [
+      "postgresql",
+      "pgvector",
+      "memory"
+    ]
+  },
+  {
+    "id": "d2-pg-008",
+    "domain": "data",
+    "objective": "Develop AI solutions by using Azure Database for PostgreSQL",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "A tenant-filtered similarity query is slow and under-returns. Tenants are few and stable. Which indexing approach is most effective?",
+    "options": [
+      {
+        "id": "A",
+        "text": "A partial vector index per tenant, defined WHERE tenant_id = <value>"
+      },
+      {
+        "id": "B",
+        "text": "A single HNSW index with a higher m value"
+      },
+      {
+        "id": "C",
+        "text": "A composite B-tree index on (tenant_id, embedding)"
+      },
+      {
+        "id": "D",
+        "text": "Dropping the tenant filter and post-filtering in the application"
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation": "A partial index restricted to one tenant contains only that tenant's vectors, so the ANN traversal never wastes candidates on other tenants and cannot under-return. It is practical precisely because the tenant set is small and stable.",
+    "whyWrong": {
+      "B": "A denser graph improves recall generally but does not stop the filter discarding most candidates.",
+      "C": "B-tree indexes cannot serve vector distance ordering.",
+      "D": "Post-filtering in the application is exactly the under-return problem, moved further from the data."
+    },
+    "docs": [
+      {
+        "title": "Optimize pgvector performance",
+        "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/how-to-optimize-performance-pgvector"
+      }
+    ],
+    "tags": [
+      "postgresql",
+      "pgvector",
+      "rag",
+      "filtering",
+      "indexing"
+    ]
+  },
+  {
+    "id": "d2-cos-001",
+    "domain": "data",
+    "objective": "Develop AI solutions by using Azure Cosmos DB for NoSQL",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Which partition key best suits a chat application storing messages, where reads always fetch one conversation's history?",
+    "options": [
+      {
+        "id": "A",
+        "text": "conversationId"
+      },
+      {
+        "id": "B",
+        "text": "messageId"
+      },
+      {
+        "id": "C",
+        "text": "A constant value"
+      },
+      {
+        "id": "D",
+        "text": "The message timestamp"
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation": "Partition by the boundary your queries use. Keying on conversationId puts a whole conversation in one logical partition, so history reads are single-partition and cheap, while different conversations spread across partitions.",
+    "whyWrong": {
+      "B": "A unique id per item spreads writes perfectly but makes every history read a cross-partition fan-out.",
+      "C": "A constant puts everything in one logical partition, which caps throughput and guarantees throttling.",
+      "D": "Timestamps concentrate all current writes on one partition, creating a moving hot spot."
+    },
+    "docs": [
+      {
+        "title": "Partitioning and horizontal scaling",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/partitioning-overview"
+      }
+    ],
+    "tags": [
+      "cosmos-db",
+      "partitioning",
+      "modelling"
+    ]
+  },
+  {
+    "id": "d2-cos-002",
+    "domain": "data",
+    "objective": "Develop AI solutions by using Azure Cosmos DB for NoSQL",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "A container stores documents up to 1.5 MB each, mostly a large embedding array that is never filtered on but is returned with every read. Reads are expensive. Which change helps most?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Split the embedding into a separate item and fetch it only when needed"
+      },
+      {
+        "id": "B",
+        "text": "Exclude the embedding path from the indexing policy"
+      },
+      {
+        "id": "C",
+        "text": "Lower the consistency level to Eventual"
+      },
+      {
+        "id": "D",
+        "text": "Enable autoscale throughput"
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation": "RU cost for a read scales with item size, so the fix is to stop reading bytes you do not need. Splitting the vector into its own item keeps the frequently read document small.",
+    "whyWrong": {
+      "B": "Excluding paths reduces write cost, which is worth doing, but the read charge here comes from item size rather than indexing.",
+      "C": "Consistency halves the multiplier on reads but does nothing about payload size, and the question says reads specifically.",
+      "D": "Autoscale changes provisioning, not per-operation cost."
+    },
+    "docs": [
+      {
+        "title": "Request units in Azure Cosmos DB",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/request-units"
+      }
+    ],
+    "tags": [
+      "cosmos-db",
+      "ru",
+      "modelling",
+      "cost"
+    ]
+  },
+  {
+    "id": "d2-cos-003",
+    "domain": "data",
+    "objective": "Develop AI solutions by using Azure Cosmos DB for NoSQL",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Which distance function should a Cosmos DB vector policy use for embeddings that are already normalised to unit length, where you want the cheapest equivalent computation?",
+    "options": [
+      {
+        "id": "A",
+        "text": "dotproduct"
+      },
+      {
+        "id": "B",
+        "text": "euclidean"
+      },
+      {
+        "id": "C",
+        "text": "cosine"
+      },
+      {
+        "id": "D",
+        "text": "manhattan"
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation": "For unit-length vectors, cosine similarity reduces to the dot product, because the magnitudes are both 1. Choosing dotproduct skips the normalisation work while ranking results identically.",
+    "whyWrong": {
+      "B": "Euclidean distance ranks differently unless you account for magnitude, and costs more to compute.",
+      "C": "Cosine is correct but performs normalisation that is redundant when the vectors are already unit length.",
+      "D": "Manhattan distance is not among the supported Cosmos DB distance functions."
+    },
+    "docs": [
+      {
+        "title": "Vector search in Cosmos DB for NoSQL",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/vector-search"
+      }
+    ],
+    "tags": [
+      "cosmos-db",
+      "vector-search",
+      "embeddings"
+    ]
+  },
+  {
+    "id": "d2-cos-004",
+    "domain": "data",
+    "objective": "Develop AI solutions by using Azure Cosmos DB for NoSQL",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "A change feed processor is restarted after a week of downtime and reprocesses everything from the beginning. What was wrong?",
+    "options": [
+      {
+        "id": "A",
+        "text": "The lease container was deleted or recreated, losing the checkpoints"
+      },
+      {
+        "id": "B",
+        "text": "The change feed retains only seven days of history"
+      },
+      {
+        "id": "C",
+        "text": "The processor was started in all-versions-and-deletes mode"
+      },
+      {
+        "id": "D",
+        "text": "The monitored container's TTL expired"
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation": "Checkpoints live in the lease container. Lose it and the processor has no record of its position, so it starts from the configured beginning. This is why the lease container is treated as state to protect, not a scratch resource.",
+    "whyWrong": {
+      "B": "The change feed for latest-version mode is retained as long as the items exist, not for a fixed week.",
+      "C": "The mode changes what events are surfaced, not where the position is stored.",
+      "D": "TTL removes items; it would reduce what is reprocessed, not cause a restart from the beginning."
+    },
+    "docs": [
+      {
+        "title": "Change feed processor",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/change-feed-processor"
+      }
+    ],
+    "tags": [
+      "cosmos-db",
+      "change-feed",
+      "troubleshooting"
+    ]
+  },
+  {
+    "id": "d2-cos-005",
+    "domain": "data",
+    "objective": "Develop AI solutions by using Azure Cosmos DB for NoSQL",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "Two application instances update the same document concurrently and one update is silently lost. Which mechanism prevents this?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Optimistic concurrency using the item's ETag with an If-Match condition"
+      },
+      {
+        "id": "B",
+        "text": "Raising the consistency level to Strong"
+      },
+      {
+        "id": "C",
+        "text": "Enabling autoscale throughput"
+      },
+      {
+        "id": "D",
+        "text": "Using a stored procedure for every write"
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation": "Cosmos DB gives every item an ETag that changes on write. Passing the ETag you read as an If-Match condition makes the write fail with a precondition failure if someone else changed the item first, so you can re-read and retry rather than overwriting blindly.",
+    "whyWrong": {
+      "B": "Strong consistency governs what readers observe, not whether two writers overwrite each other.",
+      "C": "Throughput has no bearing on write conflicts.",
+      "D": "A stored procedure is transactional within a partition and could implement a check, but the ETag is the built-in mechanism for exactly this."
+    },
+    "docs": [
+      {
+        "title": "Optimistic concurrency control",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/database-transactions-optimistic-concurrency"
+      }
+    ],
+    "tags": [
+      "cosmos-db",
+      "concurrency",
+      "etag"
+    ]
+  },
+  {
+    "id": "d2-cos-006",
+    "domain": "data",
+    "objective": "Develop AI solutions by using Azure Cosmos DB for NoSQL",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Which operation is cheapest in RU for retrieving a single known document?",
+    "options": [
+      {
+        "id": "A",
+        "text": "`ReadItemAsync` with both the id and the partition key"
+      },
+      {
+        "id": "B",
+        "text": "A SQL query filtering on the id"
+      },
+      {
+        "id": "C",
+        "text": "A SQL query filtering on id with the partition key in `QueryRequestOptions`"
+      },
+      {
+        "id": "D",
+        "text": "`ReadManyItemsAsync` for the single id"
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation": "A point read with id and partition key bypasses the query engine entirely and costs 1 RU for a 1 KB item — the cheapest operation Cosmos DB offers. Any query, even a well-targeted one, costs more.",
+    "whyWrong": {
+      "B": "A query without the partition key fans out across partitions and is dramatically more expensive.",
+      "C": "Better than B because it is single-partition, but still goes through the query engine and costs more than a point read.",
+      "D": "ReadMany is efficient for batches but has more overhead than a single point read for one item."
+    },
+    "docs": [
+      {
+        "title": "Request units in Azure Cosmos DB",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/request-units"
+      }
+    ],
+    "tags": [
+      "cosmos-db",
+      "ru",
+      "sdk",
+      "performance"
+    ]
+  },
+  {
+    "id": "d2-cos-007",
+    "domain": "data",
+    "objective": "Develop AI solutions by using Azure Cosmos DB for NoSQL",
+    "kind": "multi",
+    "difficulty": 3,
+    "stem": "Which two steps reduce the RU cost of writes to a container holding large documents with many rarely queried fields? Choose two.",
+    "options": [
+      {
+        "id": "A",
+        "text": "Add the unused paths to excludedPaths in the indexing policy"
+      },
+      {
+        "id": "B",
+        "text": "Set `EnableContentResponseOnWrite` to false"
+      },
+      {
+        "id": "C",
+        "text": "Switch the account to Session consistency"
+      },
+      {
+        "id": "D",
+        "text": "Increase provisioned throughput"
+      },
+      {
+        "id": "E",
+        "text": "Add a composite index covering the unused fields"
+      }
+    ],
+    "correct": [
+      "A",
+      "B"
+    ],
+    "explanation": "Every indexed path adds RU cost to each write, so excluding paths you never filter or sort on is the standard lever. Suppressing the returned document on write removes payload you are not going to read, which matters for large items and high-volume ingest.",
+    "whyWrong": {
+      "C": "Consistency affects read charges, not write indexing cost.",
+      "D": "More throughput raises the budget rather than lowering the bill per write.",
+      "E": "Adding indexes increases write cost, which is the opposite of the goal."
+    },
+    "docs": [
+      {
+        "title": "Indexing policies in Cosmos DB",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/index-policy"
+      }
+    ],
+    "tags": [
+      "cosmos-db",
+      "indexing",
+      "ru",
+      "cost"
+    ]
+  },
+  {
+    "id": "d2-cos-008",
+    "domain": "data",
+    "objective": "Develop AI solutions by using Azure Cosmos DB for NoSQL",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Your retrieval service must combine keyword relevance with vector similarity in Cosmos DB for NoSQL. What is this pattern called?",
+    "options": [
+      {
+        "id": "A",
+        "text": "Hybrid search, combining full-text scoring with vector distance"
+      },
+      {
+        "id": "B",
+        "text": "Federated search across two accounts"
+      },
+      {
+        "id": "C",
+        "text": "Cross-partition search"
+      },
+      {
+        "id": "D",
+        "text": "Materialised view search"
+      }
+    ],
+    "correct": [
+      "A"
+    ],
+    "explanation": "Hybrid search blends lexical matching with semantic similarity so that exact terms — product codes, error numbers — are not lost by an embedding that treats them as noise, while paraphrases still match. Results from both are typically merged with a reciprocal rank fusion score.",
+    "whyWrong": {
+      "B": "Federation spans separate stores and is not what combining the two signals is called.",
+      "C": "Cross-partition describes query scope, not ranking strategy.",
+      "D": "A materialised view is a denormalised copy of data, unrelated to ranking."
+    },
+    "docs": [
+      {
+        "title": "Vector search in Cosmos DB for NoSQL",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/vector-search"
+      }
+    ],
+    "tags": [
+      "cosmos-db",
+      "vector-search",
+      "hybrid-search",
+      "rag"
+    ]
+  }
+]

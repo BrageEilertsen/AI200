@@ -98,7 +98,9 @@ else if (!_session.Finished)
         <QuestionView Question="item.Question"
                       Selected="item.Selected"
                       Revealed="item.Submitted"
-                      OnToggle="Toggle" />
+                      CaseStudy="Bank.CaseStudyFor(item.Question)"
+                      OnToggle="Toggle"
+                      OnSetBlank="SetBlank" />
 
         <div class="row between" style="margin-top:18px">
             <div class="kbd-hint">
@@ -196,6 +198,12 @@ else
         _shouldFocus = true;
     }
 
+    private void SetBlank(BlankChoice choice)
+    {
+        _session?.Current.SetBlank(choice.BlankId, choice.ChoiceId);
+        // Deliberately no refocus: doing so would steal focus from the dropdown mid-selection.
+    }
+
     private void Check()
     {
         Host.SubmitCurrent();
@@ -238,6 +246,10 @@ else
         }
 
         if (item.Submitted) return;
+
+        // Number keys map onto options, which Blanks questions do not have — those are
+        // driven entirely through their dropdowns.
+        if (item.Question.Kind == QuestionKind.Blanks) return;
 
         var index = OptionIndexFor(e.Key, item.Question.Options.Count);
         if (index >= 0)

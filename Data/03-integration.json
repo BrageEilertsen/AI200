@@ -7,22 +7,47 @@
     "difficulty": 2,
     "stem": "Which conditions cause a Service Bus message to be moved to the dead-letter queue automatically? Choose three.",
     "options": [
-      { "id": "A", "text": "The delivery count exceeds MaxDeliveryCount" },
-      { "id": "B", "text": "The message time to live expires" },
-      { "id": "C", "text": "A subscription rule throws an exception while being evaluated" },
-      { "id": "D", "text": "The receiver calls AbandonMessageAsync" },
-      { "id": "E", "text": "The message exceeds the queue's maximum size" }
+      {
+        "id": "A",
+        "text": "The delivery count exceeds `MaxDeliveryCount`"
+      },
+      {
+        "id": "B",
+        "text": "The message time to live expires"
+      },
+      {
+        "id": "C",
+        "text": "A subscription rule throws an exception while being evaluated"
+      },
+      {
+        "id": "D",
+        "text": "The receiver calls `AbandonMessageAsync`"
+      },
+      {
+        "id": "E",
+        "text": "The message exceeds the queue's maximum size"
+      }
     ],
-    "correct": ["A", "B", "C"],
-    "explanation": "Automatic dead-lettering happens on delivery-count exhaustion, TTL expiry (when dead-lettering on expiration is enabled) and filter evaluation errors. An application can also dead-letter explicitly with DeadLetterMessageAsync.",
+    "correct": [
+      "A",
+      "B",
+      "C"
+    ],
+    "explanation": "Automatic dead-lettering happens on delivery-count exhaustion, TTL expiry (when dead-lettering on expiration is enabled) and filter evaluation errors. An application can also dead-letter explicitly with `DeadLetterMessageAsync`.",
     "whyWrong": {
       "D": "Abandon releases the lock and makes the message available again; it increments the delivery count but does not itself dead-letter.",
       "E": "An oversized message is rejected at send time with an exception — it never enters the queue."
     },
     "docs": [
-      { "title": "Service Bus dead-letter queues", "url": "https://learn.microsoft.com/azure/service-bus-messaging/service-bus-dead-letter-queues" }
+      {
+        "title": "Service Bus dead-letter queues",
+        "url": "https://learn.microsoft.com/azure/service-bus-messaging/service-bus-dead-letter-queues"
+      }
     ],
-    "tags": ["service-bus", "dead-letter"]
+    "tags": [
+      "service-bus",
+      "dead-letter"
+    ]
   },
   {
     "id": "i-sb-002",
@@ -32,12 +57,26 @@
     "difficulty": 2,
     "stem": "A worker takes about eight minutes to generate embeddings for one Service Bus message. Messages are being processed two or three times each. What is the cause?",
     "options": [
-      { "id": "A", "text": "The message lock expires during processing, so the message becomes visible again and is redelivered" },
-      { "id": "B", "text": "The queue has duplicate detection disabled" },
-      { "id": "C", "text": "The receiver is using ReceiveAndDelete mode" },
-      { "id": "D", "text": "The queue is partitioned across multiple message stores" }
+      {
+        "id": "A",
+        "text": "The message lock expires during processing, so the message becomes visible again and is redelivered"
+      },
+      {
+        "id": "B",
+        "text": "The queue has duplicate detection disabled"
+      },
+      {
+        "id": "C",
+        "text": "The receiver is using ReceiveAndDelete mode"
+      },
+      {
+        "id": "D",
+        "text": "The queue is partitioned across multiple message stores"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "The PeekLock lock duration can be at most five minutes. Eight minutes of processing means the lock lapses, the broker makes the message available again, and another receiver picks it up. Renew the lock during processing, or hand the work off so the handler returns quickly.",
     "whyWrong": {
       "B": "Duplicate detection prevents the same MessageId being enqueued twice. Here one message is being delivered repeatedly, which is a different problem.",
@@ -45,9 +84,16 @@
       "D": "Partitioning distributes messages for throughput; it does not duplicate deliveries."
     },
     "docs": [
-      { "title": "Message transfers, locks and settlement", "url": "https://learn.microsoft.com/azure/service-bus-messaging/message-transfers-locks-settlement" }
+      {
+        "title": "Message transfers, locks and settlement",
+        "url": "https://learn.microsoft.com/azure/service-bus-messaging/message-transfers-locks-settlement"
+      }
     ],
-    "tags": ["service-bus", "peek-lock", "troubleshooting"]
+    "tags": [
+      "service-bus",
+      "peek-lock",
+      "troubleshooting"
+    ]
   },
   {
     "id": "i-sb-003",
@@ -57,22 +103,43 @@
     "difficulty": 2,
     "stem": "Documents belonging to one customer must be processed strictly in the order they were sent, while different customers can be processed in parallel. What do you use?",
     "options": [
-      { "id": "A", "text": "Service Bus sessions, with the customer id as the SessionId" },
-      { "id": "B", "text": "A partitioned queue with the customer id as the partition key" },
-      { "id": "C", "text": "A topic with one subscription per customer" },
-      { "id": "D", "text": "Duplicate detection with the customer id as MessageId" }
+      {
+        "id": "A",
+        "text": "Service Bus sessions, with the customer id as the `SessionId`"
+      },
+      {
+        "id": "B",
+        "text": "A partitioned queue with the customer id as the partition key"
+      },
+      {
+        "id": "C",
+        "text": "A topic with one subscription per customer"
+      },
+      {
+        "id": "D",
+        "text": "Duplicate detection with the customer id as `MessageId`"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "Sessions give FIFO ordering within a session. Setting SessionId to the customer id means one receiver holds that session and processes its messages in order, while other sessions are handled concurrently by other receivers.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "Sessions give FIFO ordering within a session. Setting `SessionId` to the customer id means one receiver holds that session and processes its messages in order, while other sessions are handled concurrently by other receivers.",
     "whyWrong": {
       "B": "Partitioning improves throughput but does not guarantee ordering within a partition key for consumers.",
       "C": "A subscription per customer does not scale and still gives no ordering guarantee within a subscription.",
       "D": "Duplicate detection suppresses repeats; it says nothing about order, and reusing the customer id as MessageId would discard most messages."
     },
     "docs": [
-      { "title": "Message sessions", "url": "https://learn.microsoft.com/azure/service-bus-messaging/message-sessions" }
+      {
+        "title": "Message sessions",
+        "url": "https://learn.microsoft.com/azure/service-bus-messaging/message-sessions"
+      }
     ],
-    "tags": ["service-bus", "sessions", "ordering"]
+    "tags": [
+      "service-bus",
+      "sessions",
+      "ordering"
+    ]
   },
   {
     "id": "i-sb-004",
@@ -82,22 +149,43 @@
     "difficulty": 3,
     "stem": "Duplicate detection is enabled on a queue with a ten-minute window, but duplicates still arrive. What is the most likely reason?",
     "options": [
-      { "id": "A", "text": "The sender does not set MessageId, so every message is treated as unique" },
-      { "id": "B", "text": "The duplicate detection window is shorter than the message TTL" },
-      { "id": "C", "text": "The queue is not in the Premium tier" },
-      { "id": "D", "text": "Sessions are not enabled on the queue" }
+      {
+        "id": "A",
+        "text": "The sender does not set `MessageId`, so every message is treated as unique"
+      },
+      {
+        "id": "B",
+        "text": "The duplicate detection window is shorter than the message TTL"
+      },
+      {
+        "id": "C",
+        "text": "The queue is not in the Premium tier"
+      },
+      {
+        "id": "D",
+        "text": "Sessions are not enabled on the queue"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "Duplicate detection compares the MessageId of incoming messages within the window. If the sender leaves it unset, the client generates a fresh id per send and nothing ever matches.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "Duplicate detection compares the `MessageId` of incoming messages within the window. If the sender leaves it unset, the client generates a fresh id per send and nothing ever matches.",
     "whyWrong": {
       "B": "TTL governs how long a message stays queued and is unrelated to the detection window.",
       "C": "Duplicate detection is available on Standard as well as Premium.",
       "D": "Sessions provide ordering, not duplicate suppression."
     },
     "docs": [
-      { "title": "Duplicate detection", "url": "https://learn.microsoft.com/azure/service-bus-messaging/duplicate-detection" }
+      {
+        "title": "Duplicate detection",
+        "url": "https://learn.microsoft.com/azure/service-bus-messaging/duplicate-detection"
+      }
     ],
-    "tags": ["service-bus", "duplicate-detection", "troubleshooting"]
+    "tags": [
+      "service-bus",
+      "duplicate-detection",
+      "troubleshooting"
+    ]
   },
   {
     "id": "i-sb-005",
@@ -107,12 +195,26 @@
     "difficulty": 2,
     "stem": "A topic has three subscriptions. One of them must receive only messages whose Priority application property equals high. Which filter type is the most efficient?",
     "options": [
-      { "id": "A", "text": "A correlation filter matching Priority = high" },
-      { "id": "B", "text": "A SQL filter with the expression Priority = 'high'" },
-      { "id": "C", "text": "A boolean filter set to true, with the check in the receiver" },
-      { "id": "D", "text": "An auto-forward rule to a second topic" }
+      {
+        "id": "A",
+        "text": "A correlation filter matching Priority = high"
+      },
+      {
+        "id": "B",
+        "text": "A SQL filter with the expression Priority = 'high'"
+      },
+      {
+        "id": "C",
+        "text": "A boolean filter set to true, with the check in the receiver"
+      },
+      {
+        "id": "D",
+        "text": "An auto-forward rule to a second topic"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Correlation filters match exact values on system and user properties and are optimised for that case, so they cost less to evaluate than a SQL filter. A SQL filter would also work but is unnecessary when the condition is a simple equality.",
     "whyWrong": {
       "B": "Functionally correct but more expensive to evaluate than a correlation filter for a plain equality.",
@@ -120,9 +222,16 @@
       "D": "Auto-forwarding chains entities together; it does not filter."
     },
     "docs": [
-      { "title": "Topic filters and actions", "url": "https://learn.microsoft.com/azure/service-bus-messaging/topic-filters" }
+      {
+        "title": "Topic filters and actions",
+        "url": "https://learn.microsoft.com/azure/service-bus-messaging/topic-filters"
+      }
     ],
-    "tags": ["service-bus", "topics", "filters"]
+    "tags": [
+      "service-bus",
+      "topics",
+      "filters"
+    ]
   },
   {
     "id": "i-sb-006",
@@ -132,12 +241,26 @@
     "difficulty": 2,
     "stem": "Your pipeline must move 10 MB documents through Service Bus. Which is the appropriate design?",
     "options": [
-      { "id": "A", "text": "Store the document in Blob Storage and send a message containing the blob URI (claim check pattern)" },
-      { "id": "B", "text": "Send the document as the message body on a Standard tier queue" },
-      { "id": "C", "text": "Split the document across 40 messages and reassemble them in the receiver" },
-      { "id": "D", "text": "Base64-encode the document to reduce its size" }
+      {
+        "id": "A",
+        "text": "Store the document in Blob Storage and send a message containing the blob URI (claim check pattern)"
+      },
+      {
+        "id": "B",
+        "text": "Send the document as the message body on a Standard tier queue"
+      },
+      {
+        "id": "C",
+        "text": "Split the document across 40 messages and reassemble them in the receiver"
+      },
+      {
+        "id": "D",
+        "text": "Base64-encode the document to reduce its size"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "The claim check pattern keeps the payload in storage and the pointer in the message. It works on any tier, keeps messages small and fast, and avoids paying broker throughput for bulk bytes.",
     "whyWrong": {
       "B": "Standard tier caps messages at 256 KB, so a 10 MB body is rejected. Premium allows 100 MB but is still the wrong tool for bulk data.",
@@ -145,9 +268,16 @@
       "D": "Base64 increases size by roughly a third."
     },
     "docs": [
-      { "title": "Service Bus quotas", "url": "https://learn.microsoft.com/azure/service-bus-messaging/service-bus-quotas" }
+      {
+        "title": "Service Bus quotas",
+        "url": "https://learn.microsoft.com/azure/service-bus-messaging/service-bus-quotas"
+      }
     ],
-    "tags": ["service-bus", "claim-check", "limits"]
+    "tags": [
+      "service-bus",
+      "claim-check",
+      "limits"
+    ]
   },
   {
     "id": "i-sb-007",
@@ -157,12 +287,26 @@
     "difficulty": 2,
     "stem": "A dead-letter queue has accumulated failed messages that must be inspected and reprocessed. How do you read them?",
     "options": [
-      { "id": "A", "text": "Receive from the sub-queue path <queue>/$DeadLetterQueue" },
-      { "id": "B", "text": "Call PeekMessagesAsync on the main queue with a dead-letter filter" },
-      { "id": "C", "text": "Enable dead-letter forwarding, which is the only way to access them" },
-      { "id": "D", "text": "Query the Service Bus namespace metrics API" }
+      {
+        "id": "A",
+        "text": "Receive from the sub-queue path <queue>/$DeadLetterQueue"
+      },
+      {
+        "id": "B",
+        "text": "Call PeekMessagesAsync on the main queue with a dead-letter filter"
+      },
+      {
+        "id": "C",
+        "text": "Enable dead-letter forwarding, which is the only way to access them"
+      },
+      {
+        "id": "D",
+        "text": "Query the Service Bus namespace metrics API"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "The dead-letter queue is a sub-queue addressed as <queue>/$DeadLetterQueue (or <topic>/Subscriptions/<sub>/$DeadLetterQueue). You receive from it with a normal receiver and can resubmit messages to the main queue.",
     "whyWrong": {
       "B": "Dead-lettered messages are no longer in the main queue, so no filter there can reach them.",
@@ -170,9 +314,15 @@
       "D": "Metrics report the count of dead-lettered messages, not their content."
     },
     "docs": [
-      { "title": "Service Bus dead-letter queues", "url": "https://learn.microsoft.com/azure/service-bus-messaging/service-bus-dead-letter-queues" }
+      {
+        "title": "Service Bus dead-letter queues",
+        "url": "https://learn.microsoft.com/azure/service-bus-messaging/service-bus-dead-letter-queues"
+      }
     ],
-    "tags": ["service-bus", "dead-letter"]
+    "tags": [
+      "service-bus",
+      "dead-letter"
+    ]
   },
   {
     "id": "i-sb-008",
@@ -182,22 +332,43 @@
     "difficulty": 2,
     "stem": "Throughput on a Service Bus consumer is far below what the queue can deliver, and the worker's CPU is mostly idle. Which processor settings should you look at first?",
     "options": [
-      { "id": "A", "text": "MaxConcurrentCalls and PrefetchCount" },
-      { "id": "B", "text": "MaxDeliveryCount and LockDuration" },
-      { "id": "C", "text": "AutoDeleteOnIdle and DefaultMessageTimeToLive" },
-      { "id": "D", "text": "EnablePartitioning and EnableBatchedOperations" }
+      {
+        "id": "A",
+        "text": "`MaxConcurrentCalls` and `PrefetchCount`"
+      },
+      {
+        "id": "B",
+        "text": "`MaxDeliveryCount` and LockDuration"
+      },
+      {
+        "id": "C",
+        "text": "AutoDeleteOnIdle and DefaultMessageTimeToLive"
+      },
+      {
+        "id": "D",
+        "text": "EnablePartitioning and EnableBatchedOperations"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "MaxConcurrentCalls sets how many messages the processor handles in parallel, and PrefetchCount buys down per-message latency by fetching ahead. An idle CPU with a backlog is the signature of both being too low.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "`MaxConcurrentCalls` sets how many messages the processor handles in parallel, and `PrefetchCount` buys down per-message latency by fetching ahead. An idle CPU with a backlog is the signature of both being too low.",
     "whyWrong": {
       "B": "These govern retry and lock behaviour, not consumption rate.",
       "C": "These are entity lifetime settings.",
       "D": "Partitioning is set at entity creation and is a broker-side capacity feature, not a consumer tuning knob."
     },
     "docs": [
-      { "title": "Improve performance with Service Bus", "url": "https://learn.microsoft.com/azure/service-bus-messaging/service-bus-performance-improvements" }
+      {
+        "title": "Improve performance with Service Bus",
+        "url": "https://learn.microsoft.com/azure/service-bus-messaging/service-bus-performance-improvements"
+      }
     ],
-    "tags": ["service-bus", "performance", "sdk"]
+    "tags": [
+      "service-bus",
+      "performance",
+      "sdk"
+    ]
   },
   {
     "id": "i-eg-001",
@@ -207,12 +378,26 @@
     "difficulty": 2,
     "stem": "An Event Grid subscription delivers to a webhook that was down for two days. After it recovers, none of the missed events arrive and there is no record of them. What was not configured?",
     "options": [
-      { "id": "A", "text": "A dead-letter destination, so undeliverable events were dropped after the retry policy expired" },
-      { "id": "B", "text": "A longer maximum delivery attempt count" },
-      { "id": "C", "text": "The CloudEvents 1.0 schema on the subscription" },
-      { "id": "D", "text": "An advanced filter matching the event type" }
+      {
+        "id": "A",
+        "text": "A dead-letter destination, so undeliverable events were dropped after the retry policy expired"
+      },
+      {
+        "id": "B",
+        "text": "A longer maximum delivery attempt count"
+      },
+      {
+        "id": "C",
+        "text": "The CloudEvents 1.0 schema on the subscription"
+      },
+      {
+        "id": "D",
+        "text": "An advanced filter matching the event type"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Event Grid retries with exponential backoff for up to 24 hours and 30 attempts by default. Once that is exhausted the event is discarded unless a dead-letter blob container is configured — dead-lettering is opt-in.",
     "whyWrong": {
       "B": "More attempts within the same 24-hour TTL would not have survived a two-day outage.",
@@ -220,9 +405,16 @@
       "D": "Filters decide which events are sent, not what happens when delivery fails."
     },
     "docs": [
-      { "title": "Event Grid delivery and retry", "url": "https://learn.microsoft.com/azure/event-grid/delivery-and-retry" }
+      {
+        "title": "Event Grid delivery and retry",
+        "url": "https://learn.microsoft.com/azure/event-grid/delivery-and-retry"
+      }
     ],
-    "tags": ["event-grid", "dead-letter", "retry"]
+    "tags": [
+      "event-grid",
+      "dead-letter",
+      "retry"
+    ]
   },
   {
     "id": "i-eg-002",
@@ -232,12 +424,26 @@
     "difficulty": 2,
     "stem": "You register a custom webhook as an Event Grid handler. Creation of the subscription fails validation. What must the endpoint do?",
     "options": [
-      { "id": "A", "text": "Respond to the subscription validation event by echoing the validationCode, or perform a GET on the validationUrl" },
-      { "id": "B", "text": "Present a certificate issued by a Microsoft-trusted certificate authority" },
-      { "id": "C", "text": "Return HTTP 202 to every request within 100 milliseconds" },
-      { "id": "D", "text": "Register a service principal with the Event Grid Contributor role" }
+      {
+        "id": "A",
+        "text": "Respond to the subscription validation event by echoing the validationCode, or perform a GET on the validationUrl"
+      },
+      {
+        "id": "B",
+        "text": "Present a certificate issued by a Microsoft-trusted certificate authority"
+      },
+      {
+        "id": "C",
+        "text": "Return HTTP 202 to every request within 100 milliseconds"
+      },
+      {
+        "id": "D",
+        "text": "Register a service principal with the Event Grid Contributor role"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Event Grid proves that you control the endpoint before sending it events. The endpoint must echo the validationCode in its response, or call the validationUrl from the validation event. Azure-native handlers such as Functions with the Event Grid trigger handle this automatically.",
     "whyWrong": {
       "B": "HTTPS is required, but certificate issuance is not what the handshake checks.",
@@ -245,9 +451,16 @@
       "D": "RBAC governs who may create the subscription, not endpoint ownership."
     },
     "docs": [
-      { "title": "Event Grid endpoint validation", "url": "https://learn.microsoft.com/azure/event-grid/webhook-event-delivery" }
+      {
+        "title": "Event Grid endpoint validation",
+        "url": "https://learn.microsoft.com/azure/event-grid/webhook-event-delivery"
+      }
     ],
-    "tags": ["event-grid", "webhooks", "validation"]
+    "tags": [
+      "event-grid",
+      "webhooks",
+      "validation"
+    ]
   },
   {
     "id": "i-eg-003",
@@ -257,12 +470,26 @@
     "difficulty": 3,
     "stem": "An Event Grid handler occasionally processes the same blob twice, producing duplicate embeddings. What is the correct response?",
     "options": [
-      { "id": "A", "text": "Make the handler idempotent, since Event Grid guarantees at-least-once delivery" },
-      { "id": "B", "text": "Set the maximum delivery attempts to 1 so events are never retried" },
-      { "id": "C", "text": "Switch the subscription to the CloudEvents schema, which deduplicates events" },
-      { "id": "D", "text": "Enable sessions on the Event Grid topic" }
+      {
+        "id": "A",
+        "text": "Make the handler idempotent, since Event Grid guarantees at-least-once delivery"
+      },
+      {
+        "id": "B",
+        "text": "Set the maximum delivery attempts to 1 so events are never retried"
+      },
+      {
+        "id": "C",
+        "text": "Switch the subscription to the CloudEvents schema, which deduplicates events"
+      },
+      {
+        "id": "D",
+        "text": "Enable sessions on the Event Grid topic"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Event Grid delivers at least once, so duplicates are expected behaviour, not a fault. Handlers should key on the event id or the resulting record and make repeat processing a no-op.",
     "whyWrong": {
       "B": "Setting attempts to 1 turns every transient failure into permanent data loss.",
@@ -270,9 +497,16 @@
       "D": "Event Grid topics do not have sessions; that is a Service Bus feature."
     },
     "docs": [
-      { "title": "Event Grid delivery and retry", "url": "https://learn.microsoft.com/azure/event-grid/delivery-and-retry" }
+      {
+        "title": "Event Grid delivery and retry",
+        "url": "https://learn.microsoft.com/azure/event-grid/delivery-and-retry"
+      }
     ],
-    "tags": ["event-grid", "idempotency", "delivery"]
+    "tags": [
+      "event-grid",
+      "idempotency",
+      "delivery"
+    ]
   },
   {
     "id": "i-eg-004",
@@ -282,12 +516,26 @@
     "difficulty": 2,
     "stem": "A Function is triggered by Event Grid on every blob created in a storage account, but must only run for PDFs in the incoming/ folder. Where should the filtering happen?",
     "options": [
-      { "id": "A", "text": "On the event subscription, using subject begins-with incoming/ and ends-with .pdf" },
-      { "id": "B", "text": "In the Function body, returning early for non-matching blobs" },
-      { "id": "C", "text": "On the storage account, with a lifecycle management rule" },
-      { "id": "D", "text": "In a Logic App placed between Event Grid and the Function" }
+      {
+        "id": "A",
+        "text": "On the event subscription, using subject begins-with incoming/ and ends-with .pdf"
+      },
+      {
+        "id": "B",
+        "text": "In the Function body, returning early for non-matching blobs"
+      },
+      {
+        "id": "C",
+        "text": "On the storage account, with a lifecycle management rule"
+      },
+      {
+        "id": "D",
+        "text": "In a Logic App placed between Event Grid and the Function"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Subject prefix and suffix filters are evaluated by Event Grid before delivery, so unwanted events never reach the Function. That means no invocations to pay for and no wasted cold starts.",
     "whyWrong": {
       "B": "The Function still gets invoked and billed for every blob in the account.",
@@ -295,9 +543,17 @@
       "D": "This adds a component and cost to do what the subscription already does natively."
     },
     "docs": [
-      { "title": "Event Grid event filtering", "url": "https://learn.microsoft.com/azure/event-grid/event-filtering" }
+      {
+        "title": "Event Grid event filtering",
+        "url": "https://learn.microsoft.com/azure/event-grid/event-filtering"
+      }
     ],
-    "tags": ["event-grid", "filters", "functions", "cost"]
+    "tags": [
+      "event-grid",
+      "filters",
+      "functions",
+      "cost"
+    ]
   },
   {
     "id": "i-eg-005",
@@ -307,12 +563,26 @@
     "difficulty": 3,
     "stem": "Match the service to the scenario: millions of telemetry records per hour from inference nodes, needing replay for a downstream analytics job.",
     "options": [
-      { "id": "A", "text": "Azure Event Hubs" },
-      { "id": "B", "text": "Azure Event Grid" },
-      { "id": "C", "text": "Azure Service Bus queues" },
-      { "id": "D", "text": "Azure Storage queues" }
+      {
+        "id": "A",
+        "text": "Azure Event Hubs"
+      },
+      {
+        "id": "B",
+        "text": "Azure Event Grid"
+      },
+      {
+        "id": "C",
+        "text": "Azure Service Bus queues"
+      },
+      {
+        "id": "D",
+        "text": "Azure Storage queues"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Event Hubs is the high-throughput streaming ingestion service. Its partitioned log retains events for a configured period, so consumers can replay from an earlier offset — which is exactly the replay requirement.",
     "whyWrong": {
       "B": "Event Grid distributes discrete reactive notifications and has no retention or replay from an offset.",
@@ -320,9 +590,17 @@
       "D": "Storage queues are a simple, low-feature queue with no streaming or replay semantics."
     },
     "docs": [
-      { "title": "Compare messaging services", "url": "https://learn.microsoft.com/azure/event-grid/compare-messaging-services" }
+      {
+        "title": "Compare messaging services",
+        "url": "https://learn.microsoft.com/azure/event-grid/compare-messaging-services"
+      }
     ],
-    "tags": ["event-hubs", "event-grid", "service-bus", "architecture"]
+    "tags": [
+      "event-hubs",
+      "event-grid",
+      "service-bus",
+      "architecture"
+    ]
   },
   {
     "id": "i-eg-006",
@@ -332,12 +610,26 @@
     "difficulty": 2,
     "stem": "A subscription must only receive events where the data payload's confidence field is above 0.9. Which Event Grid feature supports this?",
     "options": [
-      { "id": "A", "text": "An advanced filter using the NumberGreaterThan operator on data.confidence" },
-      { "id": "B", "text": "A subject filter with begins-with confidence" },
-      { "id": "C", "text": "A SQL filter on the subscription" },
-      { "id": "D", "text": "An event type filter" }
+      {
+        "id": "A",
+        "text": "An advanced filter using the NumberGreaterThan operator on data.confidence"
+      },
+      {
+        "id": "B",
+        "text": "A subject filter with begins-with confidence"
+      },
+      {
+        "id": "C",
+        "text": "A SQL filter on the subscription"
+      },
+      {
+        "id": "D",
+        "text": "An event type filter"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Advanced filters evaluate operators such as NumberGreaterThan, StringContains and BoolEquals against fields in the event, including nested paths inside data.",
     "whyWrong": {
       "B": "Subject filters do string prefix and suffix matching only, and the subject is not the payload.",
@@ -345,9 +637,15 @@
       "D": "Event type filtering selects by type name and cannot inspect field values."
     },
     "docs": [
-      { "title": "Event Grid event filtering", "url": "https://learn.microsoft.com/azure/event-grid/event-filtering" }
+      {
+        "title": "Event Grid event filtering",
+        "url": "https://learn.microsoft.com/azure/event-grid/event-filtering"
+      }
     ],
-    "tags": ["event-grid", "filters"]
+    "tags": [
+      "event-grid",
+      "filters"
+    ]
   },
   {
     "id": "i-eg-007",
@@ -357,12 +655,26 @@
     "difficulty": 2,
     "stem": "You need a document-ingestion pipeline where a blob upload triggers embedding generation, and the work must survive a downstream outage of several hours with guaranteed processing. Which design is best?",
     "options": [
-      { "id": "A", "text": "Event Grid on blob created, delivering to a Service Bus queue that the worker consumes" },
-      { "id": "B", "text": "Event Grid on blob created, delivering directly to the worker's HTTP endpoint" },
-      { "id": "C", "text": "A timer-triggered Function that lists the container every minute" },
-      { "id": "D", "text": "Event Hubs capture writing back into the same storage account" }
+      {
+        "id": "A",
+        "text": "Event Grid on blob created, delivering to a Service Bus queue that the worker consumes"
+      },
+      {
+        "id": "B",
+        "text": "Event Grid on blob created, delivering directly to the worker's HTTP endpoint"
+      },
+      {
+        "id": "C",
+        "text": "A timer-triggered Function that lists the container every minute"
+      },
+      {
+        "id": "D",
+        "text": "Event Hubs capture writing back into the same storage account"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Event Grid reacts to the blob event; Service Bus provides the durable buffer with retries, dead-lettering and back-pressure. Combining reactive notification with a queue is the standard resilient ingestion pattern.",
     "whyWrong": {
       "B": "Direct HTTP delivery is limited by Event Grid's 24-hour retry window and gives no back-pressure control.",
@@ -370,9 +682,17 @@
       "D": "Event Hubs Capture writes streaming data to storage — the wrong direction for this scenario."
     },
     "docs": [
-      { "title": "Compare messaging services", "url": "https://learn.microsoft.com/azure/event-grid/compare-messaging-services" }
+      {
+        "title": "Compare messaging services",
+        "url": "https://learn.microsoft.com/azure/event-grid/compare-messaging-services"
+      }
     ],
-    "tags": ["event-grid", "service-bus", "architecture", "resiliency"]
+    "tags": [
+      "event-grid",
+      "service-bus",
+      "architecture",
+      "resiliency"
+    ]
   },
   {
     "id": "i-fn-001",
@@ -382,12 +702,26 @@
     "difficulty": 2,
     "stem": "A Function on the Consumption plan processes a large document and is terminated after ten minutes. Which change resolves this with the least redesign?",
     "options": [
-      { "id": "A", "text": "Move the Function app to a Premium or Flex Consumption plan, which allows much longer executions" },
-      { "id": "B", "text": "Increase functionTimeout in host.json to 30 minutes" },
-      { "id": "C", "text": "Set the HTTP trigger's authLevel to admin" },
-      { "id": "D", "text": "Enable Always On in the app settings" }
+      {
+        "id": "A",
+        "text": "Move the Function app to a Premium or Flex Consumption plan, which allows much longer executions"
+      },
+      {
+        "id": "B",
+        "text": "Increase `functionTimeout` in `host.json` to 30 minutes"
+      },
+      {
+        "id": "C",
+        "text": "Set the HTTP trigger's `authLevel` to admin"
+      },
+      {
+        "id": "D",
+        "text": "Enable Always On in the app settings"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Consumption caps execution at ten minutes and that cap cannot be raised. Premium and Flex Consumption default to 30 minutes and allow more. Splitting the work with Durable Functions is the alternative when you must stay on Consumption.",
     "whyWrong": {
       "B": "host.json can only set a timeout within the plan's limit. On Consumption the ceiling is still ten minutes.",
@@ -395,9 +729,16 @@
       "D": "Always On applies to dedicated App Service plans and addresses idle shutdown, not execution length."
     },
     "docs": [
-      { "title": "Azure Functions hosting options", "url": "https://learn.microsoft.com/azure/azure-functions/functions-scale" }
+      {
+        "title": "Azure Functions hosting options",
+        "url": "https://learn.microsoft.com/azure/azure-functions/functions-scale"
+      }
     ],
-    "tags": ["functions", "hosting", "timeout"]
+    "tags": [
+      "functions",
+      "hosting",
+      "timeout"
+    ]
   },
   {
     "id": "i-fn-002",
@@ -407,12 +748,26 @@
     "difficulty": 2,
     "stem": "Which NCRONTAB expression runs a timer-triggered Function every five minutes?",
     "options": [
-      { "id": "A", "text": "0 */5 * * * *" },
-      { "id": "B", "text": "*/5 * * * *" },
-      { "id": "C", "text": "*/5 * * * * *" },
-      { "id": "D", "text": "0 0 */5 * * *" }
+      {
+        "id": "A",
+        "text": "0 */5 * * * *"
+      },
+      {
+        "id": "B",
+        "text": "*/5 * * * *"
+      },
+      {
+        "id": "C",
+        "text": "*/5 * * * * *"
+      },
+      {
+        "id": "D",
+        "text": "0 0 */5 * * *"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Azure Functions NCRONTAB has six fields and starts with seconds: {second} {minute} {hour} {day} {month} {day-of-week}. '0 */5 * * * *' fires at second zero of every fifth minute.",
     "whyWrong": {
       "B": "Five fields is standard Linux cron. Functions expects six, so this is misinterpreted.",
@@ -420,9 +775,16 @@
       "D": "This runs every five hours, at minute zero."
     },
     "docs": [
-      { "title": "Timer trigger for Azure Functions", "url": "https://learn.microsoft.com/azure/azure-functions/functions-bindings-timer" }
+      {
+        "title": "Timer trigger for Azure Functions",
+        "url": "https://learn.microsoft.com/azure/azure-functions/functions-bindings-timer"
+      }
     ],
-    "tags": ["functions", "timer-trigger", "ncrontab"]
+    "tags": [
+      "functions",
+      "timer-trigger",
+      "ncrontab"
+    ]
   },
   {
     "id": "i-fn-003",
@@ -432,12 +794,26 @@
     "difficulty": 3,
     "stem": "A Function app must read from Service Bus using a managed identity rather than a connection string. The binding's connection property is set to ServiceBusConn. Which app setting is required?",
     "options": [
-      { "id": "A", "text": "ServiceBusConn__fullyQualifiedNamespace = contoso.servicebus.windows.net" },
-      { "id": "B", "text": "ServiceBusConn = contoso.servicebus.windows.net" },
-      { "id": "C", "text": "ServiceBusConn__connectionString = Endpoint=sb://contoso..." },
-      { "id": "D", "text": "AzureWebJobsServiceBus = contoso.servicebus.windows.net" }
+      {
+        "id": "A",
+        "text": "ServiceBusConn__fullyQualifiedNamespace = contoso.servicebus.windows.net"
+      },
+      {
+        "id": "B",
+        "text": "ServiceBusConn = contoso.servicebus.windows.net"
+      },
+      {
+        "id": "C",
+        "text": "ServiceBusConn__connectionString = Endpoint=sb://contoso..."
+      },
+      {
+        "id": "D",
+        "text": "AzureWebJobsServiceBus = contoso.servicebus.windows.net"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Identity-based connections use a settings prefix with a typed suffix — __fullyQualifiedNamespace for Service Bus, __serviceUri or __accountName for storage, __accountEndpoint for Cosmos DB. The identity also needs the matching data-plane role, such as Azure Service Bus Data Receiver.",
     "whyWrong": {
       "B": "A bare value in the setting is interpreted as a connection string and will fail to parse.",
@@ -445,9 +821,17 @@
       "D": "This is the wrong setting name, and it is still connection-string shaped."
     },
     "docs": [
-      { "title": "Identity-based connections", "url": "https://learn.microsoft.com/azure/azure-functions/functions-reference#configure-an-identity-based-connection" }
+      {
+        "title": "Identity-based connections",
+        "url": "https://learn.microsoft.com/azure/azure-functions/functions-reference#configure-an-identity-based-connection"
+      }
     ],
-    "tags": ["functions", "managed-identity", "service-bus", "security"]
+    "tags": [
+      "functions",
+      "managed-identity",
+      "service-bus",
+      "security"
+    ]
   },
   {
     "id": "i-fn-004",
@@ -457,13 +841,31 @@
     "difficulty": 2,
     "stem": "Which statements about Azure Functions triggers and bindings are correct? Choose two.",
     "options": [
-      { "id": "A", "text": "A function has exactly one trigger" },
-      { "id": "B", "text": "A function can have multiple input and output bindings" },
-      { "id": "C", "text": "A function can have multiple triggers if they are of different types" },
-      { "id": "D", "text": "Output bindings must be of the same type as the trigger" },
-      { "id": "E", "text": "Bindings are only available in the in-process .NET model" }
+      {
+        "id": "A",
+        "text": "A function has exactly one trigger"
+      },
+      {
+        "id": "B",
+        "text": "A function can have multiple input and output bindings"
+      },
+      {
+        "id": "C",
+        "text": "A function can have multiple triggers if they are of different types"
+      },
+      {
+        "id": "D",
+        "text": "Output bindings must be of the same type as the trigger"
+      },
+      {
+        "id": "E",
+        "text": "Bindings are only available in the in-process .NET model"
+      }
     ],
-    "correct": ["A", "B"],
+    "correct": [
+      "A",
+      "B"
+    ],
     "explanation": "Exactly one trigger starts a function; input and output bindings are optional and can be combined freely. A Service Bus trigger writing to Cosmos DB and Blob Storage in the same function is normal.",
     "whyWrong": {
       "C": "Multiple triggers are not supported. Write separate functions that share a helper.",
@@ -471,9 +873,15 @@
       "E": "Bindings are fully supported in the isolated worker model, which is the current .NET model."
     },
     "docs": [
-      { "title": "Azure Functions triggers and bindings", "url": "https://learn.microsoft.com/azure/azure-functions/functions-triggers-bindings" }
+      {
+        "title": "Azure Functions triggers and bindings",
+        "url": "https://learn.microsoft.com/azure/azure-functions/functions-triggers-bindings"
+      }
     ],
-    "tags": ["functions", "bindings"]
+    "tags": [
+      "functions",
+      "bindings"
+    ]
   },
   {
     "id": "i-fn-005",
@@ -483,22 +891,43 @@
     "difficulty": 3,
     "stem": "A Durable Functions orchestrator stamps each run with a timestamp using DateTime.UtcNow. The timestamps change between replays and downstream records are inconsistent. What is the fix?",
     "options": [
-      { "id": "A", "text": "Use context.CurrentUtcDateTime, which returns a deterministic value across replays" },
-      { "id": "B", "text": "Cache the timestamp in a static field on the orchestrator class" },
-      { "id": "C", "text": "Store the timestamp in an app setting at deployment time" },
-      { "id": "D", "text": "Set the orchestrator's retry policy to a single attempt" }
+      {
+        "id": "A",
+        "text": "Use context.`CurrentUtcDateTime`, which returns a deterministic value across replays"
+      },
+      {
+        "id": "B",
+        "text": "Cache the timestamp in a static field on the orchestrator class"
+      },
+      {
+        "id": "C",
+        "text": "Store the timestamp in an app setting at deployment time"
+      },
+      {
+        "id": "D",
+        "text": "Set the orchestrator's retry policy to a single attempt"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "Orchestrator code is replayed from its event history, so anything non-deterministic — the clock, random numbers, GUIDs, I/O — produces different values on each replay. CurrentUtcDateTime is the deterministic clock the framework provides.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "Orchestrator code is replayed from its event history, so anything non-deterministic — the clock, random numbers, GUIDs, I/O — produces different values on each replay. `CurrentUtcDateTime` is the deterministic clock the framework provides.",
     "whyWrong": {
       "B": "Static state does not survive across instances or replays, and introduces cross-instance bleed.",
       "C": "A deployment-time constant is not the execution time.",
       "D": "Retry policy does not prevent replay, which is intrinsic to how orchestrations resume."
     },
     "docs": [
-      { "title": "Durable Functions code constraints", "url": "https://learn.microsoft.com/azure/azure-functions/durable/durable-functions-code-constraints" }
+      {
+        "title": "Durable Functions code constraints",
+        "url": "https://learn.microsoft.com/azure/azure-functions/durable/durable-functions-code-constraints"
+      }
     ],
-    "tags": ["functions", "durable-functions", "determinism"]
+    "tags": [
+      "functions",
+      "durable-functions",
+      "determinism"
+    ]
   },
   {
     "id": "i-fn-006",
@@ -508,12 +937,26 @@
     "difficulty": 2,
     "stem": "A pipeline must chunk a document, embed each chunk in parallel, then write a single summary once all embeddings finish. Which Durable Functions pattern is this?",
     "options": [
-      { "id": "A", "text": "Fan-out/fan-in" },
-      { "id": "B", "text": "Function chaining" },
-      { "id": "C", "text": "Monitor" },
-      { "id": "D", "text": "Human interaction" }
+      {
+        "id": "A",
+        "text": "Fan-out/fan-in"
+      },
+      {
+        "id": "B",
+        "text": "Function chaining"
+      },
+      {
+        "id": "C",
+        "text": "Monitor"
+      },
+      {
+        "id": "D",
+        "text": "Human interaction"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Fan-out/fan-in starts many activity functions in parallel and awaits them all — typically Task.WhenAll over the task list — before continuing with the aggregate step.",
     "whyWrong": {
       "B": "Chaining runs steps strictly one after another, which loses the parallelism.",
@@ -521,9 +964,16 @@
       "D": "Human interaction waits on an external event such as an approval."
     },
     "docs": [
-      { "title": "Durable Functions patterns", "url": "https://learn.microsoft.com/azure/azure-functions/durable/durable-functions-overview" }
+      {
+        "title": "Durable Functions patterns",
+        "url": "https://learn.microsoft.com/azure/azure-functions/durable/durable-functions-overview"
+      }
     ],
-    "tags": ["functions", "durable-functions", "patterns"]
+    "tags": [
+      "functions",
+      "durable-functions",
+      "patterns"
+    ]
   },
   {
     "id": "i-fn-007",
@@ -531,14 +981,28 @@
     "objective": "Develop and implement Azure Functions",
     "kind": "single",
     "difficulty": 2,
-    "stem": "An HTTP-triggered Function must be callable only by holders of a key that can be revoked independently of other functions in the app. Which authLevel do you set?",
+    "stem": "An HTTP-triggered Function must be callable only by holders of a key that can be revoked independently of other functions in the app. Which `authLevel` do you set?",
     "options": [
-      { "id": "A", "text": "function" },
-      { "id": "B", "text": "anonymous" },
-      { "id": "C", "text": "admin" },
-      { "id": "D", "text": "user" }
+      {
+        "id": "A",
+        "text": "function"
+      },
+      {
+        "id": "B",
+        "text": "anonymous"
+      },
+      {
+        "id": "C",
+        "text": "admin"
+      },
+      {
+        "id": "D",
+        "text": "user"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "The function level accepts a function-specific key, which can be rotated or revoked without affecting other functions. Host keys also work at this level but apply app-wide.",
     "whyWrong": {
       "B": "Anonymous requires no key at all.",
@@ -546,9 +1010,16 @@
       "D": "There is no user auth level; user identity comes from App Service authentication or a gateway."
     },
     "docs": [
-      { "title": "HTTP trigger authorization keys", "url": "https://learn.microsoft.com/azure/azure-functions/function-keys-how-to" }
+      {
+        "title": "HTTP trigger authorization keys",
+        "url": "https://learn.microsoft.com/azure/azure-functions/function-keys-how-to"
+      }
     ],
-    "tags": ["functions", "http-trigger", "security"]
+    "tags": [
+      "functions",
+      "http-trigger",
+      "security"
+    ]
   },
   {
     "id": "i-fn-008",
@@ -558,22 +1029,43 @@
     "difficulty": 2,
     "stem": "Which file holds settings used only when running Functions locally, and is not deployed to Azure?",
     "options": [
-      { "id": "A", "text": "local.settings.json" },
-      { "id": "B", "text": "host.json" },
-      { "id": "C", "text": "function.json" },
-      { "id": "D", "text": "appsettings.json" }
+      {
+        "id": "A",
+        "text": "`local.settings.json`"
+      },
+      {
+        "id": "B",
+        "text": "`host.json`"
+      },
+      {
+        "id": "C",
+        "text": "function.json"
+      },
+      {
+        "id": "D",
+        "text": "appsettings.json"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "local.settings.json holds local connection strings and app settings for the Core Tools. It is excluded from deployment by default, which is why the equivalent values must exist as app settings in Azure.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "`local.settings.json` holds local connection strings and app settings for the Core Tools. It is excluded from deployment by default, which is why the equivalent values must exist as app settings in Azure.",
     "whyWrong": {
       "B": "host.json configures the Functions host — retries, batch sizes, logging — and is deployed.",
       "C": "function.json describes bindings for a function in script languages and is deployed.",
       "D": "appsettings.json is an ASP.NET Core convention, not the Functions local settings file."
     },
     "docs": [
-      { "title": "Azure Functions local development", "url": "https://learn.microsoft.com/azure/azure-functions/functions-develop-local" }
+      {
+        "title": "Azure Functions local development",
+        "url": "https://learn.microsoft.com/azure/azure-functions/functions-develop-local"
+      }
     ],
-    "tags": ["functions", "configuration", "local-dev"]
+    "tags": [
+      "functions",
+      "configuration",
+      "local-dev"
+    ]
   },
   {
     "id": "i-fn-009",
@@ -583,12 +1075,26 @@
     "difficulty": 3,
     "stem": "A Function app must reach a private Azure OpenAI endpoint over a virtual network, and must not suffer cold starts on the first request of the morning. Which hosting plan meets both requirements at the lowest cost?",
     "options": [
-      { "id": "A", "text": "Premium (Elastic Premium), with pre-warmed instances and VNet integration" },
-      { "id": "B", "text": "Consumption, with Always On enabled" },
-      { "id": "C", "text": "Dedicated App Service plan on the Free tier" },
-      { "id": "D", "text": "Flex Consumption with minimum instances set to zero" }
+      {
+        "id": "A",
+        "text": "Premium (Elastic Premium), with pre-warmed instances and VNet integration"
+      },
+      {
+        "id": "B",
+        "text": "Consumption, with Always On enabled"
+      },
+      {
+        "id": "C",
+        "text": "Dedicated App Service plan on the Free tier"
+      },
+      {
+        "id": "D",
+        "text": "Flex Consumption with minimum instances set to zero"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "The Premium plan provides both VNet integration and pre-warmed instances that eliminate cold start, which is exactly the pair of requirements here.",
     "whyWrong": {
       "B": "Consumption supports neither Always On nor VNet integration.",
@@ -596,9 +1102,17 @@
       "D": "Flex Consumption supports VNet integration, but zero always-ready instances leaves the cold start in place."
     },
     "docs": [
-      { "title": "Azure Functions hosting options", "url": "https://learn.microsoft.com/azure/azure-functions/functions-scale" }
+      {
+        "title": "Azure Functions hosting options",
+        "url": "https://learn.microsoft.com/azure/azure-functions/functions-scale"
+      }
     ],
-    "tags": ["functions", "hosting", "networking", "cold-start"]
+    "tags": [
+      "functions",
+      "hosting",
+      "networking",
+      "cold-start"
+    ]
   },
   {
     "id": "i-fn-010",
@@ -608,12 +1122,26 @@
     "difficulty": 2,
     "stem": "Which app setting makes a Function app run from a deployment package, giving atomic deployments and a read-only file system?",
     "options": [
-      { "id": "A", "text": "WEBSITE_RUN_FROM_PACKAGE = 1" },
-      { "id": "B", "text": "FUNCTIONS_WORKER_RUNTIME = dotnet-isolated" },
-      { "id": "C", "text": "WEBSITE_NODE_DEFAULT_VERSION = 20" },
-      { "id": "D", "text": "AzureWebJobsStorage = DefaultEndpointsProtocol=..." }
+      {
+        "id": "A",
+        "text": "`WEBSITE_RUN_FROM_PACKAGE` = 1"
+      },
+      {
+        "id": "B",
+        "text": "`FUNCTIONS_WORKER_RUNTIME` = dotnet-isolated"
+      },
+      {
+        "id": "C",
+        "text": "`WEBSITE_NODE_DEFAULT_VERSION` = 20"
+      },
+      {
+        "id": "D",
+        "text": "AzureWebJobsStorage = DefaultEndpointsProtocol=..."
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Run-from-package mounts the deployment zip as the app content, so a deployment either fully succeeds or does not take effect. It also removes file-lock issues during deployment.",
     "whyWrong": {
       "B": "This selects the language worker.",
@@ -621,9 +1149,15 @@
       "D": "This is the storage account the Functions host requires for its own state, unrelated to packaging."
     },
     "docs": [
-      { "title": "Run your functions from a package", "url": "https://learn.microsoft.com/azure/azure-functions/run-functions-from-deployment-package" }
+      {
+        "title": "Run your functions from a package",
+        "url": "https://learn.microsoft.com/azure/azure-functions/run-functions-from-deployment-package"
+      }
     ],
-    "tags": ["functions", "deployment"]
+    "tags": [
+      "functions",
+      "deployment"
+    ]
   },
   {
     "id": "i-fn-011",
@@ -633,22 +1167,44 @@
     "difficulty": 2,
     "stem": "A Service Bus-triggered Function throws on a poison message and the message is retried forever, blocking the queue. What is the correct handling?",
     "options": [
-      { "id": "A", "text": "Let it fail — after MaxDeliveryCount attempts Service Bus dead-letters the message automatically — and monitor the dead-letter queue" },
-      { "id": "B", "text": "Catch every exception and complete the message so the queue keeps moving" },
-      { "id": "C", "text": "Set MaxDeliveryCount to 1 so failures are never retried" },
-      { "id": "D", "text": "Disable the Function until the message is manually deleted" }
+      {
+        "id": "A",
+        "text": "Let it fail — after `MaxDeliveryCount` attempts Service Bus dead-letters the message automatically — and monitor the dead-letter queue"
+      },
+      {
+        "id": "B",
+        "text": "Catch every exception and complete the message so the queue keeps moving"
+      },
+      {
+        "id": "C",
+        "text": "Set `MaxDeliveryCount` to 1 so failures are never retried"
+      },
+      {
+        "id": "D",
+        "text": "Disable the Function until the message is manually deleted"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "The delivery-count mechanism exists for exactly this case. After MaxDeliveryCount failed attempts the broker moves the message to the dead-letter queue, unblocking the main queue while preserving the message for inspection. 'Retried forever' means the count is set unusually high.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "The delivery-count mechanism exists for exactly this case. After `MaxDeliveryCount` failed attempts the broker moves the message to the dead-letter queue, unblocking the main queue while preserving the message for inspection. 'Retried forever' means the count is set unusually high.",
     "whyWrong": {
       "B": "Swallowing exceptions destroys the message and hides the failure — the data is simply lost.",
       "C": "One attempt means a single transient blip permanently dead-letters good messages.",
       "D": "Manual intervention does not scale and stops all processing, not just the bad message."
     },
     "docs": [
-      { "title": "Service Bus bindings for Functions", "url": "https://learn.microsoft.com/azure/azure-functions/functions-bindings-service-bus" }
+      {
+        "title": "Service Bus bindings for Functions",
+        "url": "https://learn.microsoft.com/azure/azure-functions/functions-bindings-service-bus"
+      }
     ],
-    "tags": ["functions", "service-bus", "dead-letter", "resiliency"]
+    "tags": [
+      "functions",
+      "service-bus",
+      "dead-letter",
+      "resiliency"
+    ]
   },
   {
     "id": "i-fn-012",
@@ -658,22 +1214,44 @@
     "difficulty": 2,
     "stem": "Where do you configure the number of messages a Service Bus-triggered Function processes concurrently?",
     "options": [
-      { "id": "A", "text": "In host.json, under extensions.serviceBus" },
-      { "id": "B", "text": "In local.settings.json" },
-      { "id": "C", "text": "As an attribute parameter on the trigger" },
-      { "id": "D", "text": "In the Service Bus queue's own properties" }
+      {
+        "id": "A",
+        "text": "In `host.json`, under extensions.serviceBus"
+      },
+      {
+        "id": "B",
+        "text": "In `local.settings.json`"
+      },
+      {
+        "id": "C",
+        "text": "As an attribute parameter on the trigger"
+      },
+      {
+        "id": "D",
+        "text": "In the Service Bus queue's own properties"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "host.json holds host-wide extension configuration, including maxConcurrentCalls, prefetchCount and maxAutoLockRenewalDuration for the Service Bus extension.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "`host.json` holds host-wide extension configuration, including maxConcurrentCalls, prefetchCount and maxAutoLockRenewalDuration for the Service Bus extension.",
     "whyWrong": {
       "B": "local.settings.json holds local app settings and is not deployed.",
       "C": "The trigger attribute names the queue, subscription and connection — not concurrency.",
       "D": "Queue properties are broker-side settings such as lock duration and delivery count."
     },
     "docs": [
-      { "title": "host.json reference", "url": "https://learn.microsoft.com/azure/azure-functions/functions-host-json" }
+      {
+        "title": "host.json reference",
+        "url": "https://learn.microsoft.com/azure/azure-functions/functions-host-json"
+      }
     ],
-    "tags": ["functions", "service-bus", "configuration", "performance"]
+    "tags": [
+      "functions",
+      "service-bus",
+      "configuration",
+      "performance"
+    ]
   },
   {
     "id": "i-fn-013",
@@ -683,12 +1261,26 @@
     "difficulty": 2,
     "stem": "A Function must write to Cosmos DB after processing a queue message, with the least amount of code. What do you use?",
     "options": [
-      { "id": "A", "text": "A Cosmos DB output binding on the function" },
-      { "id": "B", "text": "A CosmosClient constructed inside the function body per invocation" },
-      { "id": "C", "text": "A second function triggered by the first over HTTP" },
-      { "id": "D", "text": "A Cosmos DB input binding" }
+      {
+        "id": "A",
+        "text": "A Cosmos DB output binding on the function"
+      },
+      {
+        "id": "B",
+        "text": "A `CosmosClient` constructed inside the function body per invocation"
+      },
+      {
+        "id": "C",
+        "text": "A second function triggered by the first over HTTP"
+      },
+      {
+        "id": "D",
+        "text": "A Cosmos DB input binding"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "An output binding lets the runtime handle the client lifetime and the write, so the function just returns the object to persist.",
     "whyWrong": {
       "B": "Constructing a client per invocation is both more code and a performance anti-pattern — if you do use the SDK directly, hold the client in a static or injected singleton.",
@@ -696,9 +1288,16 @@
       "D": "An input binding reads from Cosmos DB; this scenario writes."
     },
     "docs": [
-      { "title": "Cosmos DB bindings for Functions", "url": "https://learn.microsoft.com/azure/azure-functions/functions-bindings-cosmosdb-v2" }
+      {
+        "title": "Cosmos DB bindings for Functions",
+        "url": "https://learn.microsoft.com/azure/azure-functions/functions-bindings-cosmosdb-v2"
+      }
     ],
-    "tags": ["functions", "bindings", "cosmos-db"]
+    "tags": [
+      "functions",
+      "bindings",
+      "cosmos-db"
+    ]
   },
   {
     "id": "i-fn-014",
@@ -708,12 +1307,26 @@
     "difficulty": 3,
     "stem": "A long-running embedding job is started from an HTTP request. The client must get an immediate response and a URL to poll for status. Which Durable Functions pattern applies?",
     "options": [
-      { "id": "A", "text": "Async HTTP API, using CreateCheckStatusResponse" },
-      { "id": "B", "text": "Aggregator, using a durable entity" },
-      { "id": "C", "text": "Monitor, polling an external resource" },
-      { "id": "D", "text": "Function chaining" }
+      {
+        "id": "A",
+        "text": "Async HTTP API, using `CreateCheckStatusResponse`"
+      },
+      {
+        "id": "B",
+        "text": "Aggregator, using a durable entity"
+      },
+      {
+        "id": "C",
+        "text": "Monitor, polling an external resource"
+      },
+      {
+        "id": "D",
+        "text": "Function chaining"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "The async HTTP API pattern starts an orchestration and immediately returns 202 with a statusQueryGetUri. The client polls that URL until the orchestration completes.",
     "whyWrong": {
       "B": "Aggregators accumulate state across events over time, which is not the request/poll shape here.",
@@ -721,9 +1334,17 @@
       "D": "Chaining describes sequential activities inside the orchestration, not the client interaction."
     },
     "docs": [
-      { "title": "Durable Functions HTTP API", "url": "https://learn.microsoft.com/azure/azure-functions/durable/durable-functions-http-features" }
+      {
+        "title": "Durable Functions HTTP API",
+        "url": "https://learn.microsoft.com/azure/azure-functions/durable/durable-functions-http-features"
+      }
     ],
-    "tags": ["functions", "durable-functions", "patterns", "http-trigger"]
+    "tags": [
+      "functions",
+      "durable-functions",
+      "patterns",
+      "http-trigger"
+    ]
   },
   {
     "id": "i-sb-009",
@@ -733,12 +1354,26 @@
     "difficulty": 2,
     "stem": "Documents must be re-embedded at 02:00 tomorrow, not immediately. Which Service Bus feature delivers this without an external scheduler?",
     "options": [
-      { "id": "A", "text": "Set ScheduledEnqueueTime on the message when sending" },
-      { "id": "B", "text": "Set the message TTL to the delay period" },
-      { "id": "C", "text": "Defer the message on receipt" },
-      { "id": "D", "text": "Send to a topic with a time-based SQL filter" }
+      {
+        "id": "A",
+        "text": "Set `ScheduledEnqueueTime` on the message when sending"
+      },
+      {
+        "id": "B",
+        "text": "Set the message TTL to the delay period"
+      },
+      {
+        "id": "C",
+        "text": "Defer the message on receipt"
+      },
+      {
+        "id": "D",
+        "text": "Send to a topic with a time-based SQL filter"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Scheduled messages sit invisible in the entity until the enqueue time arrives, at which point they become available to receivers. No external timer is needed, and the schedule can be cancelled by sequence number.",
     "whyWrong": {
       "B": "TTL controls when a message expires, not when it appears.",
@@ -746,8 +1381,14 @@
       "D": "Filters are evaluated at enqueue time and cannot delay delivery."
     },
     "docs": [
-      { "title": "Scheduled messages", "url": "https://learn.microsoft.com/azure/service-bus-messaging/message-sequencing" }
+      {
+        "title": "Scheduled messages",
+        "url": "https://learn.microsoft.com/azure/service-bus-messaging/message-sequencing"
+      }
     ],
-    "tags": ["service-bus", "scheduling"]
+    "tags": [
+      "service-bus",
+      "scheduling"
+    ]
   }
 ]
