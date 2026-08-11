@@ -1,0 +1,210 @@
+@page "/"
+@rendermode InteractiveServer
+@inject QuestionBank Bank
+@inject ProgressStore Progress
+@inject NavigationManager Nav
+
+<PageTitle>AI-200 Trainer</PageTitle>
+
+<div class="page-head">
+    <div class="eyebrow">Azure AI Cloud Developer Associate</div>
+    <h1>Developing AI Cloud<br />Solutions on Azure</h1>
+    <p class="lede">
+        40–60 questions in 100–120 minutes. 700 of 1000 to pass. The four areas below are the
+        published skills outline — every question in this bank is tagged to one of them.
+    </p>
+</div>
+
+@if (Bank.Problems.Count > 0)
+{
+    <div class="banner bad">
+        <b>@Bank.Problems.Count problem(s) in the question bank</b>
+        <ul style="margin:8px 0 0;padding-left:20px">
+            @foreach (var problem in Bank.Problems.Take(12))
+            {
+                <li class="mono xs">@problem</li>
+            }
+        </ul>
+    </div>
+}
+
+@if (Bank.All.Count == 0)
+{
+    <div class="banner warn">
+        No questions loaded. Check that <span class="mono">@Bank.DataDirectory</span> contains the JSON files, then reload.
+    </div>
+}
+
+<div class="grid cols-4 section">
+    <div class="stat-card">
+        <div class="stat-body">
+            <div class="stat-label">Question bank</div>
+            <div class="stat-value">@Bank.All.Count</div>
+            <div class="stat-note">across four areas</div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <Ring Percent="_coveragePercent" Colour="var(--accent)" />
+        <div class="stat-body">
+            <div class="stat-label">Covered</div>
+            <div class="stat-value">@($"{_coveragePercent:F0}")<span class="unit">%</span></div>
+            <div class="stat-note">@_unseen not yet seen</div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <Ring Percent="_lifetimeAccuracy" Colour="@Grade(_lifetimeAccuracy, _attempts)" />
+        <div class="stat-body">
+            <div class="stat-label">Accuracy</div>
+            <div class="stat-value" style="color:@Grade(_lifetimeAccuracy, _attempts)">
+                @if (_attempts == 0)
+                {
+                    <text>—</text>
+                }
+                else
+                {
+                    @($"{_lifetimeAccuracy:F0}")<span class="unit">%</span>
+                }
+            </div>
+            <div class="stat-note">@_attempts answers recorded</div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        @if (_lastExam is { } exam)
+        {
+            <Ring Percent="exam.ScaledScore / 10.0" Colour="@(exam.ScaledScore >= 700 ? "var(--good)" : "var(--bad)")" />
+        }
+        <div class="stat-body">
+            <div class="stat-label">Last mock</div>
+            @if (_lastExam is { } last)
+            {
+                <div class="stat-value" style="color:@(last.ScaledScore >= 700 ? "var(--good)" : "var(--bad)")">
+                    @last.ScaledScore
+                </div>
+                <div class="stat-note">@last.FinishedAt.ToString("d MMM, HH:mm")</div>
+            }
+            else
+            {
+                <div class="stat-value faint">—</div>
+                <div class="stat-note">not sat yet</div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <div class="row between" style="margin-bottom:16px">
+        <h2>Skills measured</h2>
+        <span class="xs faint">Weight = share of the live exam</span>
+    </div>
+
+    <div class="card flush">
+        <div class="inset-list">
+            @foreach (var domain in ExamDomains.All)
+            {
+                var stats = DomainStats(domain.Key);
+                <div class="inset-row">
+                    <div class="row between" style="margin-bottom:11px">
+                        <span class="domain-name">
+                            <span class="swatch" style="background-color:@domain.Accent"></span>
+                            @domain.Name
+                            <span class="domain-weight">@domain.WeightLabel</span>
+                        </span>
+                        <span class="xs nowrap num">
+                            <span class="faint">@Bank.CountFor(domain.Key) questions</span>
+                            @if (stats.Attempts > 0)
+                            {
+                                <span class="q-sep"> · </span>
+                                <span style="color:@Grade(stats.Accuracy, stats.Attempts)">@($"{stats.Accuracy:F0}% correct")</span>
+                            }
+                        </span>
+                    </div>
+                    <div class="bar">
+                        <span style="width:@Css.Pct(stats.Accuracy);background-color:@domain.Accent"></span>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <h2>Start studying</h2>
+    <div class="grid cols-3">
+        <div class="card">
+            <h3>Practice set</h3>
+            <p class="small muted" style="margin-top:8px">
+                Answer, check, read the explanation, move on. Choose your areas and weight the
+                draw toward what you keep getting wrong.
+            </p>
+            <button class="btn primary" @onclick='() => Nav.NavigateTo("practice")'>Configure practice</button>
+        </div>
+        <div class="card">
+            <h3>Exam simulation</h3>
+            <p class="small muted" style="margin-top:8px">
+                50 questions in the real weightings, 110 minutes on the clock, nothing graded
+                until you submit. The closest thing to sitting it.
+            </p>
+            <button class="btn primary" @onclick='() => Nav.NavigateTo("exam")'>Set up a mock</button>
+        </div>
+        <div class="card">
+            <h3>Cram sheet</h3>
+            <p class="small muted" style="margin-top:8px">
+                Defaults, limits and the distinctions the exam leans on — the highest yield per
+                minute of reading on the last day.
+            </p>
+            <button class="btn tinted" @onclick='() => Nav.NavigateTo("cram")'>Open cram sheet</button>
+        </div>
+    </div>
+</div>
+
+<div class="row xs faint">
+    <span>Bank loaded @Bank.LoadedAt.ToString("HH:mm:ss") · <span class="mono">@Bank.DataDirectory</span></span>
+    <span class="spacer"></span>
+    <button class="btn ghost sm" @onclick="Reload">Reload bank</button>
+</div>
+
+@code {
+    private int _unseen;
+    private int _attempts;
+    private int _correct;
+    private double _lifetimeAccuracy;
+    private double _coveragePercent;
+    private SessionRecord? _lastExam;
+
+    protected override void OnInitialized() => Recalculate();
+
+    private void Recalculate()
+    {
+        var coverage = Progress.Coverage(Bank.All);
+        _unseen = coverage.Unseen;
+        _attempts = coverage.Seen;
+        _correct = coverage.Correct;
+        _lifetimeAccuracy = _attempts == 0 ? 0 : 100.0 * _correct / _attempts;
+        _coveragePercent = Bank.All.Count == 0 ? 0 : 100.0 * (Bank.All.Count - _unseen) / Bank.All.Count;
+        _lastExam = Progress.Sessions.LastOrDefault(s => s.Mode == SessionMode.Exam);
+    }
+
+    private (int Attempts, double Accuracy) DomainStats(string domainKey)
+    {
+        var coverage = Progress.Coverage(Bank.All.Where(q => q.Domain == domainKey));
+        return (coverage.Seen, coverage.Seen == 0 ? 0 : 100.0 * coverage.Correct / coverage.Seen);
+    }
+
+    private static string Grade(double percent, int attempts) => attempts == 0
+        ? "var(--text-3)"
+        : percent switch
+        {
+            >= 80 => "var(--good)",
+            >= 65 => "var(--warn)",
+            _ => "var(--bad)"
+        };
+
+    private void Reload()
+    {
+        Bank.Load();
+        Recalculate();
+    }
+}

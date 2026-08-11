@@ -1,0 +1,155 @@
+@* Post-run summary: headline score, per-domain breakdown, and a reviewable list of
+   everything that was missed. Shared by practice sets and exam simulations. *@
+
+<div class="page-head">
+    <div class="eyebrow">@(Session.Mode == SessionMode.Exam ? "Exam simulation" : "Practice set")</div>
+    <h1>@(Session.Mode == SessionMode.Exam ? Headline : "Set complete")</h1>
+</div>
+
+<div class="grid cols-4 section">
+    <div class="stat-card">
+        <Ring Percent="Session.ScorePercent" Colour="@ScoreColour" />
+        <div class="stat-body">
+            <div class="stat-label">Score</div>
+            <div class="stat-value" style="color:@ScoreColour">@Session.CorrectCount<span class="unit">/@Session.Total</span></div>
+            <div class="stat-note">@($"{Session.ScorePercent:F0}%") correct</div>
+        </div>
+    </div>
+
+    @if (Session.Mode == SessionMode.Exam)
+    {
+        <div class="stat-card">
+            <div class="stat-body">
+                <div class="stat-label">Estimated scaled</div>
+                <div class="stat-value" style="color:@ScoreColour">@Session.EstimatedScaledScore</div>
+                <div class="stat-note">@(Session.Passed ? "above" : "below") the 700 cut</div>
+            </div>
+        </div>
+    }
+
+    <div class="stat-card">
+        <div class="stat-body">
+            <div class="stat-label">Time</div>
+            <div class="stat-value">@($"{Session.Elapsed.TotalMinutes:F0}")<span class="unit">min</span></div>
+            <div class="stat-note">@($"{Session.Elapsed.TotalSeconds / Math.Max(Session.Total, 1):F0}")s per question</div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-body">
+            <div class="stat-label">Missed</div>
+            <div class="stat-value" style="color:@(Session.Missed.Any() ? "var(--bad)" : "var(--good)")">
+                @Session.Missed.Count()
+            </div>
+            <div class="stat-note">listed below for review</div>
+        </div>
+    </div>
+</div>
+
+@if (Session.Mode == SessionMode.Exam)
+{
+    <div class="banner">
+        The scaled figure is a linear estimate where 70% maps to 700. Microsoft does not publish its
+        scaling curve, so treat anything near the line as "not safe yet" rather than a pass.
+    </div>
+}
+
+<h2 style="margin-bottom:16px">By skill area</h2>
+<div class="card flush section">
+    <div class="inset-list">
+        @foreach (var domain in ExamDomains.All)
+        {
+            var tally = Session.ByDomain().GetValueOrDefault(domain.Key);
+            if (tally.Total == 0) continue;
+
+            var percent = 100.0 * tally.Correct / tally.Total;
+            <div class="inset-row">
+                <div class="row between" style="margin-bottom:11px">
+                    <span class="domain-name">
+                        <span class="swatch" style="background-color:@domain.Accent"></span>
+                        @domain.Name
+                    </span>
+                    <span class="xs nowrap num" style="color:@Colour(percent)">
+                        @tally.Correct / @tally.Total &nbsp;@($"{percent:F0}%")
+                    </span>
+                </div>
+                <div class="bar"><span style="width:@Css.Pct(percent);background-color:@domain.Accent"></span></div>
+            </div>
+        }
+    </div>
+</div>
+
+@{
+    var weakObjectives = Session.ByObjective()
+        .Where(kv => kv.Value.Total > 0 && (double)kv.Value.Correct / kv.Value.Total < 0.7)
+        .OrderBy(kv => (double)kv.Value.Correct / kv.Value.Total)
+        .ToList();
+}
+@if (weakObjectives.Count > 0)
+{
+    <div class="card section">
+        <h2>Weakest objectives in this run</h2>
+        <table>
+            <thead>
+                <tr><th>Objective</th><th style="width:80px">Score</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var (objective, tally) in weakObjectives)
+                {
+                    var percent = 100.0 * tally.Correct / tally.Total;
+                    <tr>
+                        <td>@objective</td>
+                        <td class="nowrap num" style="color:@Colour(percent)">@tally.Correct / @tally.Total</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+<div class="row section">
+    <button class="btn primary" @onclick="() => OnRestart.InvokeAsync()">Start another run</button>
+    <button class="btn" @onclick="() => _showAll = !_showAll">
+        @(_showAll ? "Show missed only" : "Show all questions")
+    </button>
+</div>
+
+<h2 style="margin-bottom:12px">@(_showAll ? "All questions" : "Questions you missed")</h2>
+
+@{
+    var toReview = (_showAll ? Session.Items : Session.Missed).ToList();
+}
+@if (toReview.Count == 0)
+{
+    <div class="empty">Nothing missed in this run.</div>
+}
+else
+{
+    @foreach (var item in toReview)
+    {
+        <div class="card" style="margin-bottom:12px">
+            <div class="xs faint" style="margin-bottom:8px">
+                Question @(Session.Items.IndexOf(item) + 1) of @Session.Total
+            </div>
+            <QuestionView Question="item.Question" Selected="item.Selected" Revealed="true" />
+        </div>
+    }
+}
+
+@code {
+    [Parameter, EditorRequired] public required StudySession Session { get; set; }
+    [Parameter] public EventCallback OnRestart { get; set; }
+
+    private bool _showAll;
+
+    private string Headline => Session.Passed ? "Above the pass mark" : "Below the pass mark";
+
+    private string ScoreColour => Colour(Session.ScorePercent);
+
+    private static string Colour(double percent) => percent switch
+    {
+        >= 80 => "var(--good)",
+        >= 70 => "var(--warn)",
+        _ => "var(--bad)"
+    };
+}

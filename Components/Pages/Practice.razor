@@ -1,0 +1,258 @@
+@page "/practice"
+@rendermode InteractiveServer
+@inject QuestionBank Bank
+@inject ProgressStore Progress
+@inject SessionHost Host
+
+<PageTitle>Practice — AI-200 Trainer</PageTitle>
+
+<div @ref="_root" tabindex="0" @onkeydown="HandleKey" style="outline:none">
+
+@if (_session is null || _session.Mode != SessionMode.Practice)
+{
+    <div class="page-head">
+        <div class="eyebrow">Practice</div>
+        <h1>Build a practice set</h1>
+        <p class="lede">
+            Immediate feedback after every question. Everything you answer here feeds the
+            weak-area picker and your progress stats.
+        </p>
+    </div>
+
+    <div class="card section">
+        <h3>Skill areas</h3>
+        <div class="row" style="margin-bottom:10px">
+            @foreach (var domain in ExamDomains.All)
+            {
+                var on = _pickedDomains.Contains(domain.Key);
+                <button type="button" class="chip @(on ? "on" : "")" @onclick="() => ToggleDomain(domain.Key)">
+                    <span class="dot" style="background-color:@domain.Accent"></span>
+                    @domain.ShortName
+                    <span class="faint">@Bank.CountFor(domain.Key)</span>
+                </button>
+            }
+        </div>
+        <div class="row xs">
+            <button class="btn ghost sm" @onclick="SelectAllDomains">Select all</button>
+            <button class="btn ghost sm" @onclick="() => _pickedDomains.Clear()">Clear</button>
+            <span class="faint">@AvailableCount question(s) match</span>
+        </div>
+    </div>
+
+    <div class="card section">
+        <h3>Set size</h3>
+        <div class="segmented" style="margin-bottom:20px">
+            @foreach (var size in new[] { 10, 20, 30, 50 })
+            {
+                <button type="button" class="segment @(_count == size ? "on" : "")" @onclick="() => _count = size">
+                    @size
+                </button>
+            }
+            <button type="button" class="segment @(_count == int.MaxValue ? "on" : "")" @onclick="() => _count = int.MaxValue">
+                Everything
+            </button>
+        </div>
+
+        <label class="check">
+            <input type="checkbox" checked="@_focusWeak" @onchange="e => _focusWeak = (bool)e.Value!" />
+            <span>
+                <b style="color:var(--text);font-weight:550">Focus weak areas</b><br />
+                Favour questions you have never seen or recently got wrong
+            </span>
+        </label>
+    </div>
+
+    <button class="btn primary lg" disabled="@(AvailableCount == 0)" @onclick="Start">
+        Start practice set
+    </button>
+
+    @if (_lastResult is { } last)
+    {
+        <div class="banner" style="margin-top:24px">
+            Last set: <b>@last.Correct / @last.Total</b> (@($"{last.Percent:F0}%")) in @($"{last.ElapsedMinutes:F1}") min.
+        </div>
+    }
+}
+else if (!_session.Finished)
+{
+    var item = _session.Current;
+
+    <div class="row between" style="margin-bottom:10px">
+        <div>
+            <div class="eyebrow" style="margin-bottom:2px">Practice set</div>
+            <b>Question @(_session.Index + 1) <span class="faint">of @_session.Total</span></b>
+        </div>
+        <div class="row">
+            <span class="xs muted num">
+                @_session.CorrectCount correct of @_session.Items.Count(i => i.Submitted) graded
+            </span>
+            <button class="btn ghost sm" @onclick="EndEarly">End set</button>
+        </div>
+    </div>
+
+    <div class="bar" style="margin-bottom:20px">
+        <span style="width:@Css.Pct(100.0 * _session.Index / _session.Total)"></span>
+    </div>
+
+    <div class="card">
+        <QuestionView Question="item.Question"
+                      Selected="item.Selected"
+                      Revealed="item.Submitted"
+                      OnToggle="Toggle" />
+
+        <div class="row between" style="margin-top:18px">
+            <div class="kbd-hint">
+                <kbd>1</kbd>–<kbd>@item.Question.Options.Count</kbd> select
+                <span class="q-sep">·</span>
+                <kbd>Enter</kbd> @(item.Submitted ? "next" : "check")
+            </div>
+            <div class="row">
+                @if (!item.Submitted)
+                {
+                    <button class="btn primary" disabled="@(!item.Answered)" @onclick="Check">
+                        Check answer
+                    </button>
+                }
+                else if (_session.CanGoNext)
+                {
+                    <button class="btn primary" @onclick="Next">Next question →</button>
+                }
+                else
+                {
+                    <button class="btn primary" @onclick="Finish">See results →</button>
+                }
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <ResultsView Session="_session" OnRestart="Reset" />
+}
+
+</div>
+
+@code {
+    private StudySession? _session;
+    private ElementReference _root;
+    private readonly HashSet<string> _pickedDomains = [];
+    private int _count = 20;
+    private bool _focusWeak = true;
+    private SessionRecord? _lastResult;
+    private bool _shouldFocus;
+
+    protected override void OnInitialized()
+    {
+        SelectAllDomains();
+
+        // Resume a set that is still open on the circuit.
+        if (Host.Current is { Mode: SessionMode.Practice } existing)
+        {
+            _session = existing;
+        }
+
+        _lastResult = Progress.Sessions.LastOrDefault(s => s.Mode == SessionMode.Practice);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_shouldFocus || firstRender)
+        {
+            _shouldFocus = false;
+            try { await _root.FocusAsync(); } catch { /* element not rendered yet */ }
+        }
+    }
+
+    private int AvailableCount =>
+        Bank.All.Count(q => _pickedDomains.Count == 0 || _pickedDomains.Contains(q.Domain));
+
+    private void SelectAllDomains()
+    {
+        _pickedDomains.Clear();
+        foreach (var domain in ExamDomains.All) _pickedDomains.Add(domain.Key);
+    }
+
+    private void ToggleDomain(string key)
+    {
+        if (!_pickedDomains.Remove(key)) _pickedDomains.Add(key);
+    }
+
+    private void Start()
+    {
+        var size = _count == int.MaxValue ? AvailableCount : Math.Min(_count, AvailableCount);
+        _session = Host.StartPractice(_pickedDomains, size, _focusWeak);
+        _shouldFocus = true;
+    }
+
+    private void Toggle(string optionId)
+    {
+        _session?.Current.Toggle(optionId);
+        _shouldFocus = true;
+    }
+
+    private void Check()
+    {
+        Host.SubmitCurrent();
+        _shouldFocus = true;
+    }
+
+    private void Next()
+    {
+        if (_session is { CanGoNext: true }) _session.Index++;
+        _shouldFocus = true;
+    }
+
+    private void Finish()
+    {
+        Host.Finish();
+        _lastResult = Progress.Sessions.LastOrDefault(s => s.Mode == SessionMode.Practice);
+    }
+
+    private void EndEarly() => Finish();
+
+    private void Reset()
+    {
+        Host.Clear();
+        _session = null;
+        _lastResult = Progress.Sessions.LastOrDefault(s => s.Mode == SessionMode.Practice);
+    }
+
+    private void HandleKey(KeyboardEventArgs e)
+    {
+        if (_session is not { Finished: false } session) return;
+
+        var item = session.Current;
+
+        if (e.Key == "Enter")
+        {
+            if (!item.Submitted && item.Answered) Check();
+            else if (item.Submitted && session.CanGoNext) Next();
+            else if (item.Submitted) Finish();
+            return;
+        }
+
+        if (item.Submitted) return;
+
+        var index = OptionIndexFor(e.Key, item.Question.Options.Count);
+        if (index >= 0)
+        {
+            Toggle(item.Question.Options[index].Id);
+        }
+    }
+
+    /// <summary>Maps "1".."9" and "a".."i" onto a zero-based option index.</summary>
+    private static int OptionIndexFor(string key, int optionCount)
+    {
+        if (key.Length != 1) return -1;
+
+        var c = char.ToLowerInvariant(key[0]);
+        var index = c switch
+        {
+            >= '1' and <= '9' => c - '1',
+            >= 'a' and <= 'i' => c - 'a',
+            _ => -1
+        };
+
+        return index < optionCount ? index : -1;
+    }
+}

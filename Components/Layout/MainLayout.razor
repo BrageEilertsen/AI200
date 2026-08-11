@@ -1,0 +1,59 @@
+@inherits LayoutComponentBase
+
+<div class="shell">
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-mark">
+                <span class="code">AI-200</span>
+                <span>Trainer</span>
+            </div>
+            <span class="brand-sub">Developing AI Cloud Solutions on Azure</span>
+        </div>
+
+        <nav>
+            <NavLink class="nav-item" href="" Match="NavLinkMatch.All">
+                @Icons.Dashboard
+                <span class="nav-label">Dashboard</span>
+            </NavLink>
+            <NavLink class="nav-item" href="practice">
+                @Icons.Practice
+                <span class="nav-label">Practice</span>
+            </NavLink>
+            <NavLink class="nav-item" href="exam">
+                @Icons.Exam
+                <span class="nav-label">Exam simulation</span>
+            </NavLink>
+            <NavLink class="nav-item" href="browse">
+                @Icons.Browse
+                <span class="nav-label">Question bank</span>
+            </NavLink>
+            <NavLink class="nav-item" href="cram">
+                @Icons.Cram
+                <span class="nav-label">Cram sheet</span>
+            </NavLink>
+            <NavLink class="nav-item" href="stats">
+                @Icons.Stats
+                <span class="nav-label">Progress</span>
+            </NavLink>
+        </nav>
+
+        <div class="sidebar-foot">
+            <ExamCountdown />
+            <ThemeToggle />
+            <div class="disclaimer">
+                Independent study aid built from the published skills outline.
+                Not affiliated with or endorsed by Microsoft.
+            </div>
+        </div>
+    </aside>
+
+    <main class="content">
+        @Body
+    </main>
+</div>
+
+<div id="blazor-error-ui" data-nosnippet>
+    An unhandled error has occurred.
+    <a href="." class="reload">Reload</a>
+    <span class="dismiss">🗙</span>
+</div>

@@ -1,0 +1,213 @@
+@page "/cram"
+
+<PageTitle>Cram sheet — AI-200 Trainer</PageTitle>
+
+<div class="page-head">
+    <div class="eyebrow">Cram sheet</div>
+    <h1>Highest yield per minute</h1>
+    <p class="lede">
+        Defaults, limits and distinctions the exam leans on. Read this the morning of, then sit
+        one mock. Everything here maps to a bullet in the published skills outline.
+    </p>
+</div>
+
+<div class="card section">
+    @* Two things are needed to make these jump links work.
+       1. The href must carry the page path: with <base href="/"> in App.razor a bare
+          "#containers" resolves against the base URL, so it lands on /#containers —
+          the dashboard — instead of scrolling.
+       2. data-enhance-nav="false" opts the links out of Blazor's enhanced navigation.
+          Otherwise Blazor intercepts the click, sees the path already matches, and
+          rewrites the URL without ever scrolling. Opted out, the browser performs a
+          normal same-document fragment navigation. *@
+    <div class="toc" data-enhance-nav="false">
+        <a href="cram#containers">Containers</a> <span class="sep">/</span>
+        <a href="cram#cosmos">Cosmos DB</a> <span class="sep">/</span>
+        <a href="cram#postgres">PostgreSQL &amp; pgvector</a> <span class="sep">/</span>
+        <a href="cram#redis">Managed Redis</a> <span class="sep">/</span>
+        <a href="cram#messaging">Service Bus &amp; Event Grid</a> <span class="sep">/</span>
+        <a href="cram#functions">Functions</a> <span class="sep">/</span>
+        <a href="cram#security">Key Vault &amp; App Config</a> <span class="sep">/</span>
+        <a href="cram#observability">OpenTelemetry &amp; KQL</a> <span class="sep">/</span>
+        <a href="cram#traps">Common traps</a>
+    </div>
+</div>
+
+<section class="cram-section" id="containers">
+    <h2>Containers <span class="w">20–25%</span></h2>
+
+    <h3>Azure Container Registry</h3>
+    <ul class="facts">
+        <li><b>SKUs:</b> Basic, Standard, Premium. <b>Premium only:</b> geo-replication, content trust, private link, customer-managed keys, repository-scoped tokens, zone redundancy. If a question mentions any of those, the answer is Premium.</li>
+        <li><code>az acr build</code> runs the build <b>in Azure</b> — no local Docker daemon needed. This is the answer whenever a build agent has no Docker installed.</li>
+        <li><code>az acr import</code> copies an image registry-to-registry <b>without pulling it locally</b>. Faster and cheaper than pull + retag + push.</li>
+        <li><b>ACR Tasks trigger types:</b> quick task (manual), source-code commit, <b>base image update</b>, and schedule. A base-image trigger only fires if the task tracked the base image at build time.</li>
+        <li><b>Auth, best to worst:</b> managed identity → service principal → repository-scoped token → admin user. The admin account is disabled by default and is a single shared credential; never the right answer for production.</li>
+        <li><code>AcrPull</code> to pull, <code>AcrPush</code> to push. Attach a registry to AKS with <code>az aks update --attach-acr</code>, which assigns AcrPull to the kubelet identity.</li>
+        <li>Multi-step tasks are defined in YAML (<code>acr-task.yaml</code>) with <code>build</code>, <code>push</code> and <code>cmd</code> steps.</li>
+    </ul>
+
+    <h3>App Service for containers</h3>
+    <ul class="facts">
+        <li><code>WEBSITES_PORT</code> tells App Service which port your container listens on. Container starts but requests time out → this is almost always missing.</li>
+        <li>Private registry pull uses <code>DOCKER_REGISTRY_SERVER_URL</code> / <code>_USERNAME</code> / <code>_PASSWORD</code>, or a managed identity instead of the username/password pair.</li>
+        <li>App settings surface as <b>environment variables</b>. On Linux, hierarchical .NET keys use a double underscore: <code>Storage__ConnectionString</code>, not <code>Storage:ConnectionString</code>.</li>
+        <li>Secrets belong in Key Vault, referenced from an app setting as <code>@@Microsoft.KeyVault(SecretUri=https://…)</code>. Requires a managed identity with <b>Key Vault Secrets User</b>.</li>
+        <li><b>Deployment slots:</b> settings swap with the slot unless marked as a <b>deployment slot setting</b> (sticky), which stays put. Sticky is what you want for per-environment connection strings.</li>
+        <li><code>WEBSITES_ENABLE_APP_SERVICE_STORAGE=true</code> to persist <code>/home</code> across restarts.</li>
+    </ul>
+
+    <h3>Azure Container Apps</h3>
+    <ul class="facts">
+        <li><b>Revisions are immutable snapshots.</b> Revision-scope changes (image, env vars, resources) create a new revision. App-scope changes (ingress, secret values, registry credentials) apply to all revisions in place.</li>
+        <li><b>Traffic splitting requires multiple-revision mode.</b> In single-revision mode all traffic goes to the latest revision — that is the answer to every blue/green and canary question.</li>
+        <li><b>Scale rules:</b> HTTP (concurrent requests), TCP, or custom via any <b>KEDA scaler</b> — Service Bus queue length, Event Hubs lag, Redis list length, Kafka, cron, Azure Storage queues.</li>
+        <li><code>minReplicas: 0</code> gives scale-to-zero. Note that a container with no ingress and no active scale rule stays at zero — background workers need an explicit KEDA rule to ever wake up.</li>
+        <li>Secrets are defined on the app and referenced from env vars as <code>secretref:mysecret</code>. KEDA scale rules reference them through an <code>auth</code> block, not inline.</li>
+        <li>The <b>environment</b> is the security and networking boundary: shared VNet, shared Log Analytics workspace, and apps inside it reach each other by name.</li>
+        <li>Logs: <code>ContainerAppConsoleLogs_CL</code> is your app's stdout/stderr; <code>ContainerAppSystemLogs_CL</code> is the platform telling you why a revision failed to start.</li>
+    </ul>
+
+    <h3>AKS</h3>
+    <ul class="facts">
+        <li><b>Pod status decoder:</b> <code>ImagePullBackOff</code> = registry auth or wrong tag. <code>CrashLoopBackOff</code> = container starts then exits, read the logs. <code>Pending</code> = scheduler cannot place it, usually resource requests or node selectors. Exit code <b>137</b> = OOMKilled, raise the memory limit.</li>
+        <li><b>Liveness</b> probe failing restarts the container; <b>readiness</b> probe failing only pulls it out of the Service endpoints. A pod flapping in and out of rotation is a readiness problem.</li>
+        <li>Troubleshooting order: <code>kubectl get pods</code> → <code>kubectl describe pod</code> (events, why it will not start) → <code>kubectl logs --previous</code> (why the last one died) → <code>kubectl port-forward</code> to bypass Service/Ingress and prove the container itself answers.</li>
+        <li><b>Workload identity</b> with a federated credential is the current way to give pods an Azure identity. Pod-managed identity is deprecated.</li>
+        <li>Service types: <code>ClusterIP</code> internal only, <code>NodePort</code> via node IPs, <code>LoadBalancer</code> gets an Azure load balancer and public IP.</li>
+    </ul>
+</section>
+
+<section class="cram-section" id="cosmos">
+    <h2>Cosmos DB for NoSQL <span class="w">part of 25–30%</span></h2>
+    <ul class="facts">
+        <li><b>Five consistency levels</b>, strongest first: Strong, Bounded Staleness, <b>Session (default)</b>, Consistent Prefix, Eventual. Reads at Strong and Bounded Staleness cost <b>2× the RUs</b> of the weaker three.</li>
+        <li>A 1 KB point read costs <b>1 RU</b>. Check the real cost with <code>response.RequestCharge</code> (the <code>x-ms-request-charge</code> header).</li>
+        <li><b>429</b> = throttled. The SDK retries automatically; tune with <code>MaxRetryAttemptsOnRateLimitedRequests</code>. Persistent 429s on one logical partition mean a <b>hot partition</b> — fix the partition key, not the throughput.</li>
+        <li><b>Indexing policy:</b> everything is indexed by default. <b>Excluding</b> paths you never filter on is the standard way to cut write RU charges. <b>Composite indexes</b> are required for <code>ORDER BY</code> on two or more properties.</li>
+        <li><b>Vector search:</b> declare a container vector policy (path, <code>float32</code>, dimensions, distance function — cosine / dotproduct / euclidean) plus a vector index: <code>flat</code> (exact, small sets), <code>quantizedFlat</code>, or <code>diskANN</code> (large sets). Query with <code>VectorDistance()</code> in <code>ORDER BY</code>.</li>
+        <li><b>Change feed, latest-version mode</b> (default): inserts and updates only, in partition-key order, and you see only the final state of an item. <b>It does not surface deletes</b> — either use all-versions-and-deletes mode or soft-delete with a TTL.</li>
+        <li>The <b>change feed processor</b> needs a separate <b>lease container</b> to track checkpoints and distribute partitions across instances. Scaling out is just running more instances against the same lease container.</li>
+        <li><code>CosmosClient</code> is thread-safe and expensive to build — register it as a <b>singleton</b>. <b>Direct</b> mode gives lower latency than gateway; <code>AllowBulkExecution</code> for high-volume writes.</li>
+        <li><b>Autoscale</b> throughput scales between 10% and 100% of max and costs 1.5× per RU compared to manual — worth it for spiky loads, not for steady ones.</li>
+        <li>Always pass the partition key in <code>QueryRequestOptions</code> when you know it. A cross-partition fan-out query is the usual cause of a query costing hundreds of RUs.</li>
+    </ul>
+</section>
+
+<section class="cram-section" id="postgres">
+    <h2>PostgreSQL &amp; pgvector <span class="w">part of 25–30%</span></h2>
+    <ul class="facts">
+        <li>Enable the extension in two steps: add <code>vector</code> to the <b>azure.extensions</b> server parameter (allowlist), then run <code>CREATE EXTENSION vector;</code> in the database. Doing only the second fails.</li>
+        <li><b>Distance operators:</b> <code>&lt;-&gt;</code> L2/Euclidean, <code>&lt;=&gt;</code> cosine, <code>&lt;#&gt;</code> negative inner product. The index you build must use the matching operator class (<code>vector_cosine_ops</code> etc.) or the planner will ignore it.</li>
+        <li><b>HNSW vs IVFFlat:</b> HNSW gives better recall and query latency, can be built on an empty table, but uses more memory and builds slower. IVFFlat builds fast and is smaller, but <b>needs representative data present before you create it</b>.</li>
+        <li>Recall/speed knobs at query time: <code>SET hnsw.ef_search = 100;</code> or <code>SET ivfflat.probes = 10;</code>. Higher = better recall, slower query.</li>
+        <li>Build-time knobs: HNSW <code>m</code> and <code>ef_construction</code>; IVFFlat <code>lists</code> (rule of thumb: rows/1000 up to 1M rows, then √rows). Raise <code>maintenance_work_mem</code> to keep an index build in memory.</li>
+        <li><b>Metadata-filtered RAG:</b> a plain <code>WHERE tenant_id = $1</code> alongside a vector <code>ORDER BY</code> can under-return, because the ANN index is searched first. Use a <b>partial index</b> per filter value, or iterative scans, when filters are selective.</li>
+        <li>Vector workloads are memory-bound: prefer <b>memory-optimized</b> SKUs and size RAM so the index fits, otherwise every query hits disk.</li>
+        <li><b>Connection handling:</b> flexible server has <b>PgBouncer built in on port 6432</b> (transaction pooling). Serverless callers that open a connection per invocation should go through it. Each idle Postgres connection still costs memory.</li>
+        <li><code>EXPLAIN ANALYZE</code> is how you prove the vector index is being used — a <code>Seq Scan</code> means it is not.</li>
+        <li><code>halfvec</code> halves index memory at a small recall cost; <code>pg_diskann</code> is the Azure extension for very large vector sets.</li>
+    </ul>
+</section>
+
+<section class="cram-section" id="redis">
+    <h2>Azure Managed Redis <span class="w">part of 25–30%</span></h2>
+    <ul class="facts">
+        <li><b>Tiers:</b> Memory Optimized (most RAM per vCPU), Balanced, Compute Optimized (highest throughput, best for vector search), Flash Optimized (NVMe, large cold datasets).</li>
+        <li><b>Cache-aside:</b> read cache → miss → read source → write to cache with a TTL. Always set expiry; <code>SET key val EX 300</code> in one call beats <code>SET</code> then <code>EXPIRE</code>.</li>
+        <li><b>Invalidate on write.</b> Deleting the key on update is safer than updating it — the next read repopulates it, and you cannot leave a stale value behind on a failed write.</li>
+        <li><b>Eviction policies:</b> <code>volatile-lru</code> (default-ish, evicts only keys with a TTL), <code>allkeys-lru</code> for a pure cache, <code>noeviction</code> makes writes fail once memory is full. Keys vanishing early → wrong eviction policy or too little memory.</li>
+        <li><b>Vector search</b> uses the RediSearch module: <code>FT.CREATE</code> with a <code>VECTOR HNSW</code> or <code>FLAT</code> field (<code>TYPE FLOAT32</code>, <code>DIM</code>, <code>DISTANCE_METRIC COSINE</code>), then a KNN query <code>*=&gt;[KNN 5 @@vec $blob AS score]</code>.</li>
+        <li>Never run <code>KEYS</code> against a production cache — it blocks the server. Use <code>SCAN</code>.</li>
+        <li>Prefer Microsoft Entra ID auth over access keys; use one multiplexed connection (a singleton <code>ConnectionMultiplexer</code>) rather than a connection per request.</li>
+    </ul>
+</section>
+
+<section class="cram-section" id="messaging">
+    <h2>Service Bus &amp; Event Grid <span class="w">part of 20–25%</span></h2>
+
+    <h3>Service Bus</h3>
+    <ul class="facts">
+        <li><b>Four ways into the dead-letter queue:</b> delivery count exceeds <code>MaxDeliveryCount</code> (default <b>10</b>), the message TTL expires, a subscription filter throws, or the app calls <code>DeadLetterMessageAsync</code> explicitly. Read it at <code>&lt;queue&gt;/$DeadLetterQueue</code>.</li>
+        <li><b>PeekLock</b> (default) = at-least-once: complete, abandon, defer or dead-letter it yourself. <b>ReceiveAndDelete</b> = at-most-once, message is gone even if you crash.</li>
+        <li>Lock duration maxes at <b>5 minutes</b>. Long-running handlers must call <code>RenewMessageLockAsync</code> (or let the processor auto-renew) or the message reappears and gets processed twice.</li>
+        <li><b>Sessions</b> are the only way to get FIFO ordering and per-entity state. Set <code>SessionId</code> on send and use a session processor to receive.</li>
+        <li><b>Duplicate detection</b> keys on <code>MessageId</code> within a configured window — you must set MessageId yourself for it to do anything.</li>
+        <li><b>Subscription filters:</b> SQL filters (expressions over properties), correlation filters (cheapest, exact match on system/user properties), and boolean true/false.</li>
+        <li>Message size: <b>256 KB</b> Standard, <b>100 MB</b> Premium. Large payloads go to Blob Storage with a claim-check pointer in the message.</li>
+        <li>Throughput knobs on the processor: <code>MaxConcurrentCalls</code> and <code>PrefetchCount</code>.</li>
+    </ul>
+
+    <h3>Event Grid</h3>
+    <ul class="facts">
+        <li><b>Delivery is at-least-once, so handlers must be idempotent.</b> Retries use exponential backoff, up to <b>30 attempts</b> over a <b>24-hour</b> TTL by default.</li>
+        <li><b>Dead-lettering goes to a Storage blob container</b> and must be configured explicitly — without it, undeliverable events are dropped silently.</li>
+        <li><b>Filtering:</b> event type, subject begins-with/ends-with, and advanced filters on any payload field (<code>NumberGreaterThan</code>, <code>StringContains</code>, …). Filter at the subscription, not in your handler.</li>
+        <li><b>Webhook endpoints must complete a validation handshake</b> — echo back the <code>validationCode</code> or call the <code>validationUrl</code>. Azure services as handlers (Functions with the Event Grid trigger, Service Bus, storage queues) skip this.</li>
+        <li>Schemas: Event Grid schema or <b>CloudEvents 1.0</b>. CloudEvents is the interoperable choice.</li>
+        <li><b>Choosing between them:</b> Event Grid = discrete reactive notifications ("a blob appeared"). Event Hubs = high-throughput telemetry streams with replay. Service Bus = ordered, transactional business messages that must not be lost.</li>
+    </ul>
+</section>
+
+<section class="cram-section" id="functions">
+    <h2>Azure Functions <span class="w">part of 20–25%</span></h2>
+    <ul class="facts">
+        <li><b>A function has exactly one trigger</b> and any number of input/output bindings.</li>
+        <li><b>Timeouts:</b> Consumption defaults to 5 minutes, hard cap <b>10 minutes</b>. Premium and Flex Consumption default to 30 and can go far higher. "Job runs longer than 10 minutes" → not Consumption, or use Durable Functions.</li>
+        <li><b>Premium / Flex</b> buy you VNet integration, pre-warmed instances (no cold start) and longer runs. Cold start on Consumption is the classic reason to move up.</li>
+        <li><b>Timer triggers use six-field NCRONTAB</b> starting with <b>seconds</b>: <code>0 */5 * * * *</code> is every five minutes, not every five seconds.</li>
+        <li><b>HTTP auth levels:</b> <code>anonymous</code>, <code>function</code> (function or host key), <code>admin</code> (master key). Keys are not identity — put Entra ID or APIM in front for real auth.</li>
+        <li><b>Identity-based connections</b> replace connection strings: <code>ServiceBusConn__fullyQualifiedNamespace</code>, <code>Storage__accountName</code>, <code>Cosmos__accountEndpoint</code>, plus a managed identity with the right data-plane role.</li>
+        <li><code>local.settings.json</code> is local-only and never deployed. <code>host.json</code> holds host-wide config (batch sizes, retries, timeout) and does ship.</li>
+        <li><b>Durable Functions patterns:</b> function chaining, fan-out/fan-in, async HTTP API, monitor, human interaction, aggregator.</li>
+        <li><b>Orchestrator code must be deterministic</b> — it is replayed. No <code>DateTime.Now</code> (use <code>context.CurrentUtcDateTime</code>), no random, no I/O, no direct HTTP. Do that work in activity functions.</li>
+        <li>For .NET, the <b>isolated worker model</b> is the supported one. Deploy with <code>WEBSITE_RUN_FROM_PACKAGE=1</code> for an atomic, read-only deployment.</li>
+    </ul>
+</section>
+
+<section class="cram-section" id="security">
+    <h2>Key Vault &amp; App Configuration <span class="w">part of 20–25%</span></h2>
+    <ul class="facts">
+        <li><b>Key Vault RBAC over access policies.</b> <code>Key Vault Secrets User</code> = get/list secrets, which is all an app needs. <code>Secrets Officer</code> can write. Access policies are the legacy model.</li>
+        <li><b>Soft delete is always on</b> and cannot be turned off. <b>Purge protection</b> is optional and, once enabled, cannot be turned off — a deleted vault or secret is unrecoverable-by-anyone only after the retention window.</li>
+        <li>Secrets are <b>versioned</b>. Omit the version in the URI to always get the current one — that is what makes rotation transparent to callers.</li>
+        <li><b>Rotation:</b> set a rotation policy, and Key Vault raises <code>SecretNearExpiry</code> through Event Grid; a Function handles the event and writes the new version.</li>
+        <li><b>Cache secrets in the client.</b> Key Vault is throttled per vault; fetching a secret on every request is a documented anti-pattern.</li>
+        <li><code>DefaultAzureCredential</code> walks environment → workload identity → managed identity → Azure CLI, so the same code works locally and in Azure. With a <b>user-assigned</b> identity you must pass the client id.</li>
+        <li><b>App Configuration</b> holds non-secret config; <b>labels</b> are how you separate dev/test/prod values for the same key. It can also store <b>Key Vault references</b> so apps read one place.</li>
+        <li><b>Dynamic refresh needs a sentinel key:</b> register one key for refresh with a cache expiry, update it last after changing everything else, and the whole configuration reloads at once.</li>
+        <li><b>Feature flags</b> live in App Configuration and are read through <code>IFeatureManager.IsEnabledAsync</code>. Filters: percentage, time window, targeting.</li>
+    </ul>
+</section>
+
+<section class="cram-section" id="observability">
+    <h2>OpenTelemetry &amp; KQL <span class="w">part of 20–25%</span></h2>
+    <ul class="facts">
+        <li>Wire up with the Azure Monitor distro: <code>builder.Services.AddOpenTelemetry().UseAzureMonitor();</code> plus <code>APPLICATIONINSIGHTS_CONNECTION_STRING</code>. Instrumentation keys are retired.</li>
+        <li><b>Three signals:</b> traces (spans), metrics, logs. A <b>trace</b> is one end-to-end operation; a <b>span</b> is one unit of work inside it.</li>
+        <li><b>Context propagates over the W3C <code>traceparent</code> header.</b> If a downstream service shows up as a separate trace, propagation is broken — usually a hand-rolled HttpClient or a queue hop that did not carry the context.</li>
+        <li>Custom spans in .NET come from an <code>ActivitySource</code>; the resource attribute <code>service.name</code> becomes <code>cloud_RoleName</code> in Application Insights, which is what splits the app map.</li>
+        <li><b>Sampling</b> is the lever for cost. Fixed-rate sampling keeps whole traces together; head sampling decides at the start of the trace.</li>
+        <li><b>KQL shape:</b> <code>Table | where … | summarize … | order by … | take …</code>. Put the <b>time filter first</b> — it is the single biggest performance lever.</li>
+        <li>Bucketing over time: <code>summarize count() by bin(timestamp, 5m)</code>. Failures: <code>requests | where success == false</code>. Correlate a single operation across services with <code>where operation_Id == "…"</code>.</li>
+        <li><code>has</code> is term-indexed and fast; <code>contains</code> is a substring scan and slow. Avoid bare <code>search</code> across all tables.</li>
+        <li>Custom properties arrive as dynamic: <code>extend tenant = tostring(customDimensions.tenantId)</code>.</li>
+        <li>Workspace-based Application Insights tables: <code>AppRequests</code>, <code>AppDependencies</code>, <code>AppExceptions</code>, <code>AppTraces</code>. Container Apps: <code>ContainerAppConsoleLogs_CL</code>. AKS: <code>ContainerLogV2</code>, <code>KubeEvents</code>.</li>
+    </ul>
+</section>
+
+<section class="cram-section" id="traps">
+    <h2>Common traps <span class="w">read these twice</span></h2>
+    <ul class="facts">
+        <li><b>Cosmos DB control-plane RBAC does not grant data access.</b> "Cosmos DB Account Reader" or even Owner will not let you read documents — you need a <b>data-plane</b> role assignment created with <code>az cosmosdb sql role assignment create</code>. Highest-value trick question on the exam.</li>
+        <li><b>Change feed does not see deletes</b> in the default mode. Soft-delete with TTL, or use all-versions-and-deletes.</li>
+        <li><b>Traffic splitting silently does nothing in single-revision mode</b> on Container Apps.</li>
+        <li><b>An empty pgvector table + IVFFlat = a useless index.</b> Load data first, or use HNSW.</li>
+        <li><b>Event Grid drops undeliverable events</b> unless you configured a dead-letter blob container.</li>
+        <li><b>Setting <code>MessageId</code> is on you</b> — duplicate detection does nothing without it.</li>
+        <li><b>NCRONTAB has six fields.</b> A five-field cron expression copied from Linux will not mean what you think.</li>
+        <li><b>Reading a Key Vault secret per request will get you throttled.</b> Cache it.</li>
+        <li><b>A missing <code>WEBSITES_PORT</code></b> is the reason a perfectly good container times out on App Service.</li>
+        <li><b>Strong consistency doubles your read RUs</b> — if a question asks how to cut cost without changing the partition key, look at the consistency level and the indexing policy.</li>
+    </ul>
+</section>

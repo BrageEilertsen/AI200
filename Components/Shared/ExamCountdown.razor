@@ -1,0 +1,43 @@
+@rendermode InteractiveServer
+@inject ProgressStore Progress
+
+<div class="countdown">
+    @if (Progress.DaysUntilExam is { } days)
+    {
+        <div class="countdown-row">
+            <span class="countdown-days" style="color:@Colour(days)">@Math.Abs(days)</span>
+            <span class="countdown-label">
+                @(days switch
+                {
+                    < 0 => "days ago",
+                    0 => "today",
+                    1 => "day to go",
+                    _ => "days to go"
+                })
+            </span>
+        </div>
+        <div class="xs faint" style="margin-top:2px">@Progress.ExamDate!.Value.ToString("dddd d MMMM")</div>
+    }
+    else
+    {
+        <div class="countdown-label">Exam date</div>
+    }
+
+    <input type="date" value="@Progress.ExamDate?.ToString("yyyy-MM-dd")" @onchange="OnDateChanged" />
+</div>
+
+@code {
+    private void OnDateChanged(ChangeEventArgs e)
+    {
+        var raw = e.Value?.ToString();
+        Progress.SetExamDate(DateOnly.TryParse(raw, out var parsed) ? parsed : null);
+    }
+
+    private static string Colour(int days) => days switch
+    {
+        < 0 => "var(--text-3)",
+        <= 2 => "var(--bad)",
+        <= 7 => "var(--warn)",
+        _ => "var(--text)"
+    };
+}

@@ -1,0 +1,138 @@
+@page "/browse"
+@rendermode InteractiveServer
+@inject QuestionBank Bank
+@inject ProgressStore Progress
+
+<PageTitle>Browse questions — AI-200 Trainer</PageTitle>
+
+<div class="page-head">
+    <div class="eyebrow">Question bank</div>
+    <h1>Browse and search</h1>
+    <p class="lede">
+        The whole bank with answers and explanations on tap. Good for reading through one
+        objective at a time rather than drilling at random.
+    </p>
+</div>
+
+<div class="card section">
+    <div class="row" style="margin-bottom:12px">
+        @foreach (var domain in ExamDomains.All)
+        {
+            var on = _domains.Contains(domain.Key);
+            <button type="button" class="chip @(on ? "on" : "")" @onclick="() => ToggleDomain(domain.Key)">
+                <span class="dot" style="background-color:@domain.Accent"></span>@domain.ShortName
+            </button>
+        }
+        <span class="spacer"></span>
+        <label class="check">
+            <input type="checkbox" checked="@_missedOnly" @onchange="e => _missedOnly = (bool)e.Value!" />
+            Only ones I have got wrong
+        </label>
+    </div>
+
+    <input type="search" placeholder="Search stems, options, explanations and tags…"
+           value="@_search" @oninput="OnSearchInput" />
+
+    <div class="row xs faint" style="margin-top:10px">
+        <span class="num">@Filtered.Count of @Bank.All.Count questions</span>
+        <span class="spacer"></span>
+        <button class="btn ghost sm" @onclick="() => _allRevealed = !_allRevealed">
+            @(_allRevealed ? "Hide all answers" : "Reveal all answers")
+        </button>
+    </div>
+</div>
+
+@if (Filtered.Count == 0)
+{
+    <div class="empty">Nothing matches those filters.</div>
+}
+else
+{
+    @foreach (var question in Filtered)
+    {
+        var revealed = _allRevealed || _revealed.Contains(question.Id);
+        var stat = Progress.StatFor(question.Id);
+
+        <div class="card" style="margin-bottom:12px">
+            <QuestionView Question="question" Selected="@(revealed ? question.Correct : [])" Revealed="revealed" />
+
+            <div class="row between" style="margin-top:14px">
+                <span class="xs faint">
+                    @if (stat.Seen == 0)
+                    {
+                        <text>Never attempted</text>
+                    }
+                    else
+                    {
+                        <text>Attempted @stat.Seen× · @stat.Correct correct · last one @(stat.LastWasCorrect ? "right" : "wrong")</text>
+                    }
+                </span>
+                @if (!_allRevealed)
+                {
+                    <button class="btn sm" @onclick="() => ToggleReveal(question.Id)">
+                        @(revealed ? "Hide answer" : "Show answer")
+                    </button>
+                }
+            </div>
+        </div>
+    }
+}
+
+@code {
+    private readonly HashSet<string> _domains = [];
+    private readonly HashSet<string> _revealed = [];
+    private string _search = "";
+    private bool _missedOnly;
+    private bool _allRevealed;
+
+    private List<Question> Filtered
+    {
+        get
+        {
+            IEnumerable<Question> query = Bank.All;
+
+            if (_domains.Count > 0)
+            {
+                query = query.Where(q => _domains.Contains(q.Domain));
+            }
+
+            if (_missedOnly)
+            {
+                query = query.Where(q =>
+                {
+                    var stat = Progress.StatFor(q.Id);
+                    return stat.Seen > 0 && stat.Correct < stat.Seen;
+                });
+            }
+
+            if (!string.IsNullOrWhiteSpace(_search))
+            {
+                var needle = _search.Trim();
+                query = query.Where(q =>
+                    Contains(q.Stem, needle)
+                    || Contains(q.Explanation, needle)
+                    || Contains(q.Objective, needle)
+                    || Contains(q.Code, needle)
+                    || q.Tags.Any(t => Contains(t, needle))
+                    || q.Options.Any(o => Contains(o.Text, needle)));
+            }
+
+            return query.OrderBy(q => q.Domain).ThenBy(q => q.Objective).ThenBy(q => q.Id).ToList();
+        }
+    }
+
+    private void OnSearchInput(ChangeEventArgs e) => _search = e.Value?.ToString() ?? string.Empty;
+
+    private static bool Contains(string? haystack, string needle) =>
+        haystack is not null && haystack.Contains(needle, StringComparison.OrdinalIgnoreCase);
+
+    private void ToggleDomain(string key)
+    {
+        if (!_domains.Remove(key)) _domains.Add(key);
+    }
+
+    private void ToggleReveal(string id)
+    {
+        if (!_revealed.Remove(id)) _revealed.Add(id);
+    }
+}

@@ -1,0 +1,33 @@
+@* Activity-style progress ring. Stroke is drawn from a dash offset so it animates
+   smoothly when the value changes.
+
+   Every numeric attribute goes through Css.Num — a locale that uses a comma as the
+   decimal separator would otherwise emit r="27,5" and the circle would not render. *@
+
+<svg class="ring" width="@Size" height="@Size" viewBox="0 0 @Size @Size" aria-hidden="true">
+    <circle class="track"
+            cx="@Css.Num(Centre)" cy="@Css.Num(Centre)" r="@Css.Num(Radius)"
+            stroke-width="@Thickness" />
+    <circle class="value"
+            cx="@Css.Num(Centre)" cy="@Css.Num(Centre)" r="@Css.Num(Radius)"
+            stroke="@Colour"
+            stroke-width="@Thickness"
+            stroke-dasharray="@Css.Num(Circumference)"
+            stroke-dashoffset="@Css.Num(Offset)" />
+</svg>
+
+@code {
+    /// <summary>Fill level, 0–100. Values outside the range are clamped.</summary>
+    [Parameter] public double Percent { get; set; }
+
+    [Parameter] public int Size { get; set; } = 62;
+
+    [Parameter] public int Thickness { get; set; } = 7;
+
+    [Parameter] public string Colour { get; set; } = "var(--accent)";
+
+    private double Centre => Size / 2.0;
+    private double Radius => (Size - Thickness) / 2.0;
+    private double Circumference => 2 * Math.PI * Radius;
+    private double Offset => Circumference * (1 - Math.Clamp(Percent, 0, 100) / 100.0);
+}

@@ -1,0 +1,241 @@
+@page "/stats"
+@rendermode InteractiveServer
+@inject QuestionBank Bank
+@inject ProgressStore Progress
+
+<PageTitle>Progress — AI-200 Trainer</PageTitle>
+
+<div class="page-head">
+    <div class="eyebrow">Progress</div>
+    <h1>Where you stand</h1>
+    <p class="lede">
+        Lifetime accuracy per objective and topic, so the next practice set can be pointed at
+        whatever is actually costing you marks.
+    </p>
+</div>
+
+@{
+    var coverage = Progress.Coverage(Bank.All);
+    var overall = coverage.Seen == 0 ? 0 : 100.0 * coverage.Correct / coverage.Seen;
+    var exams = Progress.Sessions.Where(s => s.Mode == SessionMode.Exam).ToList();
+}
+
+@{
+    var coveragePercent = Bank.All.Count == 0 ? 0 : 100.0 * (Bank.All.Count - coverage.Unseen) / Bank.All.Count;
+}
+
+<div class="grid cols-4 section">
+    <div class="stat-card">
+        <div class="stat-body">
+            <div class="stat-label">Answers recorded</div>
+            <div class="stat-value">@coverage.Seen</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <Ring Percent="overall" Colour="@Colour(overall, coverage.Seen)" />
+        <div class="stat-body">
+            <div class="stat-label">Lifetime accuracy</div>
+            <div class="stat-value" style="color:@Colour(overall, coverage.Seen)">
+                @if (coverage.Seen == 0)
+                {
+                    <text>—</text>
+                }
+                else
+                {
+                    @($"{overall:F0}")<span class="unit">%</span>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <Ring Percent="coveragePercent" Colour="var(--accent)" />
+        <div class="stat-body">
+            <div class="stat-label">Bank coverage</div>
+            <div class="stat-value">@($"{coveragePercent:F0}")<span class="unit">%</span></div>
+            <div class="stat-note">@coverage.Unseen never seen</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-body">
+            <div class="stat-label">Mocks sat</div>
+            <div class="stat-value">@exams.Count</div>
+            @if (exams.Count > 0)
+            {
+                <div class="stat-note">best @exams.Max(e => e.ScaledScore)</div>
+            }
+        </div>
+    </div>
+</div>
+
+@if (exams.Count > 0)
+{
+    <div class="card section">
+        <div class="row between" style="margin-bottom:18px">
+            <h2>Mock exam trend</h2>
+            <span class="xs faint">Estimated scaled score · last @Math.Min(exams.Count, 20)</span>
+        </div>
+
+        <div class="trend">
+            <div class="trend-line" style="bottom:@Css.Px(700 / 1000.0 * 150)"><span>700 pass</span></div>
+            @foreach (var exam in exams.TakeLast(20))
+            {
+                var height = Math.Max(4, exam.ScaledScore / 1000.0 * 150);
+                var colour = exam.ScaledScore >= 700 ? "var(--good)" : "var(--bad)";
+                <div class="trend-bar"
+                     title="@exam.FinishedAt.ToString("d MMM HH:mm") — @exam.ScaledScore (@exam.Correct of @exam.Total)"
+                     style="height:@Css.Px(height);background-color:@colour"></div>
+            }
+        </div>
+        <div class="row between xs faint" style="margin-top:8px">
+            <span>Oldest</span>
+            <span>Most recent</span>
+        </div>
+    </div>
+}
+
+<div class="card section">
+    <h2>By objective</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Skill area</th>
+                <th>Objective</th>
+                <th class="nowrap" style="width:70px">Attempts</th>
+                <th class="nowrap" style="width:150px">Accuracy</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in ObjectiveRows())
+            {
+                <tr>
+                    <td class="nowrap">
+                        <span class="swatch" style="background-color:@row.Accent;margin-right:7px"></span>
+                        <span class="xs">@row.DomainName</span>
+                    </td>
+                    <td style="color:var(--text)">@row.Objective</td>
+                    <td class="nowrap faint num">@row.Attempts</td>
+                    <td>
+                        @if (row.Attempts == 0)
+                        {
+                            <span class="faint xs">not started</span>
+                        }
+                        else
+                        {
+                            <div class="row" style="gap:9px;flex-wrap:nowrap">
+                                <div class="bar" style="flex:1;min-width:50px">
+                                    <span style="width:@Css.Pct(row.Accuracy);background-color:@Colour(row.Accuracy, row.Attempts)"></span>
+                                </div>
+                                <span class="xs nowrap num" style="color:@Colour(row.Accuracy, row.Attempts)">@($"{row.Accuracy:F0}%")</span>
+                            </div>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@{
+    var weakTags = TagRows().Where(t => t.Attempts >= 2 && t.Accuracy < 75).Take(24).ToList();
+}
+@if (weakTags.Count > 0)
+{
+    <div class="card section">
+        <h2>Topics to hit before the exam</h2>
+        <p class="small muted">Below 75% with at least two attempts, weakest first.</p>
+        <div class="row tight">
+            @foreach (var tag in weakTags)
+            {
+                <span class="chip static" style="border-color:@Colour(tag.Accuracy, tag.Attempts);color:@Colour(tag.Accuracy, tag.Attempts)">
+                    <span class="mono">@tag.Tag</span>
+                    <span class="faint num">@($"{tag.Accuracy:F0}%")</span>
+                </span>
+            }
+        </div>
+    </div>
+}
+
+<div class="card">
+    <div class="row between">
+        <div>
+            <h3>Stored progress</h3>
+            <span class="xs faint mono">@Progress.FilePath</span>
+        </div>
+        @if (_confirmReset)
+        {
+            <span class="row">
+                <span class="small">Wipe all answer history?</span>
+                <button class="btn ghost sm" @onclick="() => _confirmReset = false">Cancel</button>
+                <button class="btn danger sm" @onclick="ResetProgress">Yes, delete</button>
+            </span>
+        }
+        else
+        {
+            <button class="btn danger sm" @onclick="() => _confirmReset = true">Reset progress</button>
+        }
+    </div>
+</div>
+
+@code {
+    private bool _confirmReset;
+
+    private record ObjectiveRow(string DomainName, string Accent, string Objective, int Attempts, double Accuracy);
+    private record TagRow(string Tag, int Attempts, double Accuracy);
+
+    private IEnumerable<ObjectiveRow> ObjectiveRows()
+    {
+        var rows = new List<ObjectiveRow>();
+
+        foreach (var domain in ExamDomains.All)
+        {
+            foreach (var objective in Bank.ObjectivesFor(domain.Key))
+            {
+                var questions = Bank.All.Where(q => q.Domain == domain.Key && q.Objective == objective);
+                var coverage = Progress.Coverage(questions);
+                var accuracy = coverage.Seen == 0 ? 0 : 100.0 * coverage.Correct / coverage.Seen;
+                rows.Add(new ObjectiveRow(domain.ShortName, domain.Accent, objective, coverage.Seen, accuracy));
+            }
+        }
+
+        // Weakest attempted objectives first, then anything untouched.
+        return rows
+            .OrderBy(r => r.Attempts == 0)
+            .ThenBy(r => r.Accuracy);
+    }
+
+    private IEnumerable<TagRow> TagRows()
+    {
+        var totals = new Dictionary<string, (int Seen, int Correct)>();
+
+        foreach (var question in Bank.All)
+        {
+            var stat = Progress.StatFor(question.Id);
+            if (stat.Seen == 0) continue;
+
+            foreach (var tag in question.Tags)
+            {
+                var (seen, correct) = totals.GetValueOrDefault(tag);
+                totals[tag] = (seen + stat.Seen, correct + stat.Correct);
+            }
+        }
+
+        return totals
+            .Select(kv => new TagRow(kv.Key, kv.Value.Seen, 100.0 * kv.Value.Correct / kv.Value.Seen))
+            .OrderBy(t => t.Accuracy);
+    }
+
+    private static string Colour(double percent, int attempts) => attempts == 0
+        ? "var(--text-3)"
+        : percent switch
+        {
+            >= 80 => "var(--good)",
+            >= 65 => "var(--warn)",
+            _ => "var(--bad)"
+        };
+
+    private void ResetProgress()
+    {
+        Progress.Reset();
+        _confirmReset = false;
+    }
+}

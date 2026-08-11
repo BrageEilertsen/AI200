@@ -1,0 +1,356 @@
+@page "/exam"
+@rendermode InteractiveServer
+@implements IDisposable
+@inject QuestionBank Bank
+@inject ProgressStore Progress
+@inject SessionHost Host
+
+<PageTitle>Exam simulation — AI-200 Trainer</PageTitle>
+
+<div @ref="_root" tabindex="0" @onkeydown="HandleKey" style="outline:none">
+
+@if (_session is null || _session.Mode != SessionMode.Exam)
+{
+    <div class="page-head">
+        <div class="eyebrow">Exam simulation</div>
+        <h1>Sit a full mock</h1>
+        <p class="lede">
+            Questions are drawn across the four skill areas in the published weightings, the clock
+            runs, and nothing is graded until you submit. Sit one cold to find out where you
+            actually are.
+        </p>
+    </div>
+
+    <div class="card section">
+        <h3>Questions</h3>
+        <div class="segmented" style="margin-bottom:24px">
+            @foreach (var size in new[] { 40, 50, 60 })
+            {
+                <button type="button" class="segment @(_count == size ? "on" : "")" @onclick="() => SetCount(size)">@size</button>
+            }
+        </div>
+
+        <h3>Time limit</h3>
+        <div class="row" style="margin-bottom:24px">
+            <div class="segmented">
+                @foreach (var minutes in new[] { 90, 110, 120 })
+                {
+                    <button type="button" class="segment @(_minutes == minutes ? "on" : "")" @onclick="() => _minutes = minutes">
+                        @minutes min
+                    </button>
+                }
+            </div>
+            <span class="xs faint num">@($"{(double)_minutes / _count:F1}") min per question</span>
+        </div>
+
+        <label class="check">
+            <input type="checkbox" checked="@_focusWeak" @onchange="e => _focusWeak = (bool)e.Value!" />
+            <span>
+                <b style="color:var(--text);font-weight:550">Bias toward past mistakes</b><br />
+                Draw more heavily from questions you have missed before
+            </span>
+        </label>
+    </div>
+
+    <div class="card section">
+        <h3 style="margin-bottom:16px">Composition</h3>
+        <table>
+            <thead>
+                <tr><th>Skill area</th><th style="width:70px">Weight</th><th style="width:90px">Questions</th><th></th></tr>
+            </thead>
+            <tbody>
+                @foreach (var (key, want) in ExamDomains.Allocate(_count))
+                {
+                    var domain = ExamDomains.Get(key);
+                    var have = Bank.CountFor(key);
+                    <tr>
+                        <td style="color:var(--text)">
+                            <span class="swatch" style="background-color:@domain.Accent;margin-right:8px"></span>
+                            @domain.Name
+                        </td>
+                        <td class="nowrap xs faint mono">@domain.WeightLabel</td>
+                        <td class="nowrap num" style="color:var(--text)">@Math.Min(want, have)</td>
+                        <td class="nowrap xs" style="color:var(--warn)">
+                            @(have < want ? $"bank only has {have}" : "")
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <button class="btn primary lg" disabled="@(Bank.All.Count == 0)" @onclick="Start">
+        Begin @_count-question mock · @_minutes min
+    </button>
+
+    @if (_pastExams.Count > 0)
+    {
+        <h2 style="margin:32px 0 12px">Previous mocks</h2>
+        <div class="card">
+            <table>
+                <thead>
+                    <tr><th>When</th><th>Score</th><th>Scaled</th><th>Time</th><th></th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var record in _pastExams.AsEnumerable().Reverse().Take(10))
+                    {
+                        <tr>
+                            <td class="nowrap">@record.FinishedAt.ToString("d MMM HH:mm")</td>
+                            <td class="nowrap num">@record.Correct / @record.Total</td>
+                            <td class="nowrap num" style="color:@(record.ScaledScore >= 700 ? "var(--good)" : "var(--bad)")">
+                                <b>@record.ScaledScore</b>
+                            </td>
+                            <td class="nowrap faint num">@($"{record.ElapsedMinutes:F0}") min</td>
+                            <td class="nowrap xs">@(record.ScaledScore >= 700 ? "Pass" : "Below cut")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+}
+else if (!_session.Finished)
+{
+    var item = _session.Current;
+    var remaining = _session.Remaining ?? TimeSpan.Zero;
+    var low = remaining < TimeSpan.FromMinutes(10);
+
+    <div class="row between" style="margin-bottom:14px">
+        <div>
+            <div class="eyebrow" style="margin-bottom:2px">Exam simulation</div>
+            <b>Question @(_session.Index + 1) <span class="faint">of @_session.Total</span></b>
+            <span class="xs faint num" style="margin-left:8px">
+                @_session.AnsweredCount answered · @_session.FlaggedCount flagged
+            </span>
+        </div>
+        <div class="row">
+            <span class="timer @(low ? "low" : "")">
+                @($"{(int)remaining.TotalMinutes:00}:{remaining.Seconds:00}")
+            </span>
+            <button class="btn" @onclick="() => _confirmSubmit = true">Submit exam</button>
+        </div>
+    </div>
+
+    @if (_confirmSubmit)
+    {
+        var unanswered = _session.Total - _session.AnsweredCount;
+        <div class="banner warn">
+            <div class="row between">
+                <span>
+                    Submit and grade now?
+                    @if (unanswered > 0)
+                    {
+                        <b> @unanswered question(s) are still unanswered</b>
+
+                        <text> and will be marked wrong.</text>
+                    }
+                </span>
+                <span class="row">
+                    <button class="btn ghost sm" @onclick="() => _confirmSubmit = false">Keep going</button>
+                    <button class="btn primary sm" @onclick="Submit">Submit</button>
+                </span>
+            </div>
+        </div>
+    }
+
+    <div class="card" style="margin-bottom:12px">
+        <QuestionView Question="item.Question" Selected="item.Selected" Revealed="false" OnToggle="Toggle" />
+
+        <div class="row between" style="margin-top:18px">
+            <div class="kbd-hint">
+                <kbd>1</kbd>–<kbd>@item.Question.Options.Count</kbd> select
+                <span class="q-sep">·</span>
+                <kbd>←</kbd><kbd>→</kbd> move
+                <span class="q-sep">·</span>
+                <kbd>F</kbd> flag
+            </div>
+            <div class="row tight">
+                <button class="btn @(item.Flagged ? "primary" : "")" @onclick="ToggleFlag">
+                    @(item.Flagged ? "★ Flagged" : "☆ Flag")
+                </button>
+                <button class="btn" disabled="@(!_session.CanGoPrevious)" @onclick="Previous">← Previous</button>
+                <button class="btn primary" disabled="@(!_session.CanGoNext)" @onclick="Next">Next →</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="row between" style="margin-bottom:12px">
+            <h3>Navigator</h3>
+            <span class="xs faint">Filled = answered · dot = flagged</span>
+        </div>
+        <div class="navigator">
+            @for (var i = 0; i < _session.Total; i++)
+            {
+                var index = i;
+                var target = _session.Items[index];
+                var css = "nav-sq";
+                if (target.Answered) css += " done";
+                if (target.Flagged) css += " flag";
+                if (index == _session.Index) css += " here";
+
+                <button type="button" class="@css" @onclick="() => GoTo(index)">@(index + 1)</button>
+            }
+        </div>
+    </div>
+}
+else
+{
+    <ResultsView Session="_session" OnRestart="Reset" />
+}
+
+</div>
+
+@code {
+    private StudySession? _session;
+    private ElementReference _root;
+    private System.Threading.Timer? _ticker;
+    private int _count = 50;
+    private int _minutes = 110;
+    private bool _focusWeak;
+    private bool _confirmSubmit;
+    private bool _shouldFocus;
+    private List<SessionRecord> _pastExams = [];
+
+    protected override void OnInitialized()
+    {
+        if (Host.Current is { Mode: SessionMode.Exam } existing)
+        {
+            _session = existing;
+            if (!existing.Finished) StartTicker();
+        }
+
+        _pastExams = Progress.Sessions.Where(s => s.Mode == SessionMode.Exam).ToList();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_shouldFocus || firstRender)
+        {
+            _shouldFocus = false;
+            try { await _root.FocusAsync(); } catch { /* not rendered yet */ }
+        }
+    }
+
+    private void SetCount(int count)
+    {
+        _count = count;
+        // Keep the per-question pace sensible when the length changes.
+        _minutes = count switch { 40 => 90, 60 => 120, _ => 110 };
+    }
+
+    private void Start()
+    {
+        _session = Host.StartExam(_count, _minutes, _focusWeak);
+        _confirmSubmit = false;
+        StartTicker();
+        _shouldFocus = true;
+    }
+
+    private void StartTicker()
+    {
+        _ticker?.Dispose();
+        _ticker = new System.Threading.Timer(_ =>
+        {
+            _ = InvokeAsync(() =>
+            {
+                if (_session is { Finished: false, TimeExpired: true })
+                {
+                    Submit();
+                }
+                StateHasChanged();
+            });
+        }, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
+    }
+
+    private void StopTicker()
+    {
+        _ticker?.Dispose();
+        _ticker = null;
+    }
+
+    private void Toggle(string optionId)
+    {
+        _session?.Current.Toggle(optionId);
+        _shouldFocus = true;
+    }
+
+    private void ToggleFlag()
+    {
+        if (_session is { } session) session.Current.Flagged = !session.Current.Flagged;
+        _shouldFocus = true;
+    }
+
+    private void Next()
+    {
+        if (_session is { CanGoNext: true } session) session.Index++;
+        _shouldFocus = true;
+    }
+
+    private void Previous()
+    {
+        if (_session is { CanGoPrevious: true } session) session.Index--;
+        _shouldFocus = true;
+    }
+
+    private void GoTo(int index)
+    {
+        if (_session is { } session) session.Index = index;
+        _shouldFocus = true;
+    }
+
+    private void Submit()
+    {
+        StopTicker();
+        Host.Finish();
+        _confirmSubmit = false;
+        _pastExams = Progress.Sessions.Where(s => s.Mode == SessionMode.Exam).ToList();
+    }
+
+    private void Reset()
+    {
+        StopTicker();
+        Host.Clear();
+        _session = null;
+        _pastExams = Progress.Sessions.Where(s => s.Mode == SessionMode.Exam).ToList();
+    }
+
+    private void HandleKey(KeyboardEventArgs e)
+    {
+        if (_session is not { Finished: false } session) return;
+
+        switch (e.Key)
+        {
+            case "ArrowRight" or "Enter":
+                Next();
+                return;
+            case "ArrowLeft":
+                Previous();
+                return;
+            case "f" or "F":
+                ToggleFlag();
+                return;
+        }
+
+        var options = session.Current.Question.Options;
+        var index = OptionIndexFor(e.Key, options.Count);
+        if (index >= 0) Toggle(options[index].Id);
+    }
+
+    private static int OptionIndexFor(string key, int optionCount)
+    {
+        if (key.Length != 1) return -1;
+
+        var c = char.ToLowerInvariant(key[0]);
+        var index = c switch
+        {
+            >= '1' and <= '9' => c - '1',
+            >= 'a' and <= 'e' => c - 'a',
+            _ => -1
+        };
+
+        return index < optionCount ? index : -1;
+    }
+
+    public void Dispose() => StopTicker();
+}

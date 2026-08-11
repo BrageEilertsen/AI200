@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <base href="/" />
+    <ResourcePreloader />
+    <link rel="stylesheet" href="@Assets["app.css"]" />
+    <link rel="stylesheet" href="@Assets["ai-200-trainer.styles.css"]" />
+    <ImportMap />
+    <HeadOutlet />
+
+    @* Applied before first paint so an explicit theme choice never flashes the wrong palette. *@
+    <script>
+        (function () {
+            var KEY = 'ai200-theme';
+
+            function read() {
+                try { return localStorage.getItem(KEY) || 'auto'; } catch (e) { return 'auto'; }
+            }
+
+            function paint(value) {
+                var root = document.documentElement;
+                var want = value === 'auto' ? null : value;
+
+                // Bail if already correct. This is what stops the MutationObserver
+                // below from re-triggering itself forever.
+                if (root.getAttribute('data-theme') === want) return;
+
+                // Suppress transitions for the frame in which the palette swaps.
+                // Two reasons: the whole page cross-fading looks mushy, and Chromium
+                // will not start a transition when the change comes from a custom
+                // property being redefined — the element keeps painting the old
+                // colour indefinitely. With transitions off it repaints immediately.
+                root.classList.add('theme-switching');
+
+                if (want === null) root.removeAttribute('data-theme');
+                else root.setAttribute('data-theme', want);
+
+                void root.offsetHeight; // flush the new styles
+
+                requestAnimationFrame(function () {
+                    requestAnimationFrame(function () {
+                        root.classList.remove('theme-switching');
+                    });
+                });
+            }
+
+            window.ai200Theme = {
+                get: read,
+                set: function (value) {
+                    try { localStorage.setItem(KEY, value); } catch (e) { }
+                    paint(value);
+                }
+            };
+
+            paint(read());
+
+            // Blazor's enhanced navigation patches <html> to match the server-rendered
+            // markup, which carries no data-theme attribute — so without this every page
+            // change silently drops the chosen theme and falls back to the OS setting.
+            // The observer callback runs as a microtask, before the browser paints, so
+            // reasserting here is invisible rather than a flash of the wrong palette.
+            new MutationObserver(function () { paint(read()); })
+                .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+        })();
+    </script>
+</head>
+
+<body>
+    <Routes />
+    <ReconnectModal />
+    <script src="@Assets["_framework/blazor.web.js"]"></script>
+</body>
+
+</html>

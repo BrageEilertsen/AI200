@@ -1,0 +1,136 @@
+@* Renders one question: metadata, stem, optional code block, options, and — once
+   revealed — the explanation, per-distractor notes and doc links. *@
+
+@{
+    var domain = ExamDomains.Get(Question.Domain);
+}
+
+<div class="q-meta">
+    <span class="q-domain" style="color:@domain.Accent">
+        <span class="swatch" style="background-color:@domain.Accent"></span>@domain.ShortName
+    </span>
+    <span class="q-sep">/</span>
+    <span>@Question.Objective</span>
+    <span class="q-sep">/</span>
+    <span>@DifficultyLabel(Question.Difficulty)</span>
+    @if (Question.Kind == QuestionKind.Multi)
+    {
+        <span class="q-sep">/</span>
+        <span class="q-multi">Select @Question.Correct.Count</span>
+    }
+    <span class="spacer"></span>
+    <span class="tag">@Question.Id</span>
+</div>
+
+<div class="q-stem">@Question.Stem</div>
+
+@if (!string.IsNullOrWhiteSpace(Question.Code))
+{
+    <pre class="code">@Question.Code</pre>
+}
+
+<div class="options">
+    @foreach (var option in Question.Options)
+    {
+        var isPicked = Selected.Contains(option.Id);
+        var isCorrect = Question.Correct.Contains(option.Id);
+
+        var css = "option";
+        if (Revealed)
+        {
+            if (isCorrect) css += " right";
+            else if (isPicked) css += " wrong";
+        }
+        else if (isPicked)
+        {
+            css += " picked";
+        }
+
+        <button type="button" class="@css" disabled="@Revealed" @onclick="() => OnToggle.InvokeAsync(option.Id)">
+            <span class="option-key">@option.Id</span>
+            <span class="option-text">@option.Text</span>
+            @if (Revealed && isCorrect)
+            {
+                <span class="option-mark" style="color:var(--good)">✓</span>
+            }
+            else if (Revealed && isPicked)
+            {
+                <span class="option-mark" style="color:var(--bad)">✕</span>
+            }
+        </button>
+    }
+</div>
+
+@if (Revealed)
+{
+    var answered = Selected.Count > 0;
+    var gotIt = Question.IsCorrect(Selected);
+    var verdictCss = !answered ? "" : gotIt ? "right" : "wrong";
+
+    <div class="explain @verdictCss">
+        <div class="explain-verdict">
+            @if (!answered)
+            {
+                <text>Unanswered — correct answer @Question.CorrectLabel</text>
+            }
+            else if (gotIt)
+            {
+                <text>Correct — @Question.CorrectLabel</text>
+            }
+            else
+            {
+                <text>Incorrect — correct answer @Question.CorrectLabel</text>
+            }
+        </div>
+
+        <p>@Question.Explanation</p>
+
+        @if (Question.WhyWrong.Count > 0)
+        {
+            <ul class="why-wrong">
+                @foreach (var (key, reason) in Question.WhyWrong.OrderBy(kv => kv.Key))
+                {
+                    <li><span class="k">@key</span><span>@reason</span></li>
+                }
+            </ul>
+        }
+
+        @if (Question.Docs.Count > 0)
+        {
+            <div class="doc-links">
+                @foreach (var doc in Question.Docs)
+                {
+                    <a href="@doc.Url" target="_blank" rel="noopener">@Icons.External @doc.Title</a>
+                }
+            </div>
+        }
+
+        @if (Question.Tags.Count > 0)
+        {
+            <div class="row tight" style="margin-top:12px">
+                @foreach (var tag in Question.Tags)
+                {
+                    <span class="tag">@tag</span>
+                }
+            </div>
+        }
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired] public required Question Question { get; set; }
+
+    [Parameter] public IReadOnlyCollection<string> Selected { get; set; } = [];
+
+    /// <summary>When true the options are locked and the explanation is shown.</summary>
+    [Parameter] public bool Revealed { get; set; }
+
+    [Parameter] public EventCallback<string> OnToggle { get; set; }
+
+    private static string DifficultyLabel(int difficulty) => difficulty switch
+    {
+        1 => "Recall",
+        3 => "Hard",
+        _ => "Applied"
+    };
+}

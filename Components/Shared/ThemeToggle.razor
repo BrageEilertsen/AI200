@@ -1,0 +1,44 @@
+@rendermode InteractiveServer
+@inject IJSRuntime Js
+
+<div class="segmented compact" role="group" aria-label="Colour theme">
+    @foreach (var (value, label) in Options)
+    {
+        <button type="button"
+                class="segment @(_current == value ? "on" : "")"
+                aria-pressed="@(_current == value)"
+                @onclick="() => Choose(value)">
+            @label
+        </button>
+    }
+</div>
+
+@code {
+    private static readonly (string Value, string Label)[] Options =
+    [
+        ("light", "Light"),
+        ("dark", "Dark"),
+        ("auto", "Auto")
+    ];
+
+    private string _current = "auto";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        // The browser is the source of truth — the choice lives in localStorage.
+        var stored = await Js.InvokeAsync<string>("ai200Theme.get");
+        if (stored != _current)
+        {
+            _current = stored;
+            StateHasChanged();
+        }
+    }
+
+    private async Task Choose(string value)
+    {
+        _current = value;
+        await Js.InvokeVoidAsync("ai200Theme.set", value);
+    }
+}
