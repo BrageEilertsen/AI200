@@ -225,6 +225,12 @@ else
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (firstRender && await Progress.EnsureLoadedAsync())
+        {
+            _pastExams = Progress.Sessions.Where(s => s.Mode == SessionMode.Exam).ToList();
+            StateHasChanged();
+        }
+
         if (_shouldFocus || firstRender)
         {
             _shouldFocus = false;

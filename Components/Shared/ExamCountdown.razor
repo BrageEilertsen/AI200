@@ -27,6 +27,14 @@
 </div>
 
 @code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && await Progress.EnsureLoadedAsync())
+        {
+            StateHasChanged();
+        }
+    }
+
     private void OnDateChanged(ChangeEventArgs e)
     {
         var raw = e.Value?.ToString();

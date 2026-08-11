@@ -79,6 +79,15 @@ else
 }
 
 @code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // The per-question attempt counts come from browser storage.
+        if (firstRender && await Progress.EnsureLoadedAsync())
+        {
+            StateHasChanged();
+        }
+    }
+
     private readonly HashSet<string> _domains = [];
     private readonly HashSet<string> _revealed = [];
     private string _search = "";

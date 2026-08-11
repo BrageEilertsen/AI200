@@ -59,14 +59,13 @@ public sealed class SessionHost(QuestionBank bank, ProgressStore progress)
 
         session.Finish();
 
-        foreach (var item in session.Items)
-        {
-            if (session.Mode == SessionMode.Practice && alreadyRecorded.Contains(item.Question.Id))
-            {
-                continue;
-            }
-            progress.RecordAnswer(item.Question.Id, item.IsCorrect);
-        }
+        var pending = session.Items
+            .Where(i => session.Mode != SessionMode.Practice || !alreadyRecorded.Contains(i.Question.Id))
+            .Select(i => (i.Question.Id, i.IsCorrect));
+
+        // One batched write rather than one per question — each write is a round trip
+        // to the browser, and an exam submits fifty answers at once.
+        progress.RecordAnswers(pending);
 
         progress.RecordSession(session);
     }

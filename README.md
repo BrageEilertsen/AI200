@@ -112,10 +112,27 @@ in a banner on the dashboard.
 
 ## Progress
 
-Stored at `%LOCALAPPDATA%\Ai200Trainer\progress.json` — outside the project, so it survives
-rebuilds and `git clean`. It holds per-question attempt history (used by the *focus weak areas*
-picker), finished session records, and your exam date. **Reset progress** on the Progress screen
-clears history but keeps the exam date.
+Stored in **the visitor's own browser** (`localStorage`, key `ai200-progress`), never on the
+server. It holds per-question attempt history (which drives the *focus weak areas* picker),
+finished session records, and your exam date. **Reset progress** on the Progress screen clears
+history but keeps the exam date.
+
+This is deliberate, and it matters because the app is deployed to a public URL. A server-side
+store would be **one record shared by everyone who opens the site** — any visitor's answers would
+move your accuracy, your weak-topic list and your mock history, and your study activity would be
+visible to them. Browser storage gives each person their own history with no accounts, no
+database, and no data loss on redeploy.
+
+Consequences worth knowing:
+
+- Progress does not follow you between browsers or machines, and clearing site data wipes it.
+- A full 50-question mock plus its answers costs about 5 KB, so the practical ceiling is nowhere
+  near localStorage's ~5 MB.
+- `ProgressStore` is registered **scoped** (one per Blazor circuit) and loads asynchronously,
+  because JS interop is unavailable until the circuit connects. Components call
+  `EnsureLoadedAsync()` from `OnAfterRenderAsync(firstRender: true)` and re-render. That method
+  caches its *task*, so every component gets the same answer — returning "data arrived" to only
+  the first caller leaves the rest rendering zeroes.
 
 ## Two non-obvious things in the styling
 
@@ -134,6 +151,20 @@ reliably invalidate the shorthand when a `var()` it references is redefined by f
 `transition` on that property are worse: they never repaint at all. Hence `background-color:
 var(--x)`, `transition: background-color …`, and the `.theme-switching` class that suppresses
 transitions for the one frame in which the palette swaps.
+
+## Deploying
+
+`.github/workflows/azure-webapp.yml` publishes on push to `main`. Two Azure settings the app
+needs that are not in the repo:
+
+- **Enable WebSockets** on the App Service (**Configuration → General settings**). It is off by
+  default, and without it Blazor Server falls back to long polling — functional, but every click
+  feels sluggish. Leave ARR affinity **on**; a Blazor circuit is bound to one instance.
+- **HTTPS Only** on. `UseHttpsRedirection()` is deliberately absent so local HTTP dev works;
+  TLS is terminated by the platform.
+
+The question bank ships in the publish output (`Data/*.json` is copied on publish), so the
+deployed app loads all 136 questions with no extra configuration.
 
 ## Caveats
 

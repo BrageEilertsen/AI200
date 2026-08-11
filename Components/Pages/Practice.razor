@@ -156,6 +156,12 @@ else
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (firstRender && await Progress.EnsureLoadedAsync())
+        {
+            _lastResult = Progress.Sessions.LastOrDefault(s => s.Mode == SessionMode.Practice);
+            StateHasChanged();
+        }
+
         if (_shouldFocus || firstRender)
         {
             _shouldFocus = false;

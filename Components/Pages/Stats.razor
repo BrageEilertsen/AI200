@@ -159,7 +159,10 @@
     <div class="row between">
         <div>
             <h3>Stored progress</h3>
-            <span class="xs faint mono">@Progress.FilePath</span>
+            <span class="xs faint">
+                @Progress.StorageDescription — private to you, never sent to the server.
+                Clearing site data or using a different browser starts you fresh.
+            </span>
         </div>
         @if (_confirmReset)
         {
@@ -178,6 +181,14 @@
 
 @code {
     private bool _confirmReset;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && await Progress.EnsureLoadedAsync())
+        {
+            StateHasChanged();
+        }
+    }
 
     private record ObjectiveRow(string DomainName, string Accent, string Objective, int Attempts, double Accuracy);
     private record TagRow(string Tag, int Attempts, double Accuracy);

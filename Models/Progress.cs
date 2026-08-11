@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Ai200Trainer.Models;
 
 /// <summary>Lifetime record for a single question, used to drive the "focus weak areas" picker.</summary>
@@ -8,12 +10,14 @@ public sealed class QuestionStat
     public bool LastWasCorrect { get; set; }
     public DateTimeOffset? LastSeen { get; set; }
 
+    [JsonIgnore]
     public double Accuracy => Seen == 0 ? 0 : (double)Correct / Seen;
 
     /// <summary>
     /// Higher = more worth re-asking. Never-seen questions rank highest, then ones you got
     /// wrong last time, then ones with a poor lifetime record. Recently-correct ranks lowest.
     /// </summary>
+    [JsonIgnore]
     public double Priority
     {
         get
@@ -48,6 +52,7 @@ public sealed class SessionRecord
     public double ElapsedMinutes { get; set; }
     public Dictionary<string, DomainTally> ByDomain { get; set; } = [];
 
+    [JsonIgnore]
     public double Percent => Total == 0 ? 0 : 100.0 * Correct / Total;
 }
 

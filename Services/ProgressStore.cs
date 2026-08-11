@@ -1,111 +1,134 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Ai200Trainer.Models;
+using Microsoft.JSInterop;
 
 namespace Ai200Trainer.Services;
 
 /// <summary>
-/// Per-question and per-session history, persisted as JSON under
-/// <c>%LOCALAPPDATA%\Ai200Trainer\progress.json</c> so it survives rebuilds of the app.
+/// Per-question and per-session history, kept in the visitor's own browser via
+/// <c>localStorage</c>.
+/// <para>
+/// This deliberately does not live on the server. The app is deployed to a public URL,
+/// and a server-side store would be a single record shared by everyone who opens it —
+/// every visitor's answers would move the same accuracy figures and weak-topic list.
+/// Browser storage gives each person their own history with no accounts and no database,
+/// and it survives redeploys.
+/// </para>
+/// Registered as scoped, so there is one instance per Blazor circuit. Loading is async
+/// because JS interop is unavailable until the circuit is connected — call
+/// <see cref="EnsureLoadedAsync"/> from <c>OnAfterRenderAsync(firstRender: true)</c>.
 /// </summary>
-public sealed class ProgressStore
+public sealed class ProgressStore(IJSRuntime js, ILogger<ProgressStore> logger)
 {
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        WriteIndented = true,
         Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
     };
 
-    private readonly ILogger<ProgressStore> _logger;
-    private readonly Lock _gate = new();
     private ProgressData _data = new();
+    private Task<bool>? _load;
 
-    public string FilePath { get; }
+    /// <summary>False until the browser's stored history has been read in.</summary>
+    public bool IsLoaded { get; private set; }
 
-    public ProgressStore(ILogger<ProgressStore> logger)
-    {
-        _logger = logger;
+    public string StorageDescription => "This browser's local storage";
 
-        var dir = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "Ai200Trainer");
-        Directory.CreateDirectory(dir);
-        FilePath = Path.Combine(dir, "progress.json");
+    /// <summary>
+    /// Reads stored history from the browser. Safe to call from every component: the load
+    /// runs once and every caller awaits the same operation.
+    /// <para>
+    /// Returns true when there was stored history to restore, which tells the caller its
+    /// first render was based on empty data and should be repeated. The result is cached
+    /// with the task on purpose — several components on a page call this, and if only the
+    /// first one were told "yes, data arrived" the rest would keep showing zeroes.
+    /// </para>
+    /// </summary>
+    public Task<bool> EnsureLoadedAsync() => _load ??= LoadAsync();
 
-        Load();
-    }
-
-    public IReadOnlyDictionary<string, QuestionStat> Stats
-    {
-        get { lock (_gate) return _data.Questions; }
-    }
-
-    public IReadOnlyList<SessionRecord> Sessions
-    {
-        get { lock (_gate) return _data.Sessions; }
-    }
-
-    private void Load()
-    {
-        if (!File.Exists(FilePath)) return;
-
-        try
-        {
-            var loaded = JsonSerializer.Deserialize<ProgressData>(File.ReadAllText(FilePath), JsonOptions);
-            if (loaded is not null)
-            {
-                lock (_gate) _data = loaded;
-            }
-        }
-        catch (Exception ex)
-        {
-            // A corrupt progress file should never stop you from studying.
-            _logger.LogWarning(ex, "Could not read progress from {Path}; starting fresh.", FilePath);
-        }
-    }
-
-    private void Save()
+    private async Task<bool> LoadAsync()
     {
         try
         {
-            string json;
-            lock (_gate) json = JsonSerializer.Serialize(_data, JsonOptions);
+            var json = await js.InvokeAsync<string?>("ai200Progress.load");
 
-            // Write to a temp file first so an interrupted write cannot truncate the real one.
-            var temp = FilePath + ".tmp";
-            File.WriteAllText(temp, json);
-            File.Move(temp, FilePath, overwrite: true);
+            if (string.IsNullOrWhiteSpace(json)) return false;
+
+            var parsed = JsonSerializer.Deserialize<ProgressData>(json, JsonOptions);
+            if (parsed is null) return false;
+
+            _data = parsed;
+            return true;
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "Could not save progress to {Path}.", FilePath);
+            // Corrupt or unreadable storage should never stop you from studying.
+            logger.LogWarning(ex, "Could not read progress from browser storage; starting fresh.");
+            return false;
+        }
+        finally
+        {
+            IsLoaded = true;
         }
     }
 
-    /// <summary>Records one graded answer. Called as you go in practice, and in bulk at the end of an exam.</summary>
+    public IReadOnlyDictionary<string, QuestionStat> Stats => _data.Questions;
+
+    public IReadOnlyList<SessionRecord> Sessions => _data.Sessions;
+
+    public DateOnly? ExamDate => _data.ExamDate;
+
+    /// <summary>Whole days from today until the exam. Negative once the date has passed.</summary>
+    public int? DaysUntilExam =>
+        ExamDate is { } date ? date.DayNumber - DateOnly.FromDateTime(DateTime.Today).DayNumber : null;
+
+    public void SetExamDate(DateOnly? date)
+    {
+        _data.ExamDate = date;
+        Save();
+    }
+
+    public QuestionStat StatFor(string questionId) =>
+        _data.Questions.TryGetValue(questionId, out var s) ? s : new QuestionStat();
+
+    /// <summary>Records one graded answer.</summary>
     public void RecordAnswer(string questionId, bool correct)
     {
-        lock (_gate)
-        {
-            if (!_data.Questions.TryGetValue(questionId, out var stat))
-            {
-                stat = new QuestionStat();
-                _data.Questions[questionId] = stat;
-            }
+        Apply(questionId, correct);
+        Save();
+    }
 
-            stat.Seen++;
-            if (correct) stat.Correct++;
-            stat.LastWasCorrect = correct;
-            stat.LastSeen = DateTimeOffset.Now;
+    /// <summary>
+    /// Records a batch of graded answers with a single write. Used when an exam is submitted,
+    /// where writing once per question would mean fifty round trips to the browser.
+    /// </summary>
+    public void RecordAnswers(IEnumerable<(string QuestionId, bool Correct)> answers)
+    {
+        foreach (var (questionId, correct) in answers)
+        {
+            Apply(questionId, correct);
+        }
+        Save();
+    }
+
+    private void Apply(string questionId, bool correct)
+    {
+        if (!_data.Questions.TryGetValue(questionId, out var stat))
+        {
+            stat = new QuestionStat();
+            _data.Questions[questionId] = stat;
         }
 
-        Save();
+        stat.Seen++;
+        if (correct) stat.Correct++;
+        stat.LastWasCorrect = correct;
+        stat.LastSeen = DateTimeOffset.Now;
     }
 
     public void RecordSession(StudySession session)
     {
-        var record = new SessionRecord
+        _data.Sessions.Add(new SessionRecord
         {
             FinishedAt = DateTimeOffset.Now,
             Mode = session.Mode,
@@ -116,39 +139,16 @@ public sealed class ProgressStore
             ByDomain = session.ByDomain().ToDictionary(
                 kv => kv.Key,
                 kv => new DomainTally { Correct = kv.Value.Correct, Total = kv.Value.Total })
-        };
+        });
 
-        lock (_gate)
+        // Keep the record small enough to sit comfortably in localStorage.
+        if (_data.Sessions.Count > 200)
         {
-            _data.Sessions.Add(record);
-
-            // Keep the history readable; the charts only look at the recent run anyway.
-            if (_data.Sessions.Count > 200)
-            {
-                _data.Sessions.RemoveRange(0, _data.Sessions.Count - 200);
-            }
+            _data.Sessions.RemoveRange(0, _data.Sessions.Count - 200);
         }
 
         Save();
     }
-
-    public DateOnly? ExamDate
-    {
-        get { lock (_gate) return _data.ExamDate; }
-    }
-
-    public void SetExamDate(DateOnly? date)
-    {
-        lock (_gate) _data.ExamDate = date;
-        Save();
-    }
-
-    /// <summary>Whole days from today until the exam. Negative once the date has passed.</summary>
-    public int? DaysUntilExam =>
-        ExamDate is { } date ? date.DayNumber - DateOnly.FromDateTime(DateTime.Today).DayNumber : null;
-
-    public QuestionStat StatFor(string questionId) =>
-        Stats.TryGetValue(questionId, out var s) ? s : new QuestionStat();
 
     /// <summary>Lifetime accuracy across every question in <paramref name="questions"/> that has been attempted.</summary>
     public (int Seen, int Correct, int Unseen) Coverage(IEnumerable<Question> questions)
@@ -157,19 +157,16 @@ public sealed class ProgressStore
         var correct = 0;
         var unseen = 0;
 
-        lock (_gate)
+        foreach (var q in questions)
         {
-            foreach (var q in questions)
+            if (_data.Questions.TryGetValue(q.Id, out var stat) && stat.Seen > 0)
             {
-                if (_data.Questions.TryGetValue(q.Id, out var stat) && stat.Seen > 0)
-                {
-                    seen += stat.Seen;
-                    correct += stat.Correct;
-                }
-                else
-                {
-                    unseen++;
-                }
+                seen += stat.Seen;
+                correct += stat.Correct;
+            }
+            else
+            {
+                unseen++;
             }
         }
 
@@ -179,7 +176,43 @@ public sealed class ProgressStore
     /// <summary>Clears answer history and session records. The exam date is deliberately kept.</summary>
     public void Reset()
     {
-        lock (_gate) _data = new ProgressData { ExamDate = _data.ExamDate };
+        _data = new ProgressData { ExamDate = _data.ExamDate };
         Save();
+    }
+
+    /// <summary>
+    /// Writes back to the browser. Fire-and-forget: the caller is a UI event handler and
+    /// should not block on a round trip, and a failed write must not break the quiz.
+    /// </summary>
+    private void Save()
+    {
+        string json;
+        try
+        {
+            json = JsonSerializer.Serialize(_data, JsonOptions);
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "Could not serialise progress.");
+            return;
+        }
+
+        _ = SaveAsync(json);
+    }
+
+    private async Task SaveAsync(string json)
+    {
+        try
+        {
+            await js.InvokeVoidAsync("ai200Progress.save", json);
+        }
+        catch (JSDisconnectedException)
+        {
+            // Circuit went away mid-write (tab closed). Nothing to do.
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "Could not write progress to browser storage.");
+        }
     }
 }

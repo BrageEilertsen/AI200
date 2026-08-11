@@ -66,6 +66,21 @@
             new MutationObserver(function () { paint(read()); })
                 .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
         })();
+
+        // Study history lives in the visitor's own browser. The app is on a public URL,
+        // so a server-side store would be one record shared by everybody who opens it.
+        // Deliberately avoids `this` — Blazor's interop does not guarantee the binding.
+        (function () {
+            var KEY = 'ai200-progress';
+            window.ai200Progress = {
+                load: function () {
+                    try { return localStorage.getItem(KEY); } catch (e) { return null; }
+                },
+                save: function (json) {
+                    try { localStorage.setItem(KEY, json); } catch (e) { /* private mode or quota */ }
+                }
+            };
+        })();
     </script>
 </head>
 

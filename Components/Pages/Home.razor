@@ -176,6 +176,17 @@
 
     protected override void OnInitialized() => Recalculate();
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // Progress lives in the browser, so it can only be read once the circuit is up.
+        // The page renders immediately with empty figures and fills them in here.
+        if (firstRender && await Progress.EnsureLoadedAsync())
+        {
+            Recalculate();
+            StateHasChanged();
+        }
+    }
+
     private void Recalculate()
     {
         var coverage = Progress.Coverage(Bank.All);
