@@ -85,6 +85,14 @@ theme on reload. *Auto* follows the OS.
 | `03-integration.json` | Connect to and consume Azure services | 20–25% | 30 |
 | `04-operations.json` | Secure, monitor, troubleshoot | 20–25% | 31 |
 
+**Option order is randomised at presentation time**, so the order stored in the JSON does not
+matter. This is not cosmetic: the bank was authored with the correct answer written first, which
+left it at position A for 92% of single-answer questions — you could have scored 92% by always
+picking A. `Question.WithShuffledOptions` permutes the options, relabels them A/B/C/…, and remaps
+the correct answers and per-distractor notes. Every draw goes through it, and the browse page
+shuffles too (cached per question so options hold still while you type in the search box). When
+adding questions, write them in whatever order reads best.
+
 Edit the JSON and hit **Reload bank** on the dashboard — no rebuild needed when running via
 `dotnet run`. The loader validates on every load and reports problems (duplicate ids, answers
 that aren't options, single-answer questions with two correct answers, missing explanations)

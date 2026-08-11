@@ -145,7 +145,7 @@ public sealed class QuestionBank(IWebHostEnvironment env, ILogger<QuestionBank> 
         IReadOnlyDictionary<string, QuestionStat>? stats = null)
     {
         var pool = All.Where(q => domainKeys.Count == 0 || domainKeys.Contains(q.Domain)).ToList();
-        return Pick(pool, count, focusWeak, stats);
+        return Present(Pick(pool, count, focusWeak, stats));
     }
 
     /// <summary>
@@ -174,8 +174,16 @@ public sealed class QuestionBank(IWebHostEnvironment env, ILogger<QuestionBank> 
             chosen.AddRange(Pick(filler, count - chosen.Count, focusWeak, stats));
         }
 
-        return Shuffle(chosen);
+        return Present(Shuffle(chosen));
     }
+
+    /// <summary>
+    /// Final step before questions leave the bank: hand back copies with the options in a
+    /// random order. Every draw goes through here so no path can serve them in the authored
+    /// order, where the correct answer sits at A far too often.
+    /// </summary>
+    private static List<Question> Present(List<Question> questions) =>
+        [.. questions.Select(q => q.WithShuffledOptions(Random.Shared))];
 
     private static List<Question> Pick(
         List<Question> pool,

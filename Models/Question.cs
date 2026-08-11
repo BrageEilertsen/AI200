@@ -58,4 +58,54 @@ public sealed class Question
         selected.Count == Correct.Count && Correct.All(selected.Contains);
 
     public string CorrectLabel => string.Join(", ", Correct.Order());
+
+    /// <summary>
+    /// Returns a copy with the options in a random order, relabelled A, B, C… so the letters
+    /// still read top to bottom. Correct answers and per-distractor notes are remapped to the
+    /// new labels.
+    /// <para>
+    /// This exists because the bank was authored with the correct answer written first, which
+    /// left it in position A for 92% of single-answer questions — you could score 92% by always
+    /// picking A. Shuffling at presentation time fixes that regardless of how the JSON is
+    /// ordered, and stops repeated practice teaching the position rather than the answer.
+    /// </para>
+    /// </summary>
+    public Question WithShuffledOptions(Random rng)
+    {
+        var order = Options.ToList();
+        for (var i = order.Count - 1; i > 0; i--)
+        {
+            var j = rng.Next(i + 1);
+            (order[i], order[j]) = (order[j], order[i]);
+        }
+
+        var relabel = new Dictionary<string, string>(order.Count);
+        var options = new List<Option>(order.Count);
+
+        for (var i = 0; i < order.Count; i++)
+        {
+            var label = ((char)('A' + i)).ToString();
+            relabel[order[i].Id] = label;
+            options.Add(new Option { Id = label, Text = order[i].Text });
+        }
+
+        return new Question
+        {
+            Id = Id,
+            Domain = Domain,
+            Objective = Objective,
+            Kind = Kind,
+            Difficulty = Difficulty,
+            Stem = Stem,
+            Code = Code,
+            Options = options,
+            Correct = [.. Correct.Where(relabel.ContainsKey).Select(c => relabel[c]).Order()],
+            Explanation = Explanation,
+            WhyWrong = WhyWrong
+                .Where(kv => relabel.ContainsKey(kv.Key))
+                .ToDictionary(kv => relabel[kv.Key], kv => kv.Value),
+            Docs = Docs,
+            Tags = Tags
+        };
+    }
 }

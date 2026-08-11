@@ -48,8 +48,9 @@
 }
 else
 {
-    @foreach (var question in Filtered)
+    @foreach (var source in Filtered)
     {
+        var question = Present(source);
         var revealed = _allRevealed || _revealed.Contains(question.Id);
         var stat = Progress.StatFor(question.Id);
 
@@ -79,6 +80,21 @@ else
 }
 
 @code {
+    // Options are shuffled for browsing too, otherwise reading the bank would train you on
+    // the authored order — where the correct answer is at A far more often than chance.
+    // Cached per question so they hold still while the search box is being typed into.
+    private readonly Dictionary<string, Question> _presented = [];
+
+    private Question Present(Question question)
+    {
+        if (!_presented.TryGetValue(question.Id, out var shuffled))
+        {
+            shuffled = question.WithShuffledOptions(Random.Shared);
+            _presented[question.Id] = shuffled;
+        }
+        return shuffled;
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         // The per-question attempt counts come from browser storage.
