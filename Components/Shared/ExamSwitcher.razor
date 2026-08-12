@@ -9,11 +9,16 @@
 *@
 @if (Exams.HasMultipleExams)
 {
-    <div class="exam-switch @(_open ? "open" : "")" @onfocusout="OnFocusOut">
+    // @ref compiles to an assignment, so it cannot take a conditional expression — every
+    // option captures into its own slot and the active index is read back when focusing.
+    _optionRefs = _optionRefs.Length == Exams.All.Count ? _optionRefs : new ElementReference[Exams.All.Count];
+
+    <div class="exam-switch @(_open ? "open" : "")">
         <div class="exam-switch-label" id="exam-switch-label">Studying</div>
 
         <button type="button"
                 class="exam-trigger"
+                @ref="_triggerRef"
                 @onclick="Toggle"
                 @onkeydown="OnTriggerKey"
                 aria-haspopup="listbox"
@@ -31,23 +36,25 @@
 
         @if (_open)
         {
-            @* Most of the page is not focusable, so a click on plain background never moves
-               focus and focusout alone would leave the menu hanging open. This catches it. *@
-            <div class="exam-backdrop" @onclick="Close"></div>
+            @* Most of the page is not focusable, so a click on plain background moves focus
+               nowhere. This catches those clicks. It sits under the menu, not over it. *@
+            <div class="exam-backdrop" @onclick="CloseAndReturnFocus"></div>
 
             <div class="exam-menu" role="listbox" aria-labelledby="exam-switch-label">
                 @foreach (var (bank, i) in Exams.All.Select((b, i) => (b, i)))
                 {
                     var slug = bank.Definition.Slug;
+                    var index = i;
                     var current = slug == Exams.Exam.Slug;
 
                     <button type="button"
                             role="option"
                             aria-selected="@current.ToString().ToLowerInvariant()"
                             class="exam-option @(current ? "on" : "") @(i == _active ? "active" : "")"
+                            @ref="_optionRefs[index]"
                             @onclick="() => Choose(slug)"
                             @onkeydown="OnMenuKey"
-                            @onmouseenter="() => _active = i">
+                            @onmouseenter="() => _active = index">
                         <span class="exam-option-text">
                             <span class="exam-option-code">@bank.Definition.Code</span>
                             <span class="exam-option-cert">@bank.Definition.Certification</span>
@@ -69,6 +76,13 @@
 @code {
     private bool _open;
     private int _active;
+    private ElementReference _triggerRef;
+    private ElementReference[] _optionRefs = [];
+
+    // Which element should hold focus after the next render. Focus has to be moved after the
+    // DOM exists, so it is requested here and applied in OnAfterRenderAsync.
+    private enum FocusTarget { None, ActiveOption, Trigger }
+    private FocusTarget _pendingFocus = FocusTarget.None;
 
     protected override void OnInitialized() => Exams.Changed += Refresh;
 
@@ -82,16 +96,51 @@
         if (firstRender && await Exams.EnsureLoadedAsync())
         {
             StateHasChanged();
+            return;
         }
+
+        var target = _pendingFocus;
+        _pendingFocus = FocusTarget.None;
+
+        try
+        {
+            switch (target)
+            {
+                case FocusTarget.ActiveOption when _open && _active < _optionRefs.Length:
+                    await _optionRefs[_active].FocusAsync();
+                    break;
+                case FocusTarget.Trigger:
+                    await _triggerRef.FocusAsync();
+                    break;
+            }
+        }
+        catch
+        {
+            // The element went away between the render and the focus call; nothing to do.
+        }
+    }
+
+    private void Open()
+    {
+        _open = true;
+        _active = IndexOfCurrent();
+
+        // Focus moves into the menu so the arrow keys have somewhere to act. Without this the
+        // menu is reachable by mouse only.
+        _pendingFocus = FocusTarget.ActiveOption;
     }
 
     private void Toggle()
     {
-        _open = !_open;
-        if (_open) _active = IndexOfCurrent();
+        if (_open) CloseAndReturnFocus();
+        else Open();
     }
 
-    private void Close() => _open = false;
+    private void CloseAndReturnFocus()
+    {
+        _open = false;
+        _pendingFocus = FocusTarget.Trigger;
+    }
 
     private int IndexOfCurrent()
     {
@@ -105,25 +154,21 @@
     private async Task Choose(string slug)
     {
         _open = false;
+        _pendingFocus = FocusTarget.Trigger;
         await Exams.SelectAsync(slug);
     }
-
-    /// <summary>
-    /// Closes when focus leaves the whole control. Blazor gives focusout on the container
-    /// because the event bubbles, which is what makes a click elsewhere on the page dismiss
-    /// the menu without a document-level listener.
-    /// </summary>
-    private void OnFocusOut(FocusEventArgs _) => _open = false;
 
     private void OnTriggerKey(KeyboardEventArgs e)
     {
         switch (e.Key)
         {
-            case "ArrowDown" or "ArrowUp" or "Enter" or " ":
-                if (!_open) { _open = true; _active = IndexOfCurrent(); }
+            // Enter and Space already reach Toggle through the button's native click, so
+            // handling them here as well would open and immediately close again.
+            case "ArrowDown" or "ArrowUp" when !_open:
+                Open();
                 break;
-            case "Escape":
-                _open = false;
+            case "Escape" when _open:
+                CloseAndReturnFocus();
                 break;
         }
     }
@@ -136,22 +181,24 @@
         {
             case "ArrowDown":
                 _active = (_active + 1) % count;
+                _pendingFocus = FocusTarget.ActiveOption;
                 break;
             case "ArrowUp":
                 _active = (_active - 1 + count) % count;
+                _pendingFocus = FocusTarget.ActiveOption;
                 break;
             case "Home":
                 _active = 0;
+                _pendingFocus = FocusTarget.ActiveOption;
                 break;
             case "End":
                 _active = count - 1;
+                _pendingFocus = FocusTarget.ActiveOption;
                 break;
-            case "Escape":
-                _open = false;
+            case "Escape" or "Tab":
+                CloseAndReturnFocus();
                 break;
-            case "Enter" or " ":
-                await Choose(Exams.All[_active].Definition.Slug);
-                break;
+            // Enter and Space activate the focused option natively, which runs Choose.
         }
     }
 }
