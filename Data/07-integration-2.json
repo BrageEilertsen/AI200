@@ -191,7 +191,7 @@
     "correct": ["A"],
     "explanation": "Long work does not belong on a synchronous HTTP request. Accept the request, hand the work to a queue or a durable orchestration, and return 202 with a polling URL — which is exactly the async HTTP API pattern Durable Functions provides.",
     "whyWrong": {
-      "B": "The load balancer in front of the app imposes its own idle timeout, so this cannot be solved purely in `host.json`.",
+      "B": "An HTTP-triggered function must respond within 230 seconds no matter what `functionTimeout` says — that ceiling comes from the Azure Load Balancer idle timeout in front of the app, not from Functions.",
       "C": "A longer function timeout does not stop the caller or the front end giving up on the request.",
       "D": "This pushes orchestration into the client and multiplies the failure modes."
     },

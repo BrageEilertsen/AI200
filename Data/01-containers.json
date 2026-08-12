@@ -112,7 +112,7 @@
       },
       {
         "id": "D",
-        "text": "Repository-scoped tokens"
+        "text": "Customer-managed keys for encryption at rest"
       },
       {
         "id": "E",
@@ -124,9 +124,9 @@
       "C",
       "D"
     ],
-    "explanation": "Premium adds geo-replication, private link, content trust, customer-managed keys, repository-scoped tokens and zone redundancy on top of what Standard offers. When a scenario mentions any of those, the SKU is decided for you.",
+    "explanation": "Premium-only features include geo-replication, private link with private endpoints, content trust, customer-managed keys, dedicated data endpoints, connected registries, IP access rules and the retention policy for untagged manifests. When a scenario mentions any of those, the SKU is decided for you.",
     "whyWrong": {
-      "B": "Webhooks are available from the Basic tier upward.",
+      "B": "Webhooks work on every tier; only the number allowed differs — 2 on Basic, 10 on Standard, 500 on Premium.",
       "E": "ACR Tasks run on all tiers, including Basic."
     },
     "docs": [
@@ -307,7 +307,7 @@
     "correct": [
       "B"
     ],
-    "explanation": "Repository-scoped tokens are the only ACR mechanism that grants permissions on an individual repository rather than the whole registry. They are a Premium feature and exist precisely for this least-privilege case.",
+    "explanation": "Repository-scoped tokens with scope maps grant permissions on individual repositories rather than the whole registry, which is exactly this least-privilege case. They are available on every tier — Basic, Standard and Premium — with only the number of tokens differing.",
     "whyWrong": {
       "A": "AcrPush is registry-wide — the pipeline could push to every repository.",
       "C": "The admin account has full access to everything and is a shared credential.",

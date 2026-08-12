@@ -44,7 +44,8 @@
 
     <h3>Azure Container Registry</h3>
     <ul class="facts">
-        <li><b>SKUs:</b> Basic, Standard, Premium. <b>Premium only:</b> geo-replication, content trust, private link, customer-managed keys, repository-scoped tokens, zone redundancy. If a question mentions any of those, the answer is Premium.</li>
+        <li><b>SKUs:</b> Basic, Standard, Premium. <b>Premium only:</b> geo-replication, private link with private endpoints, content trust, customer-managed keys, dedicated data endpoints, connected registries, IP access rules, retention policy for untagged manifests. If a question mentions any of those, the answer is Premium.</li>
+        <li><b>Not Premium-only, despite looking like it:</b> repository-scoped tokens and scope maps work on <b>all three tiers</b> (only the token count differs), and so do <b>availability zones</b> and webhooks. <b>Anonymous pull</b> needs Standard or Premium.</li>
         <li><code>az acr build</code> runs the build <b>in Azure</b> — no local Docker daemon needed. This is the answer whenever a build agent has no Docker installed.</li>
         <li><code>az acr import</code> copies an image registry-to-registry <b>without pulling it locally</b>. Faster and cheaper than pull + retag + push.</li>
         <li><b>ACR Tasks trigger types:</b> quick task (manual), source-code commit, <b>base image update</b>, and schedule. A base-image trigger only fires if the task tracked the base image at build time.</li>
@@ -140,7 +141,7 @@
         <li><b>Sessions</b> are the only way to get FIFO ordering and per-entity state. Set <code>SessionId</code> on send and use a session processor to receive.</li>
         <li><b>Duplicate detection</b> keys on <code>MessageId</code> within a configured window — you must set MessageId yourself for it to do anything.</li>
         <li><b>Subscription filters:</b> SQL filters (expressions over properties), correlation filters (cheapest, exact match on system/user properties), and boolean true/false.</li>
-        <li>Message size: <b>256 KB</b> Standard, <b>100 MB</b> Premium. Large payloads go to Blob Storage with a claim-check pointer in the message.</li>
+        <li>Message size: <b>256 KB</b> on Basic and Standard. Premium defaults to <b>1 MB</b> and can be raised to <b>100 MB</b>, but only over AMQP. Large payloads go to Blob Storage with a claim-check pointer in the message.</li>
         <li>Throughput knobs on the processor: <code>MaxConcurrentCalls</code> and <code>PrefetchCount</code>.</li>
     </ul>
 

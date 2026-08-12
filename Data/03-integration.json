@@ -263,7 +263,7 @@
     ],
     "explanation": "The claim check pattern keeps the payload in storage and the pointer in the message. It works on any tier, keeps messages small and fast, and avoids paying broker throughput for bulk bytes.",
     "whyWrong": {
-      "B": "Standard tier caps messages at 256 KB, so a 10 MB body is rejected. Premium allows 100 MB but is still the wrong tool for bulk data.",
+      "B": "Basic and Standard cap messages at 256 KB, so a 10 MB body is rejected. Premium defaults to 1 MB and can be raised to 100 MB over AMQP, but a broker is still the wrong place for bulk data.",
       "C": "Manual chunking adds ordering, correlation and partial-failure problems you would have to solve yourself.",
       "D": "Base64 increases size by roughly a third."
     },
