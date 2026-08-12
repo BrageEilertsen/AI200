@@ -7,12 +7,26 @@
     "difficulty": 2,
     "stem": "A team wants short-lived branches merged into `main` at least daily, with `main` always releasable. Which strategy is this?",
     "options": [
-      { "id": "A", "text": "Trunk-based development with short-lived feature branches" },
-      { "id": "B", "text": "GitFlow with develop, release and hotfix branches" },
-      { "id": "C", "text": "A long-lived branch per environment" },
-      { "id": "D", "text": "A fork per developer, merged at the end of each sprint" }
+      {
+        "id": "A",
+        "text": "Trunk-based development with short-lived feature branches"
+      },
+      {
+        "id": "B",
+        "text": "GitFlow with develop, release and hotfix branches"
+      },
+      {
+        "id": "C",
+        "text": "A long-lived branch per environment"
+      },
+      {
+        "id": "D",
+        "text": "A fork per developer, merged at the end of each sprint"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Trunk-based development keeps branches alive for hours or a day, so merges stay small and integration problems surface immediately. It is the strategy continuous delivery assumes, usually paired with feature flags for work that is not ready to be seen.",
     "whyWrong": {
       "B": "GitFlow's long-lived develop and release branches deliberately delay integration.",
@@ -20,9 +34,16 @@
       "D": "Forks with sprint-end merges are the opposite of daily integration."
     },
     "docs": [
-      { "title": "Adopt a Git branching strategy", "url": "https://learn.microsoft.com/azure/devops/repos/git/git-branching-guidance" }
+      {
+        "title": "Adopt a Git branching strategy",
+        "url": "https://learn.microsoft.com/azure/devops/repos/git/git-branching-guidance"
+      }
     ],
-    "tags": ["git", "branching", "trunk-based"]
+    "tags": [
+      "git",
+      "branching",
+      "trunk-based"
+    ]
   },
   {
     "id": "s-branch-002",
@@ -32,12 +53,26 @@
     "difficulty": 2,
     "stem": "Which branch policy setting stops a pull request being completed until the linked build succeeds?",
     "options": [
-      { "id": "A", "text": "A build validation policy set to required" },
-      { "id": "B", "text": "A minimum number of reviewers" },
-      { "id": "C", "text": "A comment resolution requirement" },
-      { "id": "D", "text": "A merge strategy restriction" }
+      {
+        "id": "A",
+        "text": "A build validation policy set to required"
+      },
+      {
+        "id": "B",
+        "text": "A minimum number of reviewers"
+      },
+      {
+        "id": "C",
+        "text": "A comment resolution requirement"
+      },
+      {
+        "id": "D",
+        "text": "A merge strategy restriction"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Build validation queues the pipeline against the merged result and blocks completion until it passes. Set to optional it still runs but does not block, which is a useful way to introduce a new check without breaking everyone's flow.",
     "whyWrong": {
       "B": "Reviewer counts gate on people, not on a build.",
@@ -45,9 +80,16 @@
       "D": "Merge strategy controls the shape of the resulting history."
     },
     "docs": [
-      { "title": "Branch policies", "url": "https://learn.microsoft.com/azure/devops/repos/git/branch-policies" }
+      {
+        "title": "Branch policies",
+        "url": "https://learn.microsoft.com/azure/devops/repos/git/branch-policies"
+      }
     ],
-    "tags": ["azure-repos", "branch-policies", "pull-requests"]
+    "tags": [
+      "azure-repos",
+      "branch-policies",
+      "pull-requests"
+    ]
   },
   {
     "id": "s-branch-003",
@@ -57,12 +99,26 @@
     "difficulty": 3,
     "stem": "Certain files must be reviewed by the security team whenever they change, automatically, on every pull request. What implements this?",
     "options": [
-      { "id": "A", "text": "An automatically included reviewers policy scoped to those file paths" },
-      { "id": "B", "text": "A required build validation on those files" },
-      { "id": "C", "text": "A branch lock on the paths" },
-      { "id": "D", "text": "A repository-level permission denying others write access" }
+      {
+        "id": "A",
+        "text": "An automatically included reviewers policy scoped to those file paths"
+      },
+      {
+        "id": "B",
+        "text": "A required build validation on those files"
+      },
+      {
+        "id": "C",
+        "text": "A branch lock on the paths"
+      },
+      {
+        "id": "D",
+        "text": "A repository-level permission denying others write access"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Azure Repos can add specific reviewers automatically when a pull request touches matching paths, and make them required. GitHub's equivalent is a `CODEOWNERS` file combined with required review from code owners.",
     "whyWrong": {
       "B": "A build cannot represent a human security review.",
@@ -70,9 +126,16 @@
       "D": "Denying write access stops the change being proposed at all."
     },
     "docs": [
-      { "title": "Automatically include code reviewers", "url": "https://learn.microsoft.com/azure/devops/repos/git/branch-policies" }
+      {
+        "title": "Automatically include code reviewers",
+        "url": "https://learn.microsoft.com/azure/devops/repos/git/branch-policies"
+      }
     ],
-    "tags": ["azure-repos", "branch-policies", "code-owners"]
+    "tags": [
+      "azure-repos",
+      "branch-policies",
+      "code-owners"
+    ]
   },
   {
     "id": "s-repo-001",
@@ -82,12 +145,26 @@
     "difficulty": 2,
     "stem": "A repository has grown to several gigabytes because designers commit large binary assets. What is the appropriate fix?",
     "options": [
-      { "id": "A", "text": "Move the binaries to Git LFS so only pointers are stored in history" },
-      { "id": "B", "text": "Add the binaries to `.gitignore` and share them over a file share" },
-      { "id": "C", "text": "Run `git gc --aggressive` on the server" },
-      { "id": "D", "text": "Shallow-clone the repository in every pipeline" }
+      {
+        "id": "A",
+        "text": "Move the binaries to Git LFS so only pointers are stored in history"
+      },
+      {
+        "id": "B",
+        "text": "Add the binaries to `.gitignore` and share them over a file share"
+      },
+      {
+        "id": "C",
+        "text": "Run `git gc --aggressive` on the server"
+      },
+      {
+        "id": "D",
+        "text": "Shallow-clone the repository in every pipeline"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Git stores a complete new object for every version of a binary, so history grows without bound. LFS keeps a small pointer in the repository and the content in separate storage, which keeps clones fast while the assets remain versioned.",
     "whyWrong": {
       "B": "Ignoring them removes version control from files the team clearly needs versioned.",
@@ -95,9 +172,16 @@
       "D": "Shallow clones speed up builds but leave the repository just as large for humans."
     },
     "docs": [
-      { "title": "Manage large files with Git LFS", "url": "https://learn.microsoft.com/azure/devops/repos/git/manage-large-files" }
+      {
+        "title": "Manage large files with Git LFS",
+        "url": "https://learn.microsoft.com/azure/devops/repos/git/manage-large-files"
+      }
     ],
-    "tags": ["git", "git-lfs", "repository-health"]
+    "tags": [
+      "git",
+      "git-lfs",
+      "repository-health"
+    ]
   },
   {
     "id": "s-repo-002",
@@ -107,12 +191,26 @@
     "difficulty": 3,
     "stem": "A monolithic repository is being split so each team owns its own repo, but one shared library must remain usable from both. What is the cleanest approach?",
     "options": [
-      { "id": "A", "text": "Publish the shared library as a versioned package to an Azure Artifacts feed" },
-      { "id": "B", "text": "Add the shared library as a Git submodule in each repository" },
-      { "id": "C", "text": "Copy the library source into both repositories" },
-      { "id": "D", "text": "Keep the library in the monolith and have teams branch from it" }
+      {
+        "id": "A",
+        "text": "Publish the shared library as a versioned package to an Azure Artifacts feed"
+      },
+      {
+        "id": "B",
+        "text": "Add the shared library as a Git submodule in each repository"
+      },
+      {
+        "id": "C",
+        "text": "Copy the library source into both repositories"
+      },
+      {
+        "id": "D",
+        "text": "Keep the library in the monolith and have teams branch from it"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Packaging gives consumers an explicit, versioned dependency, so each team upgrades when it suits them and the contract is visible. This is the standard answer when a repository split needs shared code.",
     "whyWrong": {
       "B": "Submodules work but pin a commit rather than a version, and are notoriously easy to leave stale.",
@@ -120,9 +218,16 @@
       "D": "That defeats the point of splitting the monolith."
     },
     "docs": [
-      { "title": "Azure Artifacts key concepts", "url": "https://learn.microsoft.com/azure/devops/artifacts/artifacts-key-concepts" }
+      {
+        "title": "Azure Artifacts key concepts",
+        "url": "https://learn.microsoft.com/azure/devops/artifacts/artifacts-key-concepts"
+      }
     ],
-    "tags": ["repository-strategy", "monorepo", "package-management"]
+    "tags": [
+      "repository-strategy",
+      "monorepo",
+      "package-management"
+    ]
   },
   {
     "id": "s-repo-003",
@@ -132,12 +237,26 @@
     "difficulty": 3,
     "stem": "A password was committed six months ago and the commit is deep in history. What must happen?",
     "options": [
-      { "id": "A", "text": "Rotate the credential immediately, then purge it from history and force-push the rewritten branch" },
-      { "id": "B", "text": "Delete the file in a new commit and enable secret scanning" },
-      { "id": "C", "text": "Purge it from history, which makes rotation unnecessary" },
-      { "id": "D", "text": "Make the repository private and leave history intact" }
+      {
+        "id": "A",
+        "text": "Rotate the credential immediately, then purge it from history and force-push the rewritten branch"
+      },
+      {
+        "id": "B",
+        "text": "Delete the file in a new commit and enable secret scanning"
+      },
+      {
+        "id": "C",
+        "text": "Purge it from history, which makes rotation unnecessary"
+      },
+      {
+        "id": "D",
+        "text": "Make the repository private and leave history intact"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Rotation comes first and matters most: anyone who cloned the repository still holds the secret, and history rewriting cannot reach those copies. Purging history is worth doing afterwards to stop it spreading further.",
     "whyWrong": {
       "B": "Deleting the file leaves the secret in every earlier commit.",
@@ -145,9 +264,16 @@
       "D": "Restricting access does nothing about clones already taken."
     },
     "docs": [
-      { "title": "Remove sensitive data from a repository", "url": "https://learn.microsoft.com/azure/devops/repos/git/remove-file-from-git" }
+      {
+        "title": "Removing sensitive data from a repository",
+        "url": "https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository"
+      }
     ],
-    "tags": ["git", "secrets", "incident-response"]
+    "tags": [
+      "git",
+      "secrets",
+      "incident-response"
+    ]
   },
   {
     "id": "s-pr-001",
@@ -157,12 +283,26 @@
     "difficulty": 2,
     "stem": "Which pull request merge strategy produces a single commit on the target branch, discarding the individual commits from the source branch?",
     "options": [
-      { "id": "A", "text": "Squash merge" },
-      { "id": "B", "text": "Merge (no fast-forward)" },
-      { "id": "C", "text": "Rebase and fast-forward" },
-      { "id": "D", "text": "Semi-linear merge" }
+      {
+        "id": "A",
+        "text": "Squash merge"
+      },
+      {
+        "id": "B",
+        "text": "Merge (no fast-forward)"
+      },
+      {
+        "id": "C",
+        "text": "Rebase and fast-forward"
+      },
+      {
+        "id": "D",
+        "text": "Semi-linear merge"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Squash collapses the branch into one commit on the target, which keeps `main` readable at the cost of losing the individual steps. Rebase replays each commit onto the tip, preserving them in a linear history.",
     "whyWrong": {
       "B": "A no-fast-forward merge keeps every source commit plus a merge commit.",
@@ -170,9 +310,16 @@
       "D": "Semi-linear rebases then creates a merge commit, keeping the individual commits."
     },
     "docs": [
-      { "title": "Merge strategies and squash merge", "url": "https://learn.microsoft.com/azure/devops/repos/git/merging-with-squash" }
+      {
+        "title": "Merge strategies and squash merge",
+        "url": "https://learn.microsoft.com/azure/devops/repos/git/merging-with-squash"
+      }
     ],
-    "tags": ["git", "pull-requests", "merge-strategy"]
+    "tags": [
+      "git",
+      "pull-requests",
+      "merge-strategy"
+    ]
   },
   {
     "id": "s-pr-002",
@@ -182,18 +329,46 @@
     "difficulty": 2,
     "stem": "Order the steps of a governed change reaching `main` in a trunk-based repository.",
     "options": [
-      { "id": "1", "text": "Create a short-lived branch from main" },
-      { "id": "2", "text": "Open a pull request, which triggers build validation" },
-      { "id": "3", "text": "Required reviewers approve and all comments are resolved" },
-      { "id": "4", "text": "Complete the pull request, merging into main" },
-      { "id": "5", "text": "Delete the source branch" }
+      {
+        "id": "1",
+        "text": "Create a short-lived branch from main"
+      },
+      {
+        "id": "2",
+        "text": "Open a pull request, which triggers build validation"
+      },
+      {
+        "id": "3",
+        "text": "Required reviewers approve and all comments are resolved"
+      },
+      {
+        "id": "4",
+        "text": "Complete the pull request, merging into main"
+      },
+      {
+        "id": "5",
+        "text": "Delete the source branch"
+      }
     ],
-    "correct": ["1", "2", "3", "4", "5"],
+    "correct": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
     "explanation": "The gates run before the merge, not after — that is the whole point of a branch policy. Deleting the branch on completion keeps the repository tidy and can be set as the default in Azure Repos.",
     "docs": [
-      { "title": "Pull requests", "url": "https://learn.microsoft.com/azure/devops/repos/git/pull-requests" }
+      {
+        "title": "Pull requests",
+        "url": "https://learn.microsoft.com/azure/devops/repos/git/pull-requests"
+      }
     ],
-    "tags": ["git", "pull-requests", "workflow"]
+    "tags": [
+      "git",
+      "pull-requests",
+      "workflow"
+    ]
   },
   {
     "id": "s-gh-001",
@@ -203,12 +378,26 @@
     "difficulty": 2,
     "stem": "Which file makes GitHub request review from a named team whenever files under `/infra` change?",
     "options": [
-      { "id": "A", "text": "`CODEOWNERS`" },
-      { "id": "B", "text": "`.gitattributes`" },
-      { "id": "C", "text": "`dependabot.yml`" },
-      { "id": "D", "text": "`.github/pull_request_template.md`" }
+      {
+        "id": "A",
+        "text": "`CODEOWNERS`"
+      },
+      {
+        "id": "B",
+        "text": "`.gitattributes`"
+      },
+      {
+        "id": "C",
+        "text": "`dependabot.yml`"
+      },
+      {
+        "id": "D",
+        "text": "`.github/pull_request_template.md`"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "`CODEOWNERS` maps path patterns to owning users or teams, and combined with the branch protection rule requiring review from code owners it becomes a hard gate rather than a suggestion.",
     "whyWrong": {
       "B": "`.gitattributes` controls line endings, diff behaviour and LFS tracking.",
@@ -216,8 +405,15 @@
       "D": "A template pre-fills the pull request description."
     },
     "docs": [
-      { "title": "About code owners", "url": "https://docs.github.com/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners" }
+      {
+        "title": "About code owners",
+        "url": "https://docs.github.com/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners"
+      }
     ],
-    "tags": ["github", "code-owners", "governance"]
+    "tags": [
+      "github",
+      "code-owners",
+      "governance"
+    ]
   }
 ]

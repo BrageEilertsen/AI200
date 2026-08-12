@@ -35,8 +35,8 @@
     },
     "docs": [
       {
-        "title": "Vector search in Azure Managed Redis",
-        "url": "https://learn.microsoft.com/azure/redis/how-to-vector-search"
+        "title": "Vector similarity search with Azure Cache for Redis",
+        "url": "https://learn.microsoft.com/azure/azure-cache-for-redis/cache-tutorial-vector-similarity"
       }
     ],
     "tags": [
@@ -81,8 +81,8 @@
     },
     "docs": [
       {
-        "title": "Vector search in Azure Managed Redis",
-        "url": "https://learn.microsoft.com/azure/redis/how-to-vector-search"
+        "title": "Vector similarity search with Azure Cache for Redis",
+        "url": "https://learn.microsoft.com/azure/azure-cache-for-redis/cache-tutorial-vector-similarity"
       }
     ],
     "tags": [
@@ -173,8 +173,8 @@
     },
     "docs": [
       {
-        "title": "Vector search in Azure Managed Redis",
-        "url": "https://learn.microsoft.com/azure/redis/how-to-vector-search"
+        "title": "Vector similarity search with Azure Cache for Redis",
+        "url": "https://learn.microsoft.com/azure/azure-cache-for-redis/cache-tutorial-vector-similarity"
       }
     ],
     "tags": [

@@ -975,7 +975,7 @@ tbody tr:first-child td { border-top: none; }
 
 /* ═══════════════ exam switcher ═══════════════ */
 
-.exam-switch { padding: 0 4px; }
+.exam-switch { padding: 0 4px; position: relative; }
 
 .exam-switch-label {
     font-size: 10.5px;
@@ -986,12 +986,126 @@ tbody tr:first-child td { border-top: none; }
     margin: 0 6px 6px;
 }
 
-.exam-switch select {
+/* The trigger and menu are hand-built because a native <select> popup is drawn by the OS
+   and cannot be styled — it broke out of the app's shapes and type the moment it opened. */
+.exam-trigger {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     width: 100%;
-    font-size: 12.5px;
-    font-weight: 500;
-    padding: 7px 9px;
+    text-align: left;
+    padding: 8px 10px 8px 12px;
+    border: none;
+    border-radius: 10px;
     background-color: var(--surface);
+    box-shadow: var(--shadow-1);
+    color: var(--text);
+    font: inherit;
+    cursor: pointer;
+    transition: background-color .18s ease, box-shadow .18s ease;
+}
+
+.exam-trigger:hover { background-color: var(--surface-2); }
+.exam-switch.open .exam-trigger { background-color: var(--surface-2); box-shadow: var(--shadow-2); }
+
+.exam-trigger-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; flex: 1; }
+
+.exam-trigger-code {
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: -.006em;
+    line-height: 1.25;
+}
+
+.exam-trigger-cert {
+    font-size: 11px;
+    font-weight: 450;
+    color: var(--text-3);
+    line-height: 1.3;
+    letter-spacing: -.003em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.exam-chevron {
+    width: 10px;
+    height: 6px;
+    flex: none;
+    color: var(--text-3);
+    transition: transform .22s cubic-bezier(.4, 0, .2, 1);
+}
+
+.exam-switch.open .exam-chevron { transform: rotate(180deg); }
+
+.exam-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 39;
+    background: none;
+}
+
+.exam-menu {
+    position: absolute;
+    z-index: 40;
+    left: 4px;
+    right: 4px;
+    top: calc(100% + 6px);
+    padding: 5px;
+    border-radius: 12px;
+    background-color: var(--surface);
+    box-shadow: var(--shadow-2);
+    animation: exam-menu-in .16s cubic-bezier(.4, 0, .2, 1);
+}
+
+@keyframes exam-menu-in {
+    from { opacity: 0; transform: translateY(-4px) scale(.98); }
+    to   { opacity: 1; transform: none; }
+}
+
+.exam-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    text-align: left;
+    padding: 7px 9px;
+    border: none;
+    border-radius: 8px;
+    background-color: transparent;
+    color: var(--text);
+    font: inherit;
+    cursor: pointer;
+}
+
+.exam-option.active { background-color: var(--surface-2); }
+.exam-option.on .exam-option-code { color: var(--accent); }
+
+.exam-option-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; flex: 1; }
+
+.exam-option-code {
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: -.006em;
+    line-height: 1.25;
+}
+
+.exam-option-cert {
+    font-size: 11px;
+    font-weight: 450;
+    color: var(--text-3);
+    line-height: 1.3;
+    letter-spacing: -.003em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.exam-check { width: 12px; height: 10px; flex: none; color: var(--accent); }
+
+@media (prefers-reduced-motion: reduce) {
+    .exam-menu { animation: none; }
+    .exam-chevron { transition: none; }
 }
 
 /* ═══════════════ countdown ═══════════════ */

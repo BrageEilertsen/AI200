@@ -1,22 +1,81 @@
 @rendermode InteractiveServer
+@implements IDisposable
 @inject ExamContext Exams
 
+@*
+    A hand-built listbox rather than a <select>. The native popup is drawn by the operating
+    system and ignores CSS entirely, so on click it dropped out of the app's type and shape
+    into plain system rectangles. This keeps the menu inside the page where it can be styled.
+*@
 @if (Exams.HasMultipleExams)
 {
-    <div class="exam-switch">
-        <div class="exam-switch-label">Studying</div>
-        <select value="@Exams.Exam.Slug" @onchange="OnChanged" aria-label="Certification exam">
-            @foreach (var bank in Exams.All)
-            {
-                <option value="@bank.Definition.Slug" selected="@(bank.Definition.Slug == Exams.Exam.Slug)">
-                    @bank.Definition.Code — @bank.Definition.Certification
-                </option>
-            }
-        </select>
+    <div class="exam-switch @(_open ? "open" : "")" @onfocusout="OnFocusOut">
+        <div class="exam-switch-label" id="exam-switch-label">Studying</div>
+
+        <button type="button"
+                class="exam-trigger"
+                @onclick="Toggle"
+                @onkeydown="OnTriggerKey"
+                aria-haspopup="listbox"
+                aria-expanded="@_open.ToString().ToLowerInvariant()"
+                aria-labelledby="exam-switch-label exam-switch-value">
+            <span class="exam-trigger-text" id="exam-switch-value">
+                <span class="exam-trigger-code">@Exams.Exam.Code</span>
+                <span class="exam-trigger-cert">@Exams.Exam.Certification</span>
+            </span>
+            <svg class="exam-chevron" viewBox="0 0 10 6" aria-hidden="true">
+                <path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5"
+                      stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+        </button>
+
+        @if (_open)
+        {
+            @* Most of the page is not focusable, so a click on plain background never moves
+               focus and focusout alone would leave the menu hanging open. This catches it. *@
+            <div class="exam-backdrop" @onclick="Close"></div>
+
+            <div class="exam-menu" role="listbox" aria-labelledby="exam-switch-label">
+                @foreach (var (bank, i) in Exams.All.Select((b, i) => (b, i)))
+                {
+                    var slug = bank.Definition.Slug;
+                    var current = slug == Exams.Exam.Slug;
+
+                    <button type="button"
+                            role="option"
+                            aria-selected="@current.ToString().ToLowerInvariant()"
+                            class="exam-option @(current ? "on" : "") @(i == _active ? "active" : "")"
+                            @onclick="() => Choose(slug)"
+                            @onkeydown="OnMenuKey"
+                            @onmouseenter="() => _active = i">
+                        <span class="exam-option-text">
+                            <span class="exam-option-code">@bank.Definition.Code</span>
+                            <span class="exam-option-cert">@bank.Definition.Certification</span>
+                        </span>
+                        @if (current)
+                        {
+                            <svg class="exam-check" viewBox="0 0 12 10" aria-hidden="true">
+                                <path d="M1 5l3.4 3.4L11 1.6" fill="none" stroke="currentColor"
+                                      stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        }
+                    </button>
+                }
+            </div>
+        }
     </div>
 }
 
 @code {
+    private bool _open;
+    private int _active;
+
+    protected override void OnInitialized() => Exams.Changed += Refresh;
+
+    public void Dispose() => Exams.Changed -= Refresh;
+
+    private void Refresh() => InvokeAsync(StateHasChanged);
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         // The remembered exam lives in the browser, so the first render shows the default.
@@ -26,11 +85,73 @@
         }
     }
 
-    private async Task OnChanged(ChangeEventArgs e)
+    private void Toggle()
     {
-        if (e.Value?.ToString() is { Length: > 0 } slug)
+        _open = !_open;
+        if (_open) _active = IndexOfCurrent();
+    }
+
+    private void Close() => _open = false;
+
+    private int IndexOfCurrent()
+    {
+        for (var i = 0; i < Exams.All.Count; i++)
         {
-            await Exams.SelectAsync(slug);
+            if (Exams.All[i].Definition.Slug == Exams.Exam.Slug) return i;
+        }
+        return 0;
+    }
+
+    private async Task Choose(string slug)
+    {
+        _open = false;
+        await Exams.SelectAsync(slug);
+    }
+
+    /// <summary>
+    /// Closes when focus leaves the whole control. Blazor gives focusout on the container
+    /// because the event bubbles, which is what makes a click elsewhere on the page dismiss
+    /// the menu without a document-level listener.
+    /// </summary>
+    private void OnFocusOut(FocusEventArgs _) => _open = false;
+
+    private void OnTriggerKey(KeyboardEventArgs e)
+    {
+        switch (e.Key)
+        {
+            case "ArrowDown" or "ArrowUp" or "Enter" or " ":
+                if (!_open) { _open = true; _active = IndexOfCurrent(); }
+                break;
+            case "Escape":
+                _open = false;
+                break;
+        }
+    }
+
+    private async Task OnMenuKey(KeyboardEventArgs e)
+    {
+        var count = Exams.All.Count;
+
+        switch (e.Key)
+        {
+            case "ArrowDown":
+                _active = (_active + 1) % count;
+                break;
+            case "ArrowUp":
+                _active = (_active - 1 + count) % count;
+                break;
+            case "Home":
+                _active = 0;
+                break;
+            case "End":
+                _active = count - 1;
+                break;
+            case "Escape":
+                _open = false;
+                break;
+            case "Enter" or " ":
+                await Choose(Exams.All[_active].Definition.Slug);
+                break;
         }
     }
 }

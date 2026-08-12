@@ -7,12 +7,26 @@
     "difficulty": 3,
     "stem": "A release goes to internal staff, then to a set of pilot customers, then to everyone, with a bake time at each stage. What is this called?",
     "options": [
-      { "id": "A", "text": "Ring-based deployment, a progressive exposure strategy" },
-      { "id": "B", "text": "A/B testing" },
-      { "id": "C", "text": "Blue-green deployment" },
-      { "id": "D", "text": "Rolling deployment" }
+      {
+        "id": "A",
+        "text": "Ring-based deployment, a progressive exposure strategy"
+      },
+      {
+        "id": "B",
+        "text": "A/B testing"
+      },
+      {
+        "id": "C",
+        "text": "Blue-green deployment"
+      },
+      {
+        "id": "D",
+        "text": "Rolling deployment"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Rings are named cohorts — staff, then pilots, then everyone — each with a bake time long enough for problems to surface. Canary is the same family, expressed as a traffic percentage rather than a named audience.",
     "whyWrong": {
       "B": "A/B testing compares two variants to measure which performs better; it is an experiment, not a release-safety mechanism.",
@@ -20,9 +34,16 @@
       "D": "Rolling replaces instances gradually but does not target audiences."
     },
     "docs": [
-      { "title": "Progressive exposure deployments", "url": "https://learn.microsoft.com/devops/deliver/deploy-raspberry-pi-cluster" }
+      {
+        "title": "Phase rollout with rings",
+        "url": "https://learn.microsoft.com/azure/devops/migrate/phase-rollout-with-rings"
+      }
     ],
-    "tags": ["deployment-strategy", "rings", "progressive-exposure"]
+    "tags": [
+      "deployment-strategy",
+      "rings",
+      "progressive-exposure"
+    ]
   },
   {
     "id": "p-dep-007",
@@ -32,12 +53,26 @@
     "difficulty": 2,
     "stem": "Two variants of a checkout page are served to different users so the team can measure which produces more completed orders. What is this?",
     "options": [
-      { "id": "A", "text": "A/B testing, an experiment measuring a business outcome" },
-      { "id": "B", "text": "Canary deployment, limiting the blast radius of a release" },
-      { "id": "C", "text": "Blue-green deployment, allowing instant rollback" },
-      { "id": "D", "text": "Ring-based deployment, exposing cohorts in sequence" }
+      {
+        "id": "A",
+        "text": "A/B testing, an experiment measuring a business outcome"
+      },
+      {
+        "id": "B",
+        "text": "Canary deployment, limiting the blast radius of a release"
+      },
+      {
+        "id": "C",
+        "text": "Blue-green deployment, allowing instant rollback"
+      },
+      {
+        "id": "D",
+        "text": "Ring-based deployment, exposing cohorts in sequence"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "A/B testing asks which variant is better; canary and rings ask whether the new build is safe. The mechanics can look identical — often both are driven by feature flags — but the question being answered is different, and the exam tests exactly that distinction.",
     "whyWrong": {
       "B": "Canary watches health signals to decide whether to continue, not which variant sells more.",
@@ -45,9 +80,16 @@
       "D": "Rings sequence a rollout; they do not compare variants."
     },
     "docs": [
-      { "title": "Feature management overview", "url": "https://learn.microsoft.com/azure/azure-app-configuration/concept-feature-management" }
+      {
+        "title": "Feature management overview",
+        "url": "https://learn.microsoft.com/azure/azure-app-configuration/concept-feature-management"
+      }
     ],
-    "tags": ["deployment-strategy", "ab-testing", "experimentation"]
+    "tags": [
+      "deployment-strategy",
+      "ab-testing",
+      "experimentation"
+    ]
   },
   {
     "id": "p-pkg-004",
@@ -57,12 +99,26 @@
     "difficulty": 2,
     "stem": "A package is versioned `2026.08.3`. Which versioning scheme is in use, and what does it tell a consumer?",
     "options": [
-      { "id": "A", "text": "CalVer — it conveys when the release was made, but not whether it breaks compatibility" },
-      { "id": "B", "text": "SemVer — the leading number is the major version, so this release is breaking" },
-      { "id": "C", "text": "CalVer — the third component always signals a breaking change" },
-      { "id": "D", "text": "SemVer with a date-based prerelease tag" }
+      {
+        "id": "A",
+        "text": "CalVer — it conveys when the release was made, but not whether it breaks compatibility"
+      },
+      {
+        "id": "B",
+        "text": "SemVer — the leading number is the major version, so this release is breaking"
+      },
+      {
+        "id": "C",
+        "text": "CalVer — the third component always signals a breaking change"
+      },
+      {
+        "id": "D",
+        "text": "SemVer with a date-based prerelease tag"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Calendar versioning encodes the release date, which suits products released on a cadence — operating systems, SaaS, tooling. Its trade-off is that compatibility is not visible in the number, so libraries other people compile against usually want SemVer instead.",
     "whyWrong": {
       "B": "2026 is a year, not a major version, and CalVer makes no compatibility promise.",
@@ -70,9 +126,16 @@
       "D": "There is no prerelease tag here, and the whole version is calendar-based."
     },
     "docs": [
-      { "title": "Package versioning", "url": "https://learn.microsoft.com/azure/devops/artifacts/artifacts-key-concepts" }
+      {
+        "title": "Package versioning",
+        "url": "https://learn.microsoft.com/azure/devops/artifacts/artifacts-key-concepts"
+      }
     ],
-    "tags": ["package-management", "calver", "versioning"]
+    "tags": [
+      "package-management",
+      "calver",
+      "versioning"
+    ]
   },
   {
     "id": "p-yaml-005",
@@ -82,12 +145,26 @@
     "difficulty": 3,
     "stem": "An application pipeline must run automatically whenever the shared infrastructure pipeline completes successfully. How is that expressed in YAML?",
     "options": [
-      { "id": "A", "text": "A pipeline resource under `resources: pipelines:` with a `trigger`" },
-      { "id": "B", "text": "A `dependsOn` referring to the infrastructure pipeline" },
-      { "id": "C", "text": "A scheduled trigger timed to run after the infrastructure pipeline" },
-      { "id": "D", "text": "A repository resource pointing at the infrastructure repository" }
+      {
+        "id": "A",
+        "text": "A pipeline resource under `resources: pipelines:` with a `trigger`"
+      },
+      {
+        "id": "B",
+        "text": "A `dependsOn` referring to the infrastructure pipeline"
+      },
+      {
+        "id": "C",
+        "text": "A scheduled trigger timed to run after the infrastructure pipeline"
+      },
+      {
+        "id": "D",
+        "text": "A repository resource pointing at the infrastructure repository"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "A pipeline resource declares a dependency on another pipeline's completion and can trigger on it, which also makes that pipeline's artifacts available for download. `dependsOn` only orders stages and jobs inside one pipeline.",
     "whyWrong": {
       "B": "`dependsOn` cannot reference another pipeline.",
@@ -95,9 +172,17 @@
       "D": "A repository resource gives you the source, not a completion trigger."
     },
     "docs": [
-      { "title": "Pipeline resource triggers", "url": "https://learn.microsoft.com/azure/devops/pipelines/process/resources" }
+      {
+        "title": "Pipeline resource triggers",
+        "url": "https://learn.microsoft.com/azure/devops/pipelines/process/resources"
+      }
     ],
-    "tags": ["azure-pipelines", "yaml", "resources", "triggers"]
+    "tags": [
+      "azure-pipelines",
+      "yaml",
+      "resources",
+      "triggers"
+    ]
   },
   {
     "id": "p-yaml-006",
@@ -107,22 +192,44 @@
     "difficulty": 2,
     "stem": "The same build must run against three .NET versions, in parallel, from one job definition. What do you use?",
     "options": [
-      { "id": "A", "text": "A matrix strategy on the job" },
-      { "id": "B", "text": "Three separate jobs with a shared step template" },
-      { "id": "C", "text": "A `parallel` strategy with `parallel: 3`" },
-      { "id": "D", "text": "Three stages with no `dependsOn` between them" }
+      {
+        "id": "A",
+        "text": "A matrix strategy on the job"
+      },
+      {
+        "id": "B",
+        "text": "Three separate jobs with a shared step template"
+      },
+      {
+        "id": "C",
+        "text": "A `parallel` strategy with `parallel: 3`"
+      },
+      {
+        "id": "D",
+        "text": "Three stages with no `dependsOn` between them"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "A matrix expands one job definition into several parallel copies, each with different variable values. `parallel` — slicing — splits the *same* work across agents, which is for test distribution rather than varying configuration.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "A matrix expands one job definition into several parallel copies, each with different variable values. `parallel` — slicing — splits the same work across agents, which is for test distribution rather than varying configuration.",
     "whyWrong": {
       "B": "This works but duplicates the job three times, which is what the matrix removes.",
       "C": "Slicing runs the same configuration on several agents; it does not vary the .NET version.",
       "D": "Stages carry more overhead and still need three definitions."
     },
     "docs": [
-      { "title": "Jobs in Azure Pipelines", "url": "https://learn.microsoft.com/azure/devops/pipelines/process/phases" }
+      {
+        "title": "Jobs in Azure Pipelines",
+        "url": "https://learn.microsoft.com/azure/devops/pipelines/process/phases"
+      }
     ],
-    "tags": ["azure-pipelines", "yaml", "matrix", "parallelism"]
+    "tags": [
+      "azure-pipelines",
+      "yaml",
+      "matrix",
+      "parallelism"
+    ]
   },
   {
     "id": "p-mon-004",
@@ -132,12 +239,26 @@
     "difficulty": 2,
     "stem": "Pipeline artifact storage costs are rising and most stored builds will never be deployed. What is the appropriate control?",
     "options": [
-      { "id": "A", "text": "A retention policy that keeps recent and released runs and lets the rest expire" },
-      { "id": "B", "text": "Stop publishing artifacts and rebuild from source when a deployment is needed" },
-      { "id": "C", "text": "Publish artifacts to a storage account instead of the pipeline" },
-      { "id": "D", "text": "Reduce the number of pipeline runs by batching commits" }
+      {
+        "id": "A",
+        "text": "A retention policy that keeps recent and released runs and lets the rest expire"
+      },
+      {
+        "id": "B",
+        "text": "Stop publishing artifacts and rebuild from source when a deployment is needed"
+      },
+      {
+        "id": "C",
+        "text": "Publish artifacts to a storage account instead of the pipeline"
+      },
+      {
+        "id": "D",
+        "text": "Reduce the number of pipeline runs by batching commits"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Retention policies expire old runs and their artifacts automatically, and runs can be retained explicitly — leases — so anything released is kept. That is the balance between cost and being able to redeploy or investigate a past build.",
     "whyWrong": {
       "B": "Rebuilding breaks build-once-deploy-many: you can no longer prove the deployed bits match what was tested.",
@@ -145,9 +266,16 @@
       "D": "Batching reduces feedback frequency to solve a storage problem."
     },
     "docs": [
-      { "title": "Build and release retention policies", "url": "https://learn.microsoft.com/azure/devops/pipelines/policies/retention" }
+      {
+        "title": "Build and release retention policies",
+        "url": "https://learn.microsoft.com/azure/devops/pipelines/policies/retention"
+      }
     ],
-    "tags": ["pipeline-health", "retention", "cost"]
+    "tags": [
+      "pipeline-health",
+      "retention",
+      "cost"
+    ]
   },
   {
     "id": "p-iac-006",
@@ -157,12 +285,26 @@
     "difficulty": 3,
     "stem": "Developers need to spin up their own test environments in Azure without being granted subscription access, and only from templates the platform team approves. Which service is designed for this?",
     "options": [
-      { "id": "A", "text": "Azure Deployment Environments, with a catalog of environment definitions from a Git repository" },
-      { "id": "B", "text": "Azure Machine Configuration" },
-      { "id": "C", "text": "Azure Policy with a deny effect on unapproved resource types" },
-      { "id": "D", "text": "A shared Bicep module registry" }
+      {
+        "id": "A",
+        "text": "Azure Deployment Environments, with a catalog of environment definitions from a Git repository"
+      },
+      {
+        "id": "B",
+        "text": "Azure Machine Configuration"
+      },
+      {
+        "id": "C",
+        "text": "Azure Policy with a deny effect on unapproved resource types"
+      },
+      {
+        "id": "D",
+        "text": "A shared Bicep module registry"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Deployment Environments give developers self-service from a curated catalog, and the deployment runs under the platform's identity — so developers get environments without standing subscription permissions.",
     "whyWrong": {
       "B": "Machine Configuration manages settings inside VM guest operating systems.",
@@ -170,9 +312,16 @@
       "D": "A module registry helps whoever is already writing and deploying templates."
     },
     "docs": [
-      { "title": "What is Azure Deployment Environments?", "url": "https://learn.microsoft.com/azure/deployment-environments/overview-what-is-azure-deployment-environments" }
+      {
+        "title": "What is Azure Deployment Environments?",
+        "url": "https://learn.microsoft.com/azure/deployment-environments/overview-what-is-azure-deployment-environments"
+      }
     ],
-    "tags": ["iac", "deployment-environments", "self-service"]
+    "tags": [
+      "iac",
+      "deployment-environments",
+      "self-service"
+    ]
   },
   {
     "id": "s-branch-004",
@@ -182,12 +331,26 @@
     "difficulty": 2,
     "stem": "Which description matches GitHub Flow?",
     "options": [
-      { "id": "A", "text": "One always-deployable `main`; work happens on branches merged back via pull request" },
-      { "id": "B", "text": "Long-lived `develop` and `main` branches with release and hotfix branches between them" },
-      { "id": "C", "text": "A branch per environment, promoted by merging upward" },
-      { "id": "D", "text": "All commits go directly to `main` with no branches at all" }
+      {
+        "id": "A",
+        "text": "One always-deployable `main`; work happens on branches merged back via pull request"
+      },
+      {
+        "id": "B",
+        "text": "Long-lived `develop` and `main` branches with release and hotfix branches between them"
+      },
+      {
+        "id": "C",
+        "text": "A branch per environment, promoted by merging upward"
+      },
+      {
+        "id": "D",
+        "text": "All commits go directly to `main` with no branches at all"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "GitHub Flow is deliberately minimal: `main` is always deployable, everything else is a short-lived branch reviewed through a pull request. Its simplicity is the point — it fits teams deploying continuously.",
     "whyWrong": {
       "B": "That is GitFlow, which GitHub Flow was a reaction against.",
@@ -195,9 +358,16 @@
       "D": "Committing straight to main is not GitHub Flow; the pull request is central to it."
     },
     "docs": [
-      { "title": "GitHub flow", "url": "https://docs.github.com/get-started/using-github/github-flow" }
+      {
+        "title": "GitHub flow",
+        "url": "https://docs.github.com/get-started/using-github/github-flow"
+      }
     ],
-    "tags": ["git", "branching", "github-flow"]
+    "tags": [
+      "git",
+      "branching",
+      "github-flow"
+    ]
   },
   {
     "id": "s-repo-004",
@@ -207,22 +377,43 @@
     "difficulty": 3,
     "stem": "A repository with a very long history and hundreds of thousands of files takes many minutes to clone and status-check. Which tool is designed for that problem?",
     "options": [
-      { "id": "A", "text": "Scalar, which configures partial clone, sparse-checkout and background maintenance" },
-      { "id": "B", "text": "Git LFS, which moves file content out of history" },
-      { "id": "C", "text": "`git gc --aggressive` run after each clone" },
-      { "id": "D", "text": "Splitting the repository into one repository per directory" }
+      {
+        "id": "A",
+        "text": "Scalar, which configures partial clone, sparse-checkout and background maintenance"
+      },
+      {
+        "id": "B",
+        "text": "Git LFS, which moves file content out of history"
+      },
+      {
+        "id": "C",
+        "text": "`git gc --aggressive` run after each clone"
+      },
+      {
+        "id": "D",
+        "text": "Splitting the repository into one repository per directory"
+      }
     ],
-    "correct": ["A"],
-    "explanation": "Scalar targets repository *scale* — number of files and depth of history — by fetching objects on demand and materialising only the paths you work on. LFS targets a different problem: individual large binaries.",
+    "correct": [
+      "A"
+    ],
+    "explanation": "Scalar targets repository scale — number of files and depth of history — by fetching objects on demand and materialising only the paths you work on. LFS targets a different problem: individual large binaries.",
     "whyWrong": {
       "B": "LFS helps when a few files are huge, not when there are simply very many of them.",
       "C": "Garbage collection is a one-off tidy, not a strategy for scale.",
       "D": "Splitting may be right eventually, but it is a re-architecture rather than a tool for this problem."
     },
     "docs": [
-      { "title": "Scale your Git repository", "url": "https://learn.microsoft.com/azure/devops/repos/git/scale-git-repos" }
+      {
+        "title": "scalar - Git documentation",
+        "url": "https://git-scm.com/docs/scalar"
+      }
     ],
-    "tags": ["git", "scalar", "repository-health"]
+    "tags": [
+      "git",
+      "scalar",
+      "repository-health"
+    ]
   },
   {
     "id": "pr-comm-003",
@@ -232,12 +423,26 @@
     "difficulty": 2,
     "stem": "An architecture diagram should live in the Azure DevOps wiki and be versioned as text rather than pasted as an image. What supports that?",
     "options": [
-      { "id": "A", "text": "A Mermaid diagram in a `::: mermaid` block in the wiki page" },
-      { "id": "B", "text": "An SVG attachment uploaded to the wiki" },
-      { "id": "C", "text": "A Visio file stored in the repository" },
-      { "id": "D", "text": "A markdown table describing the components" }
+      {
+        "id": "A",
+        "text": "A Mermaid diagram in a `::: mermaid` block in the wiki page"
+      },
+      {
+        "id": "B",
+        "text": "An SVG attachment uploaded to the wiki"
+      },
+      {
+        "id": "C",
+        "text": "A Visio file stored in the repository"
+      },
+      {
+        "id": "D",
+        "text": "A markdown table describing the components"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Azure DevOps wikis render Mermaid from a `::: mermaid` fenced block, so the diagram is plain text — it diffs in a pull request and never drifts from the page it lives on.",
     "whyWrong": {
       "B": "An SVG diffs poorly and has to be regenerated elsewhere.",
@@ -245,9 +450,17 @@
       "D": "A table is not a diagram."
     },
     "docs": [
-      { "title": "Markdown syntax for wikis", "url": "https://learn.microsoft.com/azure/devops/project/wiki/wiki-markdown-guidance" }
+      {
+        "title": "Markdown syntax for wikis",
+        "url": "https://learn.microsoft.com/azure/devops/project/wiki/wiki-markdown-guidance"
+      }
     ],
-    "tags": ["collaboration", "wiki", "mermaid", "documentation"]
+    "tags": [
+      "collaboration",
+      "wiki",
+      "mermaid",
+      "documentation"
+    ]
   },
   {
     "id": "pr-comm-004",
@@ -257,12 +470,26 @@
     "difficulty": 2,
     "stem": "Release notes should be generated from the commits between the last release tag and this one, with no manual writing. What makes that reliable?",
     "options": [
-      { "id": "A", "text": "A conventional commit message format, so a pipeline step can parse and group the history" },
-      { "id": "B", "text": "A wiki page that reviewers update before each release" },
-      { "id": "C", "text": "A work item query filtered to the current iteration" },
-      { "id": "D", "text": "A longer pull request description template" }
+      {
+        "id": "A",
+        "text": "A conventional commit message format, so a pipeline step can parse and group the history"
+      },
+      {
+        "id": "B",
+        "text": "A wiki page that reviewers update before each release"
+      },
+      {
+        "id": "C",
+        "text": "A work item query filtered to the current iteration"
+      },
+      {
+        "id": "D",
+        "text": "A longer pull request description template"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Generating notes from history only works if the history is structured. A convention such as `feat:` and `fix:` prefixes lets a tool group changes and even derive the next SemVer bump.",
     "whyWrong": {
       "B": "A manually updated page is exactly the manual writing being removed.",
@@ -270,9 +497,16 @@
       "D": "A richer template helps reviewers but does not make history machine-readable."
     },
     "docs": [
-      { "title": "Release notes and documentation", "url": "https://learn.microsoft.com/azure/devops/pipelines/release/approvals" }
+      {
+        "title": "Review Git history",
+        "url": "https://learn.microsoft.com/azure/devops/repos/git/history"
+      }
     ],
-    "tags": ["collaboration", "release-notes", "automation"]
+    "tags": [
+      "collaboration",
+      "release-notes",
+      "automation"
+    ]
   },
   {
     "id": "sec-auth-003",
@@ -282,12 +516,26 @@
     "difficulty": 3,
     "stem": "A GitHub Actions workflow needs to comment on the pull request that triggered it. Which credential should it use?",
     "options": [
-      { "id": "A", "text": "The built-in `GITHUB_TOKEN`, with `pull-requests: write` in the workflow's `permissions` block" },
-      { "id": "B", "text": "A personal access token belonging to the repository owner, stored as a secret" },
-      { "id": "C", "text": "A GitHub App private key stored as a secret" },
-      { "id": "D", "text": "An SSH deploy key added to the repository" }
+      {
+        "id": "A",
+        "text": "The built-in `GITHUB_TOKEN`, with `pull-requests: write` in the workflow's `permissions` block"
+      },
+      {
+        "id": "B",
+        "text": "A personal access token belonging to the repository owner, stored as a secret"
+      },
+      {
+        "id": "C",
+        "text": "A GitHub App private key stored as a secret"
+      },
+      {
+        "id": "D",
+        "text": "An SSH deploy key added to the repository"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "`GITHUB_TOKEN` is minted for each workflow run, scoped to that repository, and expires when the job ends — nothing to store or rotate. Declaring `permissions` narrows it further, which matters because the default grant is broader than most workflows need.",
     "whyWrong": {
       "B": "A PAT is long-lived, tied to a person, and usually far broader than one repository.",
@@ -295,9 +543,17 @@
       "D": "Deploy keys grant Git access to the repository; they cannot call the pull request API."
     },
     "docs": [
-      { "title": "Automatic token authentication", "url": "https://docs.github.com/actions/security-guides/automatic-token-authentication" }
+      {
+        "title": "Authenticate with GITHUB_TOKEN",
+        "url": "https://docs.github.com/en/actions/tutorials/authenticate-with-github_token"
+      }
     ],
-    "tags": ["security", "github-actions", "github-token", "least-privilege"]
+    "tags": [
+      "security",
+      "github-actions",
+      "github-token",
+      "least-privilege"
+    ]
   },
   {
     "id": "sec-sec-003",
@@ -307,12 +563,26 @@
     "difficulty": 3,
     "stem": "A signing certificate must be available to a build but must not be committed anywhere. What does Azure Pipelines provide for this?",
     "options": [
-      { "id": "A", "text": "Secure files in the pipeline library, fetched by the Download Secure File task" },
-      { "id": "B", "text": "A secret pipeline variable holding the certificate contents" },
-      { "id": "C", "text": "A pipeline artifact published by an earlier stage" },
-      { "id": "D", "text": "A file committed to a private repository the build clones" }
+      {
+        "id": "A",
+        "text": "Secure files in the pipeline library, fetched by the Download Secure File task"
+      },
+      {
+        "id": "B",
+        "text": "A secret pipeline variable holding the certificate contents"
+      },
+      {
+        "id": "C",
+        "text": "A pipeline artifact published by an earlier stage"
+      },
+      {
+        "id": "D",
+        "text": "A file committed to a private repository the build clones"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Secure files store binaries such as certificates, keystores and provisioning profiles outside the repository. The download task places the file on the agent for the run and deletes it afterwards, so it never persists on the machine.",
     "whyWrong": {
       "B": "Variables are for strings; a certificate would have to be encoded and would be awkward to rotate.",
@@ -320,9 +590,16 @@
       "D": "A private repository is still source control, and everyone with read access gets the certificate."
     },
     "docs": [
-      { "title": "Use secure files", "url": "https://learn.microsoft.com/azure/devops/pipelines/library/secure-files" }
+      {
+        "title": "Use secure files",
+        "url": "https://learn.microsoft.com/azure/devops/pipelines/library/secure-files"
+      }
     ],
-    "tags": ["security", "secure-files", "secrets"]
+    "tags": [
+      "security",
+      "secure-files",
+      "secrets"
+    ]
   },
   {
     "id": "sec-scan-003",
@@ -332,12 +609,26 @@
     "difficulty": 3,
     "stem": "A security team wants one view of code-level findings from several Azure DevOps organisations alongside the posture of the Azure resources they deploy to. What provides that?",
     "options": [
-      { "id": "A", "text": "Microsoft Defender for Cloud DevOps security, with the organisations connected as environments" },
-      { "id": "B", "text": "A GitHub Advanced Security licence on each repository" },
-      { "id": "C", "text": "An Azure Monitor workbook querying each project's Analytics feed" },
-      { "id": "D", "text": "Azure Policy assignments at the management group" }
+      {
+        "id": "A",
+        "text": "Microsoft Defender for Cloud DevOps security, with the organisations connected as environments"
+      },
+      {
+        "id": "B",
+        "text": "A GitHub Advanced Security licence on each repository"
+      },
+      {
+        "id": "C",
+        "text": "An Azure Monitor workbook querying each project's Analytics feed"
+      },
+      {
+        "id": "D",
+        "text": "Azure Policy assignments at the management group"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Defender for Cloud's DevOps security connects Azure DevOps and GitHub organisations so code findings appear next to cloud posture — the code-to-cloud view. GHAzDO produces the findings; Defender for Cloud is where they are aggregated across organisations.",
     "whyWrong": {
       "B": "Licensing enables the scanning, but the results stay within each repository.",
@@ -345,9 +636,17 @@
       "D": "Policy governs Azure resources and never sees source code."
     },
     "docs": [
-      { "title": "DevOps security in Defender for Cloud", "url": "https://learn.microsoft.com/azure/defender-for-cloud/defender-for-devops-introduction" }
+      {
+        "title": "DevOps security in Defender for Cloud",
+        "url": "https://learn.microsoft.com/azure/defender-for-cloud/defender-for-devops-introduction"
+      }
     ],
-    "tags": ["security", "defender-for-cloud", "ghas", "posture"]
+    "tags": [
+      "security",
+      "defender-for-cloud",
+      "ghas",
+      "posture"
+    ]
   },
   {
     "id": "i-mon-007",
@@ -361,9 +660,18 @@
         "id": "b1",
         "label": "Node and pod-level performance for an AKS cluster",
         "choices": [
-          { "id": "a", "text": "Container Insights" },
-          { "id": "b", "text": "VM Insights" },
-          { "id": "c", "text": "Application Insights" }
+          {
+            "id": "a",
+            "text": "Container Insights"
+          },
+          {
+            "id": "b",
+            "text": "VM Insights"
+          },
+          {
+            "id": "c",
+            "text": "Application Insights"
+          }
         ],
         "correct": "a"
       },
@@ -371,9 +679,18 @@
         "id": "b2",
         "label": "CPU, memory and a dependency map for a fleet of virtual machines",
         "choices": [
-          { "id": "a", "text": "VM Insights" },
-          { "id": "b", "text": "Container Insights" },
-          { "id": "c", "text": "Network Watcher" }
+          {
+            "id": "a",
+            "text": "VM Insights"
+          },
+          {
+            "id": "b",
+            "text": "Container Insights"
+          },
+          {
+            "id": "c",
+            "text": "Network Watcher"
+          }
         ],
         "correct": "a"
       },
@@ -381,17 +698,34 @@
         "id": "b3",
         "label": "Request rates, response times and exceptions inside the application code",
         "choices": [
-          { "id": "a", "text": "Application Insights" },
-          { "id": "b", "text": "VM Insights" },
-          { "id": "c", "text": "Container Insights" }
+          {
+            "id": "a",
+            "text": "Application Insights"
+          },
+          {
+            "id": "b",
+            "text": "VM Insights"
+          },
+          {
+            "id": "c",
+            "text": "Container Insights"
+          }
         ],
         "correct": "a"
       }
     ],
     "explanation": "The Insights family splits by layer: Container Insights for the cluster, VM Insights for the machine — including the dependency map of what talks to what — and Application Insights for the code. Questions usually turn on which layer the symptom lives at.",
     "docs": [
-      { "title": "Azure Monitor Insights overview", "url": "https://learn.microsoft.com/azure/azure-monitor/insights/insights-overview" }
+      {
+        "title": "Azure Monitor Insights overview",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/insights/insights-overview"
+      }
     ],
-    "tags": ["monitoring", "container-insights", "vm-insights", "application-insights"]
+    "tags": [
+      "monitoring",
+      "container-insights",
+      "vm-insights",
+      "application-insights"
+    ]
   }
 ]

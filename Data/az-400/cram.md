@@ -16,8 +16,10 @@
 
 ### Approvals, checks and environments
 
-- **Approvals and checks live on the resource, not the pipeline.** Environments, service connections, agent pools, repositories and variable groups can all carry them. That separation is the point: whoever edits the YAML cannot grant themselves a bypass.
-- Available checks: manual approval, business hours, invoke REST API, invoke Azure Function, query Azure Monitor alerts, required template, evaluate artifact, exclusive lock.
+- **Approvals and checks live on the resource, not the pipeline.** Checks can be configured on **environments, service connections, repositories, variable groups, secure files and agent pools**. Microsoft is blunt about why: checks "aren't defined in the yaml file", so whoever edits the pipeline cannot grant themselves a bypass.
+- Available checks: **Branch control** (resources must come from allowed, protected branches), **Required template** (the run fails unless the pipeline extends the named template), **Evaluate artifact** (custom policy — *container images only*), Approval, Business hours, Invoke Azure Function, Invoke REST API, Query Azure Monitor alerts, Exclusive lock, ServiceNow change management.
+- Evaluation order matters if a question asks: **static checks** (branch control, required template, evaluate artifact) → pre-check approvals → **dynamic checks** (approval, function, REST, business hours, Monitor alerts) → post-check approvals → **exclusive lock**.
+- **Exclusive lock** `lockBehavior`: `runLatest` (default — only the newest run takes the lock) or `sequential` (every run takes it in turn).
 - An **environment** also gives you deployment history per resource and is what `deployment` jobs target.
 - `deployment` jobs support strategies **`runOnce`**, **`rolling`** and **`canary`**, each with `preDeploy`, `deploy`, `routeTraffic`, `postRouteTraffic` and `on: success | failure` hooks.
 - In **GitHub Actions**, the equivalent is a **GitHub environment** with required reviewers, a wait timer and deployment branch restrictions.
@@ -58,6 +60,7 @@
 
 - Test pyramid maps onto stages: many fast **unit** tests on every commit, fewer **integration** tests against real dependencies, slow **load** and **UI** tests before production or on a schedule.
 - **Quality gates** are automated pass/fail on an objective signal — coverage threshold, no critical vulnerabilities, no active Azure Monitor alerts. Automated beats "someone will notice".
+- **Code coverage on pull requests is advisory by default** — it posts a status check but does *not* block the merge. It becomes a gate only when a **branch policy** is configured against that status check. The threshold lives in **`azurepipelines-coverage.yml`** at the repo root (not in the pipeline YAML, so it applies whichever pipeline builds the code); **diff coverage** — coverage of the changed lines only — defaults to **70%**.
 - **Flaky tests** destroy trust in the gate. Azure Pipelines can detect and mark them so they stop blocking, which buys time to fix the nondeterminism. Blind retries hide real intermittent bugs.
 - Speed up builds: **pipeline caching** keyed on the lock file (the fix for restore-dominated builds), test **parallelisation** across agents, shallow clone, and job-level parallelism.
 - Health trio to watch: **failure rate, duration, flaky test count.** All three are on the pipeline analytics report.

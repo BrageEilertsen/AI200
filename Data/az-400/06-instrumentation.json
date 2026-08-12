@@ -7,12 +7,26 @@
     "difficulty": 2,
     "stem": "Which Azure Monitor concept stores the log and trace data that KQL queries run against?",
     "options": [
-      { "id": "A", "text": "A Log Analytics workspace" },
-      { "id": "B", "text": "A metrics namespace" },
-      { "id": "C", "text": "A diagnostic setting" },
-      { "id": "D", "text": "An action group" }
+      {
+        "id": "A",
+        "text": "A Log Analytics workspace"
+      },
+      {
+        "id": "B",
+        "text": "A metrics namespace"
+      },
+      {
+        "id": "C",
+        "text": "A diagnostic setting"
+      },
+      {
+        "id": "D",
+        "text": "An action group"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "The workspace is the store; diagnostic settings are the pipe that routes resource logs into it. Metrics live in a separate time-series store optimised for numeric data and near-real-time alerting.",
     "whyWrong": {
       "B": "Metrics are stored separately from logs and are queried differently.",
@@ -20,9 +34,16 @@
       "D": "Action groups define what happens when an alert fires."
     },
     "docs": [
-      { "title": "Log Analytics workspace overview", "url": "https://learn.microsoft.com/azure/azure-monitor/logs/log-analytics-workspace-overview" }
+      {
+        "title": "Log Analytics workspace overview",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/logs/log-analytics-workspace-overview"
+      }
     ],
-    "tags": ["monitoring", "azure-monitor", "log-analytics"]
+    "tags": [
+      "monitoring",
+      "azure-monitor",
+      "log-analytics"
+    ]
   },
   {
     "id": "i-mon-002",
@@ -32,12 +53,26 @@
     "difficulty": 3,
     "stem": "A web app's failure rate must be alerted on within a minute, and the alert must be cheap to evaluate continuously. Which signal type fits?",
     "options": [
-      { "id": "A", "text": "A metric alert, because metrics are pre-aggregated numeric time series" },
-      { "id": "B", "text": "A log search alert over the raw request table" },
-      { "id": "C", "text": "An activity log alert" },
-      { "id": "D", "text": "A workbook refreshed every minute" }
+      {
+        "id": "A",
+        "text": "A metric alert, because metrics are pre-aggregated numeric time series"
+      },
+      {
+        "id": "B",
+        "text": "A log search alert over the raw request table"
+      },
+      {
+        "id": "C",
+        "text": "An activity log alert"
+      },
+      {
+        "id": "D",
+        "text": "A workbook refreshed every minute"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Metric alerts evaluate against a pre-aggregated time series, so they fire with low latency and low cost. Log search alerts are more expressive but run a query on a schedule, which adds both delay and cost.",
     "whyWrong": {
       "B": "A log query alert would work but evaluates on a schedule and costs more per evaluation.",
@@ -45,9 +80,16 @@
       "D": "Workbooks visualise data; they do not alert."
     },
     "docs": [
-      { "title": "Types of Azure Monitor alerts", "url": "https://learn.microsoft.com/azure/azure-monitor/alerts/alerts-types" }
+      {
+        "title": "Types of Azure Monitor alerts",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/alerts/alerts-types"
+      }
     ],
-    "tags": ["monitoring", "alerts", "metrics"]
+    "tags": [
+      "monitoring",
+      "alerts",
+      "metrics"
+    ]
   },
   {
     "id": "i-mon-003",
@@ -57,12 +99,26 @@
     "difficulty": 3,
     "stem": "A request fails after passing through four services. Which Application Insights capability shows the path it took and where the time went?",
     "options": [
-      { "id": "A", "text": "The end-to-end transaction view, correlating telemetry by operation id" },
-      { "id": "B", "text": "The live metrics stream" },
-      { "id": "C", "text": "Availability tests" },
-      { "id": "D", "text": "The usage funnels report" }
+      {
+        "id": "A",
+        "text": "The end-to-end transaction view, correlating telemetry by operation id"
+      },
+      {
+        "id": "B",
+        "text": "The live metrics stream"
+      },
+      {
+        "id": "C",
+        "text": "Availability tests"
+      },
+      {
+        "id": "D",
+        "text": "The usage funnels report"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Distributed tracing correlates telemetry across services using a shared operation id propagated in request headers, so the transaction view can reconstruct the whole call chain with timings.",
     "whyWrong": {
       "B": "Live metrics shows current throughput and failures, not the path of one request.",
@@ -70,9 +126,16 @@
       "D": "Funnels analyse user behaviour through an application."
     },
     "docs": [
-      { "title": "Distributed tracing", "url": "https://learn.microsoft.com/azure/azure-monitor/app/distributed-trace-data" }
+      {
+        "title": "Distributed tracing",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/app/distributed-trace-data"
+      }
     ],
-    "tags": ["monitoring", "application-insights", "distributed-tracing"]
+    "tags": [
+      "monitoring",
+      "application-insights",
+      "distributed-tracing"
+    ]
   },
   {
     "id": "i-mon-004",
@@ -82,12 +145,26 @@
     "difficulty": 3,
     "stem": "Application Insights ingestion costs have grown sharply on a high-traffic service. Which setting reduces cost while keeping metrics statistically accurate?",
     "options": [
-      { "id": "A", "text": "Adaptive sampling, which stores a representative subset and scales the counts back up" },
-      { "id": "B", "text": "Lowering the workspace retention period to 30 days" },
-      { "id": "C", "text": "Disabling dependency tracking" },
-      { "id": "D", "text": "Switching the alert rules to metric alerts" }
+      {
+        "id": "A",
+        "text": "Adaptive sampling, which stores a representative subset and scales the counts back up"
+      },
+      {
+        "id": "B",
+        "text": "Lowering the workspace retention period to 30 days"
+      },
+      {
+        "id": "C",
+        "text": "Disabling dependency tracking"
+      },
+      {
+        "id": "D",
+        "text": "Switching the alert rules to metric alerts"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Sampling drops a proportion of telemetry but records the sampling rate, so aggregate counts and rates remain correct. Related items are sampled together, which keeps individual traces coherent.",
     "whyWrong": {
       "B": "Retention affects storage cost, not the ingestion cost that dominates here.",
@@ -95,9 +172,17 @@
       "D": "Alert type does not change how much telemetry is ingested."
     },
     "docs": [
-      { "title": "Sampling in Application Insights", "url": "https://learn.microsoft.com/azure/azure-monitor/app/sampling" }
+      {
+        "title": "Sampling in Application Insights",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/app/sampling"
+      }
     ],
-    "tags": ["monitoring", "application-insights", "sampling", "cost"]
+    "tags": [
+      "monitoring",
+      "application-insights",
+      "sampling",
+      "cost"
+    ]
   },
   {
     "id": "i-mon-005",
@@ -112,9 +197,18 @@
         "id": "b1",
         "label": "Blank 1 — aggregating per request name",
         "choices": [
-          { "id": "a", "text": "summarize" },
-          { "id": "b", "text": "project" },
-          { "id": "c", "text": "extend" }
+          {
+            "id": "a",
+            "text": "summarize"
+          },
+          {
+            "id": "b",
+            "text": "project"
+          },
+          {
+            "id": "c",
+            "text": "extend"
+          }
         ],
         "correct": "a"
       },
@@ -122,18 +216,34 @@
         "id": "b2",
         "label": "Blank 2 — putting the worst first",
         "choices": [
-          { "id": "a", "text": "order" },
-          { "id": "b", "text": "top-nested" },
-          { "id": "c", "text": "distinct" }
+          {
+            "id": "a",
+            "text": "order"
+          },
+          {
+            "id": "b",
+            "text": "top-nested"
+          },
+          {
+            "id": "c",
+            "text": "distinct"
+          }
         ],
         "correct": "a"
       }
     ],
     "explanation": "`summarize` aggregates with a `by` clause, and `order by` — `sort by` is an accepted synonym — sorts the result. An unnamed `count()` produces a column called `count_`, which is why the sort refers to it by that name.",
     "docs": [
-      { "title": "KQL summarize operator", "url": "https://learn.microsoft.com/kusto/query/summarize-operator" }
+      {
+        "title": "KQL summarize operator",
+        "url": "https://learn.microsoft.com/kusto/query/summarize-operator"
+      }
     ],
-    "tags": ["monitoring", "kql", "application-insights"]
+    "tags": [
+      "monitoring",
+      "kql",
+      "application-insights"
+    ]
   },
   {
     "id": "i-mon-006",
@@ -143,12 +253,26 @@
     "difficulty": 2,
     "stem": "In site reliability engineering, what does an error budget represent?",
     "options": [
-      { "id": "A", "text": "The amount of unreliability permitted by the SLO before releases are paused" },
-      { "id": "B", "text": "The money set aside to remediate production incidents" },
-      { "id": "C", "text": "The maximum number of bugs allowed in the backlog" },
-      { "id": "D", "text": "The time the on-call engineer may spend on incident response each week" }
+      {
+        "id": "A",
+        "text": "The amount of unreliability permitted by the SLO before releases are paused"
+      },
+      {
+        "id": "B",
+        "text": "The money set aside to remediate production incidents"
+      },
+      {
+        "id": "C",
+        "text": "The maximum number of bugs allowed in the backlog"
+      },
+      {
+        "id": "D",
+        "text": "The time the on-call engineer may spend on incident response each week"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "If the SLO is 99.9% availability, the error budget is the remaining 0.1%. It turns reliability into a quantity teams can spend on risk, and exhausting it is the agreed trigger for prioritising stability over new features.",
     "whyWrong": {
       "B": "Error budgets are measured in reliability, not currency.",
@@ -156,8 +280,15 @@
       "D": "On-call time is toil, which SRE measures separately."
     },
     "docs": [
-      { "title": "Site reliability engineering", "url": "https://learn.microsoft.com/devops/operate/what-is-site-reliability-engineering-sre" }
+      {
+        "title": "Azure site reliability engineering",
+        "url": "https://learn.microsoft.com/azure/site-reliability-engineering/"
+      }
     ],
-    "tags": ["sre", "slo", "error-budget"]
+    "tags": [
+      "sre",
+      "slo",
+      "error-budget"
+    ]
   }
 ]
