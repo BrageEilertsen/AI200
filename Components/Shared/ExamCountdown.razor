@@ -1,4 +1,6 @@
 @rendermode InteractiveServer
+@implements IDisposable
+@inject ExamContext Exams
 @inject ProgressStore Progress
 
 <div class="countdown">
@@ -27,6 +29,14 @@
 </div>
 
 @code {
+    // Each certification is sat on its own day, so the date is per-exam and the countdown
+    // has to follow a switch.
+    protected override void OnInitialized() => Exams.Changed += Refresh;
+
+    public void Dispose() => Exams.Changed -= Refresh;
+
+    private void Refresh() => InvokeAsync(StateHasChanged);
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender && await Progress.EnsureLoadedAsync())

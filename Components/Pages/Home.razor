@@ -1,26 +1,29 @@
 @page "/"
 @rendermode InteractiveServer
-@inject QuestionBank Bank
+@implements IDisposable
+@inject ExamContext Exams
+@inject ExamCatalog Catalog
 @inject ProgressStore Progress
 @inject NavigationManager Nav
 
-<PageTitle>AI-200 Trainer</PageTitle>
+<PageTitle>@Exams.Exam.Code Trainer</PageTitle>
 
 <div class="page-head">
-    <div class="eyebrow">Azure AI Cloud Developer Associate</div>
-    <h1>Developing AI Cloud<br />Solutions on Azure</h1>
+    <div class="eyebrow">@Exams.Exam.Code · @Exams.Exam.Certification</div>
+    <h1>@Exams.Exam.Title</h1>
     <p class="lede">
-        40–60 questions in 100–120 minutes. 700 of 1000 to pass. The four areas below are the
-        published skills outline — every question in this bank is tagged to one of them.
+        @Exams.Exam.QuestionRangeLabel in @Exams.Exam.DurationLabel. @Exams.Exam.PassMark of 1000 to pass.
+        The @Exams.Exam.Domains.Count skill areas below are the published outline — every question
+        in this bank is tagged to one of them.
     </p>
 </div>
 
-@if (Bank.Problems.Count > 0)
+@if (Exams.Bank.Problems.Count > 0)
 {
     <div class="banner bad">
-        <b>@Bank.Problems.Count problem(s) in the question bank</b>
+        <b>@Exams.Bank.Problems.Count problem(s) in the question bank</b>
         <ul style="margin:8px 0 0;padding-left:20px">
-            @foreach (var problem in Bank.Problems.Take(12))
+            @foreach (var problem in Exams.Bank.Problems.Take(12))
             {
                 <li class="mono xs">@problem</li>
             }
@@ -28,10 +31,12 @@
     </div>
 }
 
-@if (Bank.All.Count == 0)
+@if (Exams.Bank.Questions.Count == 0)
 {
     <div class="banner warn">
-        No questions loaded. Check that <span class="mono">@Bank.DataDirectory</span> contains the JSON files, then reload.
+        No questions loaded for @Exams.Exam.Code. Check that
+        <span class="mono">@System.IO.Path.Combine(Catalog.DataDirectory, Exams.Exam.Slug)</span>
+        contains the JSON files, then reload.
     </div>
 }
 
@@ -39,8 +44,8 @@
     <div class="stat-card">
         <div class="stat-body">
             <div class="stat-label">Question bank</div>
-            <div class="stat-value">@Bank.All.Count</div>
-            <div class="stat-note">across four areas</div>
+            <div class="stat-value">@Exams.Bank.Questions.Count</div>
+            <div class="stat-note">across @Exams.Exam.Domains.Count areas</div>
         </div>
     </div>
 
@@ -74,13 +79,13 @@
     <div class="stat-card">
         @if (_lastExam is { } exam)
         {
-            <Ring Percent="exam.ScaledScore / 10.0" Colour="@(exam.ScaledScore >= 700 ? "var(--good)" : "var(--bad)")" />
+            <Ring Percent="exam.ScaledScore / 10.0" Colour="@(exam.ScaledScore >= Exams.Exam.PassMark ? "var(--good)" : "var(--bad)")" />
         }
         <div class="stat-body">
             <div class="stat-label">Last mock</div>
             @if (_lastExam is { } last)
             {
-                <div class="stat-value" style="color:@(last.ScaledScore >= 700 ? "var(--good)" : "var(--bad)")">
+                <div class="stat-value" style="color:@(last.ScaledScore >= Exams.Exam.PassMark ? "var(--good)" : "var(--bad)")">
                     @last.ScaledScore
                 </div>
                 <div class="stat-note">@last.FinishedAt.ToString("d MMM, HH:mm")</div>
@@ -102,7 +107,7 @@
 
     <div class="card flush">
         <div class="inset-list">
-            @foreach (var domain in ExamDomains.All)
+            @foreach (var domain in Exams.Exam.Domains)
             {
                 var stats = DomainStats(domain.Key);
                 <div class="inset-row">
@@ -113,7 +118,7 @@
                             <span class="domain-weight">@domain.WeightLabel</span>
                         </span>
                         <span class="xs nowrap num">
-                            <span class="faint">@Bank.CountFor(domain.Key) questions</span>
+                            <span class="faint">@Exams.Bank.CountFor(domain.Key) questions</span>
                             @if (stats.Attempts > 0)
                             {
                                 <span class="q-sep"> · </span>
@@ -144,8 +149,9 @@
         <div class="card">
             <h3>Exam simulation</h3>
             <p class="small muted" style="margin-top:8px">
-                50 questions in the real weightings, 110 minutes on the clock, nothing graded
-                until you submit. The closest thing to sitting it.
+                @Exams.Exam.DefaultMockSize questions in the real weightings,
+                @Exams.Exam.DefaultMockMinutes minutes on the clock, nothing graded until you
+                submit. The closest thing to sitting it.
             </p>
             <button class="btn primary" @onclick='() => Nav.NavigateTo("exam")'>Set up a mock</button>
         </div>
@@ -161,7 +167,14 @@
 </div>
 
 <div class="row xs faint">
-    <span>Bank loaded @Bank.LoadedAt.ToString("HH:mm:ss") · <span class="mono">@Bank.DataDirectory</span></span>
+    <span>
+        Loaded @Catalog.LoadedAt.ToString("HH:mm:ss")
+        @if (Exams.Exam.StudyGuideUrl is { Length: > 0 } guide)
+        {
+            <text> · </text>
+            <a href="@guide" target="_blank" rel="noopener">published skills outline ↗</a>
+        }
+    </span>
     <span class="spacer"></span>
     <button class="btn ghost sm" @onclick="Reload">Reload bank</button>
 </div>
@@ -174,13 +187,31 @@
     private double _coveragePercent;
     private SessionRecord? _lastExam;
 
-    protected override void OnInitialized() => Recalculate();
+    protected override void OnInitialized()
+    {
+        Exams.Changed += OnExamChanged;
+        Recalculate();
+    }
+
+    public void Dispose() => Exams.Changed -= OnExamChanged;
+
+    private void OnExamChanged()
+    {
+        Recalculate();
+        InvokeAsync(StateHasChanged);
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        // Progress lives in the browser, so it can only be read once the circuit is up.
-        // The page renders immediately with empty figures and fills them in here.
-        if (firstRender && await Progress.EnsureLoadedAsync())
+        if (!firstRender) return;
+
+        // Both the chosen exam and the progress for it live in the browser, so neither is
+        // known until the circuit is up. The page renders with the default exam and empty
+        // figures, then fills in.
+        var switched = await Exams.EnsureLoadedAsync();
+        var loaded = await Progress.EnsureLoadedAsync();
+
+        if (switched || loaded)
         {
             Recalculate();
             StateHasChanged();
@@ -189,18 +220,20 @@
 
     private void Recalculate()
     {
-        var coverage = Progress.Coverage(Bank.All);
+        var coverage = Progress.Coverage(Exams.Bank.Questions);
         _unseen = coverage.Unseen;
         _attempts = coverage.Seen;
         _correct = coverage.Correct;
         _lifetimeAccuracy = _attempts == 0 ? 0 : 100.0 * _correct / _attempts;
-        _coveragePercent = Bank.All.Count == 0 ? 0 : 100.0 * (Bank.All.Count - _unseen) / Bank.All.Count;
+        _coveragePercent = Exams.Bank.Questions.Count == 0
+            ? 0
+            : 100.0 * (Exams.Bank.Questions.Count - _unseen) / Exams.Bank.Questions.Count;
         _lastExam = Progress.Sessions.LastOrDefault(s => s.Mode == SessionMode.Exam);
     }
 
     private (int Attempts, double Accuracy) DomainStats(string domainKey)
     {
-        var coverage = Progress.Coverage(Bank.All.Where(q => q.Domain == domainKey));
+        var coverage = Progress.Coverage(Exams.Bank.Questions.Where(q => q.Domain == domainKey));
         return (coverage.Seen, coverage.Seen == 0 ? 0 : 100.0 * coverage.Correct / coverage.Seen);
     }
 
@@ -215,7 +248,7 @@
 
     private void Reload()
     {
-        Bank.Load();
+        Catalog.Load();
         Recalculate();
     }
 }

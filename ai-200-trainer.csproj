@@ -19,6 +19,10 @@
     <!-- Question bank is read from the content root at runtime so you can edit
          the JSON and just refresh the page (Reload bank on the Home screen). -->
     <Content Update="Data\**\*.json" CopyToOutputDirectory="PreserveNewest" />
+    <!-- Cram sheets ship alongside each exam's questions. The Web SDK treats .md as None
+         by default, so these need including rather than updating. -->
+    <Content Include="Data\**\*.md" CopyToOutputDirectory="PreserveNewest" />
+    <None Remove="Data\**\*.md" />
   </ItemGroup>
 
 </Project>

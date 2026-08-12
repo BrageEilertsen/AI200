@@ -1,9 +1,10 @@
 @page "/stats"
 @rendermode InteractiveServer
-@inject QuestionBank Bank
+@implements IDisposable
+@inject ExamContext Exams
 @inject ProgressStore Progress
 
-<PageTitle>Progress — AI-200 Trainer</PageTitle>
+<PageTitle>Progress — @Exams.Exam.Code Trainer</PageTitle>
 
 <div class="page-head">
     <div class="eyebrow">Progress</div>
@@ -15,13 +16,13 @@
 </div>
 
 @{
-    var coverage = Progress.Coverage(Bank.All);
+    var coverage = Progress.Coverage(Exams.Bank.Questions);
     var overall = coverage.Seen == 0 ? 0 : 100.0 * coverage.Correct / coverage.Seen;
     var exams = Progress.Sessions.Where(s => s.Mode == SessionMode.Exam).ToList();
 }
 
 @{
-    var coveragePercent = Bank.All.Count == 0 ? 0 : 100.0 * (Bank.All.Count - coverage.Unseen) / Bank.All.Count;
+    var coveragePercent = Exams.Bank.Questions.Count == 0 ? 0 : 100.0 * (Exams.Bank.Questions.Count - coverage.Unseen) / Exams.Bank.Questions.Count;
 }
 
 <div class="grid cols-4 section">
@@ -76,11 +77,11 @@
         </div>
 
         <div class="trend">
-            <div class="trend-line" style="bottom:@Css.Px(700 / 1000.0 * 150)"><span>700 pass</span></div>
+            <div class="trend-line" style="bottom:@Css.Px(Exams.Exam.PassMark / 1000.0 * 150)"><span>@Exams.Exam.PassMark pass</span></div>
             @foreach (var exam in exams.TakeLast(20))
             {
                 var height = Math.Max(4, exam.ScaledScore / 1000.0 * 150);
-                var colour = exam.ScaledScore >= 700 ? "var(--good)" : "var(--bad)";
+                var colour = exam.ScaledScore >= Exams.Exam.PassMark ? "var(--good)" : "var(--bad)";
                 <div class="trend-bar"
                      title="@exam.FinishedAt.ToString("d MMM HH:mm") — @exam.ScaledScore (@exam.Correct of @exam.Total)"
                      style="height:@Css.Px(height);background-color:@colour"></div>
@@ -182,9 +183,25 @@
 @code {
     private bool _confirmReset;
 
+    protected override void OnInitialized() => Exams.Changed += OnExamChanged;
+
+    public void Dispose() => Exams.Changed -= OnExamChanged;
+
+    private void OnExamChanged()
+    {
+        // The reset confirmation names an exam, so leaving it open across a switch would
+        // invite resetting the wrong one.
+        _confirmReset = false;
+        InvokeAsync(StateHasChanged);
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender && await Progress.EnsureLoadedAsync())
+        if (!firstRender) return;
+
+        await Exams.EnsureLoadedAsync();
+
+        if (await Progress.EnsureLoadedAsync())
         {
             StateHasChanged();
         }
@@ -197,11 +214,11 @@
     {
         var rows = new List<ObjectiveRow>();
 
-        foreach (var domain in ExamDomains.All)
+        foreach (var domain in Exams.Exam.Domains)
         {
-            foreach (var objective in Bank.ObjectivesFor(domain.Key))
+            foreach (var objective in Exams.Bank.ObjectivesFor(domain.Key))
             {
-                var questions = Bank.All.Where(q => q.Domain == domain.Key && q.Objective == objective);
+                var questions = Exams.Bank.Questions.Where(q => q.Domain == domain.Key && q.Objective == objective);
                 var coverage = Progress.Coverage(questions);
                 var accuracy = coverage.Seen == 0 ? 0 : 100.0 * coverage.Correct / coverage.Seen;
                 rows.Add(new ObjectiveRow(domain.ShortName, domain.Accent, objective, coverage.Seen, accuracy));
@@ -218,7 +235,7 @@
     {
         var totals = new Dictionary<string, (int Seen, int Correct)>();
 
-        foreach (var question in Bank.All)
+        foreach (var question in Exams.Bank.Questions)
         {
             var stat = Progress.StatFor(question.Id);
             if (stat.Seen == 0) continue;

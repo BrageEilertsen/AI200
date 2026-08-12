@@ -1,10 +1,11 @@
 @page "/practice"
 @rendermode InteractiveServer
-@inject QuestionBank Bank
+@implements IDisposable
+@inject ExamContext Exams
 @inject ProgressStore Progress
 @inject SessionHost Host
 
-<PageTitle>Practice — AI-200 Trainer</PageTitle>
+<PageTitle>Practice — @Exams.Exam.Code Trainer</PageTitle>
 
 <div @ref="_root" tabindex="0" @onkeydown="HandleKey" style="outline:none">
 
@@ -22,13 +23,13 @@
     <div class="card section">
         <h3>Skill areas</h3>
         <div class="row" style="margin-bottom:10px">
-            @foreach (var domain in ExamDomains.All)
+            @foreach (var domain in Exams.Exam.Domains)
             {
                 var on = _pickedDomains.Contains(domain.Key);
                 <button type="button" class="chip @(on ? "on" : "")" @onclick="() => ToggleDomain(domain.Key)">
                     <span class="dot" style="background-color:@domain.Accent"></span>
                     @domain.ShortName
-                    <span class="faint">@Bank.CountFor(domain.Key)</span>
+                    <span class="faint">@Exams.Bank.CountFor(domain.Key)</span>
                 </button>
             }
         </div>
@@ -110,7 +111,7 @@ else if (!_session.Finished)
         <QuestionView Question="item.Question"
                       Selected="item.Selected"
                       Revealed="item.Submitted"
-                      CaseStudy="Bank.CaseStudyFor(item.Question)"
+                      CaseStudy="Exams.Bank.CaseStudyFor(item.Question)"
                       OnToggle="Toggle"
                       OnSetBlank="SetBlank" />
 
@@ -158,6 +159,7 @@ else
 
     protected override void OnInitialized()
     {
+        Exams.Changed += OnExamChanged;
         SelectAllDomains();
 
         // Resume a set that is still open on the circuit.
@@ -169,12 +171,34 @@ else
         _lastResult = Progress.Sessions.LastOrDefault(s => s.Mode == SessionMode.Practice);
     }
 
+    public void Dispose() => Exams.Changed -= OnExamChanged;
+
+    /// <summary>
+    /// The picked domains and any open set belong to the exam they were built from, so a
+    /// switch has to start over rather than carry another certification's keys across.
+    /// </summary>
+    private void OnExamChanged()
+    {
+        Host.Clear();
+        _session = null;
+        SelectAllDomains();
+        _lastResult = Progress.Sessions.LastOrDefault(s => s.Mode == SessionMode.Practice);
+        InvokeAsync(StateHasChanged);
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender && await Progress.EnsureLoadedAsync())
+        if (firstRender)
         {
-            _lastResult = Progress.Sessions.LastOrDefault(s => s.Mode == SessionMode.Practice);
-            StateHasChanged();
+            // Which exam is being studied lives in the browser, so the first render uses the
+            // default one. Loading it raises Changed, which rebuilds the domain selection.
+            await Exams.EnsureLoadedAsync();
+
+            if (await Progress.EnsureLoadedAsync())
+            {
+                _lastResult = Progress.Sessions.LastOrDefault(s => s.Mode == SessionMode.Practice);
+                StateHasChanged();
+            }
         }
 
         if (_shouldFocus || firstRender)
@@ -185,12 +209,12 @@ else
     }
 
     private int AvailableCount =>
-        Bank.All.Count(q => _pickedDomains.Count == 0 || _pickedDomains.Contains(q.Domain));
+        Exams.Bank.Questions.Count(q => _pickedDomains.Count == 0 || _pickedDomains.Contains(q.Domain));
 
     private void SelectAllDomains()
     {
         _pickedDomains.Clear();
-        foreach (var domain in ExamDomains.All) _pickedDomains.Add(domain.Key);
+        foreach (var domain in Exams.Exam.Domains) _pickedDomains.Add(domain.Key);
     }
 
     private void ToggleDomain(string key)

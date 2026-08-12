@@ -1,0 +1,57 @@
+{
+  "slug": "az-400",
+  "code": "AZ-400",
+  "title": "Designing and Implementing Microsoft DevOps Solutions",
+  "certification": "DevOps Engineer Expert",
+  "blurb": "Azure DevOps and GitHub across the delivery lifecycle. Build and release pipelines alone are over half the paper, so weight your study accordingly.",
+  "minQuestions": 40,
+  "maxQuestions": 60,
+  "minMinutes": 100,
+  "maxMinutes": 120,
+  "passMark": 700,
+  "mockSizes": [40, 50, 60],
+  "mockMinutes": [90, 110, 120],
+  "studyGuideUrl": "https://learn.microsoft.com/credentials/certifications/resources/study-guides/az-400",
+  "domains": [
+    {
+      "key": "processes",
+      "name": "Design and implement processes and communications",
+      "shortName": "Process & flow",
+      "minWeight": 10,
+      "maxWeight": 15,
+      "accent": "var(--d-1)"
+    },
+    {
+      "key": "source-control",
+      "name": "Design and implement a source control strategy",
+      "shortName": "Source control",
+      "minWeight": 10,
+      "maxWeight": 15,
+      "accent": "var(--d-2)"
+    },
+    {
+      "key": "pipelines",
+      "name": "Design and implement build and release pipelines",
+      "shortName": "Pipelines",
+      "minWeight": 50,
+      "maxWeight": 55,
+      "accent": "var(--d-3)"
+    },
+    {
+      "key": "security",
+      "name": "Develop a security and compliance plan",
+      "shortName": "Security & compliance",
+      "minWeight": 10,
+      "maxWeight": 15,
+      "accent": "var(--d-4)"
+    },
+    {
+      "key": "instrumentation",
+      "name": "Implement an instrumentation strategy",
+      "shortName": "Instrumentation",
+      "minWeight": 5,
+      "maxWeight": 10,
+      "accent": "var(--d-5)"
+    }
+  ]
+}

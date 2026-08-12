@@ -19,7 +19,7 @@ namespace Ai200Trainer.Services;
 /// because JS interop is unavailable until the circuit is connected — call
 /// <see cref="EnsureLoadedAsync"/> from <c>OnAfterRenderAsync(firstRender: true)</c>.
 /// </summary>
-public sealed class ProgressStore(IJSRuntime js, ILogger<ProgressStore> logger)
+public sealed class ProgressStore(ExamContext exams, IJSRuntime js, ILogger<ProgressStore> logger)
 {
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -27,8 +27,27 @@ public sealed class ProgressStore(IJSRuntime js, ILogger<ProgressStore> logger)
         Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
     };
 
-    private ProgressData _data = new();
+    /// <summary>
+    /// History per exam slug. Studying two certifications must not blend their accuracy,
+    /// weak-topic lists or exam dates, so every exam gets its own record.
+    /// </summary>
+    private readonly Dictionary<string, ProgressData> _byExam = [];
     private Task<bool>? _load;
+
+    private string Slug => exams.Exam.Slug;
+
+    private ProgressData _data
+    {
+        get
+        {
+            if (!_byExam.TryGetValue(Slug, out var data))
+            {
+                data = new ProgressData();
+                _byExam[Slug] = data;
+            }
+            return data;
+        }
+    }
 
     /// <summary>False until the browser's stored history has been read in.</summary>
     public bool IsLoaded { get; private set; }
@@ -55,10 +74,28 @@ public sealed class ProgressStore(IJSRuntime js, ILogger<ProgressStore> logger)
 
             if (string.IsNullOrWhiteSpace(json)) return false;
 
-            var parsed = JsonSerializer.Deserialize<ProgressData>(json, JsonOptions);
-            if (parsed is null) return false;
+            // Stored shape is a map of exam slug -> history. Before multi-exam support it was
+            // a single bare record, so anything in the old shape is migrated into AI-200
+            // rather than discarded — people have real study history in there.
+            using var doc = JsonDocument.Parse(json);
+            var looksLikeOldSingleExam = doc.RootElement.ValueKind == JsonValueKind.Object
+                                         && doc.RootElement.TryGetProperty("questions", out _);
 
-            _data = parsed;
+            if (looksLikeOldSingleExam)
+            {
+                var legacy = JsonSerializer.Deserialize<ProgressData>(json, JsonOptions);
+                if (legacy is null) return false;
+
+                _byExam["ai-200"] = legacy;
+                logger.LogInformation("Migrated single-exam progress into the ai-200 slot.");
+                Save();
+                return true;
+            }
+
+            var parsed = JsonSerializer.Deserialize<Dictionary<string, ProgressData>>(json, JsonOptions);
+            if (parsed is null || parsed.Count == 0) return false;
+
+            foreach (var (slug, data) in parsed) _byExam[slug] = data;
             return true;
         }
         catch (Exception ex)
@@ -173,10 +210,13 @@ public sealed class ProgressStore(IJSRuntime js, ILogger<ProgressStore> logger)
         return (seen, correct, unseen);
     }
 
-    /// <summary>Clears answer history and session records. The exam date is deliberately kept.</summary>
+    /// <summary>
+    /// Clears answer history and session records for the current exam only, leaving any other
+    /// exam's history alone. The exam date is deliberately kept.
+    /// </summary>
     public void Reset()
     {
-        _data = new ProgressData { ExamDate = _data.ExamDate };
+        _byExam[Slug] = new ProgressData { ExamDate = _data.ExamDate };
         Save();
     }
 
@@ -189,7 +229,7 @@ public sealed class ProgressStore(IJSRuntime js, ILogger<ProgressStore> logger)
         string json;
         try
         {
-            json = JsonSerializer.Serialize(_data, JsonOptions);
+            json = JsonSerializer.Serialize(_byExam, JsonOptions);
         }
         catch (Exception ex)
         {

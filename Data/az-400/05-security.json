@@ -1,0 +1,228 @@
+[
+  {
+    "id": "sec-auth-001",
+    "domain": "security",
+    "objective": "Design and implement authentication and authorization methods",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "A pipeline deploys to Azure and must not hold a secret that expires or can be exfiltrated from the pipeline. What should the service connection use?",
+    "options": [
+      { "id": "A", "text": "Workload identity federation, so the pipeline exchanges a short-lived OIDC token for an Azure token" },
+      { "id": "B", "text": "A service principal with a client secret stored in the service connection" },
+      { "id": "C", "text": "A service principal with a certificate rotated annually" },
+      { "id": "D", "text": "A personal access token belonging to the release manager" }
+    ],
+    "correct": ["A"],
+    "explanation": "Workload identity federation removes the stored credential entirely: Azure DevOps or GitHub presents a signed OIDC token, Entra ID validates it against a federated credential, and issues a short-lived access token. Nothing long-lived exists to leak or expire.",
+    "whyWrong": {
+      "B": "A client secret is exactly the long-lived stored credential the requirement rules out.",
+      "C": "A certificate is better than a secret but is still stored and still expires.",
+      "D": "A PAT ties deployments to one person's identity and is a broad, long-lived credential."
+    },
+    "docs": [
+      { "title": "Workload identity federation", "url": "https://learn.microsoft.com/azure/devops/pipelines/release/configure-workload-identity" }
+    ],
+    "tags": ["security", "oidc", "workload-identity", "service-connections"]
+  },
+  {
+    "id": "sec-auth-002",
+    "domain": "security",
+    "objective": "Design and implement authentication and authorization methods",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "An Azure App Service must read secrets from Key Vault at runtime with no credential in configuration. What do you use?",
+    "options": [
+      { "id": "A", "text": "A managed identity on the App Service, granted access to the vault" },
+      { "id": "B", "text": "A service principal whose secret is set as an app setting" },
+      { "id": "C", "text": "A connection string in the deployment pipeline's variable group" },
+      { "id": "D", "text": "A SAS token generated during deployment" }
+    ],
+    "correct": ["A"],
+    "explanation": "A managed identity is issued and rotated by the platform, so nothing lands in configuration. Grant it access through Key Vault RBAC or an access policy and the app requests tokens from the instance metadata endpoint.",
+    "whyWrong": {
+      "B": "Storing the secret in app settings reintroduces the credential you were trying to remove.",
+      "C": "A pipeline variable group still results in a credential reaching the app.",
+      "D": "SAS tokens apply to storage, not Key Vault."
+    },
+    "docs": [
+      { "title": "Managed identities for Azure resources", "url": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview" }
+    ],
+    "tags": ["security", "managed-identity", "key-vault"]
+  },
+  {
+    "id": "sec-sec-001",
+    "domain": "security",
+    "objective": "Design and implement a strategy for managing sensitive information in automation",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "How should a pipeline obtain database passwords that are already stored in Azure Key Vault?",
+    "options": [
+      { "id": "A", "text": "Link a variable group to the Key Vault, so values are fetched at run time" },
+      { "id": "B", "text": "Copy the values into secret pipeline variables once" },
+      { "id": "C", "text": "Store them in an encrypted file in the repository" },
+      { "id": "D", "text": "Pass them as queue-time parameters on each run" }
+    ],
+    "correct": ["A"],
+    "explanation": "A Key Vault-backed variable group reads the current value at run time, so rotating the secret in the vault takes effect immediately and the vault's access log records every read.",
+    "whyWrong": {
+      "B": "A copy goes stale the moment the secret is rotated, and now exists in two places.",
+      "C": "An encrypted file in the repository still ships the ciphertext to everyone with read access.",
+      "D": "Typing secrets per run is unauditable and error-prone."
+    },
+    "docs": [
+      { "title": "Link secrets from an Azure key vault", "url": "https://learn.microsoft.com/azure/devops/pipelines/library/link-variable-groups-to-key-vaults" }
+    ],
+    "tags": ["security", "key-vault", "secrets", "variable-groups"]
+  },
+  {
+    "id": "sec-sec-002",
+    "domain": "security",
+    "objective": "Design and implement a strategy for managing sensitive information in automation",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "Which control best prevents a secret from being committed to the repository in the first place?",
+    "options": [
+      { "id": "A", "text": "Push protection, which blocks the push when a recognised secret pattern is detected" },
+      { "id": "B", "text": "Secret scanning that alerts after the push" },
+      { "id": "C", "text": "A pipeline step that greps the diff for secrets" },
+      { "id": "D", "text": "A code review checklist item" }
+    ],
+    "correct": ["A"],
+    "explanation": "Push protection is the only option that acts before the secret exists in history — it rejects the push. Everything else detects a secret that has already been committed, which means rotation is required.",
+    "whyWrong": {
+      "B": "Alerting is valuable but the secret is already in history by then.",
+      "C": "A pipeline check runs after the commit is pushed.",
+      "D": "Checklists depend on a human noticing."
+    },
+    "docs": [
+      { "title": "GitHub Advanced Security for Azure DevOps", "url": "https://learn.microsoft.com/azure/devops/repos/security/github-advanced-security-secret-scanning" }
+    ],
+    "tags": ["security", "secret-scanning", "ghas"]
+  },
+  {
+    "id": "sec-scan-001",
+    "domain": "security",
+    "objective": "Automate security and compliance scanning",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "A build must fail when a dependency has a known critical vulnerability. Which scanning type covers this?",
+    "options": [
+      { "id": "A", "text": "Software composition analysis of open-source dependencies" },
+      { "id": "B", "text": "Static application security testing of first-party code" },
+      { "id": "C", "text": "Dynamic application security testing against a running instance" },
+      { "id": "D", "text": "Container image runtime monitoring" }
+    ],
+    "correct": ["A"],
+    "explanation": "SCA — dependency scanning — inspects the packages you consume and matches them against vulnerability databases. In GitHub Advanced Security this is Dependabot alerts plus the dependency graph.",
+    "whyWrong": {
+      "B": "SAST analyses code your team wrote, not third-party packages.",
+      "C": "DAST probes a deployed application from the outside.",
+      "D": "Runtime monitoring watches behaviour in production, too late for a build gate."
+    },
+    "docs": [
+      { "title": "Dependency scanning", "url": "https://learn.microsoft.com/azure/devops/repos/security/github-advanced-security-dependency-scanning" }
+    ],
+    "tags": ["security", "sca", "dependencies", "ghas"]
+  },
+  {
+    "id": "sec-scan-002",
+    "domain": "security",
+    "objective": "Automate security and compliance scanning",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "Which capability finds a SQL injection flaw in code the team wrote, as part of the pull request build?",
+    "options": [
+      { "id": "A", "text": "CodeQL code scanning" },
+      { "id": "B", "text": "Dependabot version updates" },
+      { "id": "C", "text": "Secret scanning" },
+      { "id": "D", "text": "Microsoft Defender for Cloud recommendations" }
+    ],
+    "correct": ["A"],
+    "explanation": "CodeQL is the static analysis engine behind code scanning; it models the code as a database and queries it for vulnerable data flows, which is how it traces untrusted input into a query.",
+    "whyWrong": {
+      "B": "Dependabot updates dependency versions; it does not analyse your code.",
+      "C": "Secret scanning looks for credentials, not injection flaws.",
+      "D": "Defender for Cloud assesses deployed Azure resources, not source in a pull request."
+    },
+    "docs": [
+      { "title": "Code scanning with CodeQL", "url": "https://learn.microsoft.com/azure/devops/repos/security/github-advanced-security-code-scanning" }
+    ],
+    "tags": ["security", "sast", "codeql", "ghas"]
+  },
+  {
+    "id": "sec-gov-001",
+    "domain": "security",
+    "objective": "Automate security and compliance scanning",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "An organisation must guarantee no storage account is ever created without HTTPS-only enabled, regardless of how it is deployed. What enforces that?",
+    "options": [
+      { "id": "A", "text": "An Azure Policy assignment with a deny effect at the subscription or management group" },
+      { "id": "B", "text": "A pipeline step that checks the Bicep file before deployment" },
+      { "id": "C", "text": "An RBAC role that omits storage account write permission" },
+      { "id": "D", "text": "A Defender for Cloud recommendation" }
+    ],
+    "correct": ["A"],
+    "explanation": "Azure Policy evaluates at the resource provider, so a deny effect blocks the request whatever path it came from — pipeline, portal, CLI or SDK. Pipeline checks only cover deployments that go through that pipeline.",
+    "whyWrong": {
+      "B": "Anyone deploying outside the pipeline bypasses the check entirely.",
+      "C": "Removing write permission blocks all storage accounts, not just misconfigured ones.",
+      "D": "Recommendations report on what exists; they do not block creation."
+    },
+    "docs": [
+      { "title": "Azure Policy overview", "url": "https://learn.microsoft.com/azure/governance/policy/overview" }
+    ],
+    "tags": ["security", "azure-policy", "governance", "compliance"]
+  },
+  {
+    "id": "sec-perm-001",
+    "domain": "security",
+    "objective": "Design and implement authentication and authorization methods",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "A production service connection must be usable only by the release pipeline, not by any pipeline in the project. How do you achieve that?",
+    "options": [
+      { "id": "A", "text": "Turn off 'Grant access permission to all pipelines' and authorise only the release pipeline" },
+      { "id": "B", "text": "Move the service connection to a separate project" },
+      { "id": "C", "text": "Mark the service connection's credentials as secret variables" },
+      { "id": "D", "text": "Add an approval check to the service connection" }
+    ],
+    "correct": ["A"],
+    "explanation": "Service connections carry a pipeline permissions list. Disabling open access and authorising specific pipelines is what stops someone creating a new pipeline in the project that borrows production credentials.",
+    "whyWrong": {
+      "B": "A separate project is heavy-handed and does not by itself restrict which pipelines there can use it.",
+      "C": "Credentials in a service connection are already stored securely; that is not the issue.",
+      "D": "An approval adds a human gate but does not limit which pipelines may reference the connection."
+    },
+    "docs": [
+      { "title": "Manage service connections", "url": "https://learn.microsoft.com/azure/devops/pipelines/library/service-endpoints" }
+    ],
+    "tags": ["security", "service-connections", "least-privilege"]
+  },
+  {
+    "id": "sec-perm-002",
+    "domain": "security",
+    "objective": "Design and implement authentication and authorization methods",
+    "kind": "multi",
+    "difficulty": 3,
+    "stem": "Which two practices reduce the blast radius of a compromised pipeline credential? Choose two.",
+    "options": [
+      { "id": "A", "text": "Scope each service connection to a single resource group rather than the subscription" },
+      { "id": "B", "text": "Use short-lived tokens through workload identity federation" },
+      { "id": "C", "text": "Share one highly privileged service connection so it is easier to audit" },
+      { "id": "D", "text": "Store the credential in the repository so its history is tracked" },
+      { "id": "E", "text": "Grant Owner so deployments never fail on a missing permission" }
+    ],
+    "correct": ["A", "B"],
+    "explanation": "Least privilege limits what a stolen credential can reach, and short-lived credentials limit how long it is useful. Together they are the two axes of blast radius: scope and time.",
+    "whyWrong": {
+      "C": "One shared privileged connection maximises blast radius rather than reducing it.",
+      "D": "Credentials in source control are exposed to everyone with read access.",
+      "E": "Owner grants far more than any deployment needs, including the ability to change access."
+    },
+    "docs": [
+      { "title": "Secure Azure Pipelines", "url": "https://learn.microsoft.com/azure/devops/pipelines/security/overview" }
+    ],
+    "tags": ["security", "least-privilege", "blast-radius"]
+  }
+]

@@ -1,0 +1,247 @@
+[
+  {
+    "id": "pr-trace-001",
+    "domain": "processes",
+    "objective": "Design and implement traceability and flow of work",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Management asks which work items shipped in last night's release. What makes that answerable without manual bookkeeping?",
+    "options": [
+      { "id": "A", "text": "Linking commits and pull requests to work items, so the release summarises the items included" },
+      { "id": "B", "text": "Requiring release notes to be written before each deployment" },
+      { "id": "C", "text": "Tagging each release in Git with the sprint number" },
+      { "id": "D", "text": "Adding a comment on each work item when it is deployed" }
+    ],
+    "correct": ["A"],
+    "explanation": "Traceability comes from links: work item to commit to pull request to build to release. Once the chain exists the tooling answers the question, which is what distinguishes traceability from documentation.",
+    "whyWrong": {
+      "B": "Hand-written notes are only as accurate as whoever remembered to update them.",
+      "C": "A sprint tag says when, not what.",
+      "D": "Manual comments are the bookkeeping the question asks you to avoid."
+    },
+    "docs": [
+      { "title": "Link work items to Git commits and pull requests", "url": "https://learn.microsoft.com/azure/devops/boards/backlogs/connect-work-items-to-git-dev-ops" }
+    ],
+    "tags": ["azure-boards", "traceability", "work-items"]
+  },
+  {
+    "id": "pr-trace-002",
+    "domain": "processes",
+    "objective": "Design and implement traceability and flow of work",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Which branch policy makes it impossible to complete a pull request that is not associated with a work item?",
+    "options": [
+      { "id": "A", "text": "Check for linked work items, set to required" },
+      { "id": "B", "text": "Check for comment resolution" },
+      { "id": "C", "text": "Build validation" },
+      { "id": "D", "text": "Automatically included reviewers" }
+    ],
+    "correct": ["A"],
+    "explanation": "The linked work item policy is the enforcement point for traceability. Left as optional it warns but still allows completion, which is a reasonable first step when introducing it to an existing team.",
+    "whyWrong": {
+      "B": "Comment resolution is about the discussion, not the work item link.",
+      "C": "Build validation checks the code compiles and tests pass.",
+      "D": "Reviewer policies decide who must approve."
+    },
+    "docs": [
+      { "title": "Branch policies", "url": "https://learn.microsoft.com/azure/devops/repos/git/branch-policies" }
+    ],
+    "tags": ["azure-boards", "branch-policies", "traceability"]
+  },
+  {
+    "id": "pr-metric-001",
+    "domain": "processes",
+    "objective": "Design and implement appropriate metrics and queries for DevOps",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "Which DORA metric measures the time from a commit being merged to it running in production?",
+    "options": [
+      { "id": "A", "text": "Lead time for changes" },
+      { "id": "B", "text": "Deployment frequency" },
+      { "id": "C", "text": "Change failure rate" },
+      { "id": "D", "text": "Mean time to restore" }
+    ],
+    "correct": ["A"],
+    "explanation": "Lead time for changes is commit to production. Deployment frequency counts releases, change failure rate is the proportion causing degradation, and mean time to restore measures recovery — the four together balance speed against stability.",
+    "whyWrong": {
+      "B": "Deployment frequency counts how often you ship, not how long each change takes.",
+      "C": "Change failure rate measures quality of releases.",
+      "D": "Mean time to restore starts at the incident, not the commit."
+    },
+    "docs": [
+      { "title": "DevOps metrics", "url": "https://learn.microsoft.com/devops/plan/measure-devops" }
+    ],
+    "tags": ["metrics", "dora", "flow"]
+  },
+  {
+    "id": "pr-metric-002",
+    "domain": "processes",
+    "objective": "Design and implement appropriate metrics and queries for DevOps",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "A cumulative flow diagram shows the Active band widening steadily while Closed grows slowly. What does that indicate?",
+    "options": [
+      { "id": "A", "text": "Work is being started faster than it is being finished, so work in progress is accumulating" },
+      { "id": "B", "text": "The team is delivering faster than it is planning" },
+      { "id": "C", "text": "Estimates are consistently too low" },
+      { "id": "D", "text": "The backlog is being refined too often" }
+    ],
+    "correct": ["A"],
+    "explanation": "A widening band on a cumulative flow diagram is growing WIP, and the horizontal width of the band is cycle time — so both are getting worse. The usual response is a WIP limit, which forces finishing before starting.",
+    "whyWrong": {
+      "B": "Delivering faster than planning would show Closed catching up, not falling behind.",
+      "C": "Estimation accuracy is not what a cumulative flow diagram displays.",
+      "D": "Refinement frequency affects the backlog band, not accumulating active work."
+    },
+    "docs": [
+      { "title": "Cumulative flow, lead time and cycle time", "url": "https://learn.microsoft.com/azure/devops/report/dashboards/cumulative-flow" }
+    ],
+    "tags": ["metrics", "azure-boards", "flow", "wip"]
+  },
+  {
+    "id": "pr-metric-003",
+    "domain": "processes",
+    "objective": "Design and implement appropriate metrics and queries for DevOps",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "A dashboard must report trends across several projects in the organisation, joined with work item history. Which data source suits it?",
+    "options": [
+      { "id": "A", "text": "Analytics views or the Analytics OData feed, consumed by Power BI" },
+      { "id": "B", "text": "A work item query saved as a chart" },
+      { "id": "C", "text": "The pipeline run history exported to CSV" },
+      { "id": "D", "text": "The audit log stream" }
+    ],
+    "correct": ["A"],
+    "explanation": "The Analytics service is the reporting layer for Azure DevOps, keeps historical snapshots so trends are possible, and exposes OData for Power BI. Work item queries only see current state.",
+    "whyWrong": {
+      "B": "Query charts are scoped to a project and show the present, not history.",
+      "C": "A CSV export is a snapshot with no work item data.",
+      "D": "Audit logs record administrative actions for compliance."
+    },
+    "docs": [
+      { "title": "What is Analytics?", "url": "https://learn.microsoft.com/azure/devops/report/powerbi/what-is-analytics" }
+    ],
+    "tags": ["metrics", "analytics", "power-bi", "reporting"]
+  },
+  {
+    "id": "pr-comm-001",
+    "domain": "processes",
+    "objective": "Configure collaboration and communication",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Deployment notifications should reach a Teams channel automatically. What is the appropriate integration?",
+    "options": [
+      { "id": "A", "text": "The Azure Pipelines app or a service hook posting to the channel" },
+      { "id": "B", "text": "A scheduled pipeline that emails the team" },
+      { "id": "C", "text": "A wiki page updated after each release" },
+      { "id": "D", "text": "An RSS feed of the build history" }
+    ],
+    "correct": ["A"],
+    "explanation": "Service hooks and the Teams and Slack apps push events as they happen, so the notification is a by-product of the deployment rather than a task someone must remember.",
+    "whyWrong": {
+      "B": "A schedule means the notification lags the event and fires even when nothing shipped.",
+      "C": "A wiki page requires manual updating.",
+      "D": "RSS requires people to go and look."
+    },
+    "docs": [
+      { "title": "Azure Boards and Azure Pipelines with Microsoft Teams", "url": "https://learn.microsoft.com/azure/devops/service-hooks/services/teams" }
+    ],
+    "tags": ["collaboration", "teams", "service-hooks"]
+  },
+  {
+    "id": "pr-comm-002",
+    "domain": "processes",
+    "objective": "Configure collaboration and communication",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Which document belongs in the repository so that new contributors know how to build, test and submit changes?",
+    "options": [
+      { "id": "A", "text": "A README together with a CONTRIBUTING guide" },
+      { "id": "B", "text": "An Azure Boards work item describing onboarding" },
+      { "id": "C", "text": "A pinned message in the team chat" },
+      { "id": "D", "text": "The pipeline YAML, since it documents the build" }
+    ],
+    "correct": ["A"],
+    "explanation": "Documentation that lives with the code is versioned with it and is where contributors already are. Azure DevOps can also publish a wiki directly from a repository folder, which keeps the same property.",
+    "whyWrong": {
+      "B": "A work item is closed and forgotten.",
+      "C": "Chat messages scroll away and are invisible to newcomers.",
+      "D": "The pipeline shows how CI builds it, not how to work on it locally."
+    },
+    "docs": [
+      { "title": "Publish a Git repository to a wiki", "url": "https://learn.microsoft.com/azure/devops/project/wiki/publish-repo-to-wiki" }
+    ],
+    "tags": ["collaboration", "documentation", "wiki"]
+  },
+  {
+    "id": "pr-flow-001",
+    "domain": "processes",
+    "objective": "Design and implement traceability and flow of work",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "A team wants a blameless review after every significant incident. What is the primary goal of that review?",
+    "options": [
+      { "id": "A", "text": "Identify the systemic conditions that allowed the failure and produce concrete follow-up actions" },
+      { "id": "B", "text": "Determine which change caused the incident and who approved it" },
+      { "id": "C", "text": "Produce a report for management showing downtime was within the SLA" },
+      { "id": "D", "text": "Decide whether the on-call rotation needs more people" }
+    ],
+    "correct": ["A"],
+    "explanation": "Blameless means the question is what made the failure possible, not who did it. People hide information when they expect blame, and that information is exactly what prevents the next incident.",
+    "whyWrong": {
+      "B": "Identifying the trigger is useful, but attaching it to a person is what makes reviews unproductive.",
+      "C": "SLA reporting is a separate activity.",
+      "D": "Staffing may be one outcome, but it is not the goal."
+    },
+    "docs": [
+      { "title": "Blameless postmortems", "url": "https://learn.microsoft.com/devops/operate/what-is-postmortem" }
+    ],
+    "tags": ["culture", "postmortem", "incident-response"]
+  },
+  {
+    "id": "pr-flow-002",
+    "domain": "processes",
+    "objective": "Design and implement appropriate metrics and queries for DevOps",
+    "kind": "blanks",
+    "difficulty": 3,
+    "stem": "Match each observation to the DORA metric it belongs to.",
+    "blanks": [
+      {
+        "id": "b1",
+        "label": "18% of production deployments require a hotfix or rollback",
+        "choices": [
+          { "id": "a", "text": "Change failure rate" },
+          { "id": "b", "text": "Deployment frequency" },
+          { "id": "c", "text": "Lead time for changes" }
+        ],
+        "correct": "a"
+      },
+      {
+        "id": "b2",
+        "label": "The median outage is resolved in 42 minutes",
+        "choices": [
+          { "id": "a", "text": "Mean time to restore" },
+          { "id": "b", "text": "Change failure rate" },
+          { "id": "c", "text": "Cycle time" }
+        ],
+        "correct": "a"
+      },
+      {
+        "id": "b3",
+        "label": "The team ships to production 14 times a week",
+        "choices": [
+          { "id": "a", "text": "Deployment frequency" },
+          { "id": "b", "text": "Lead time for changes" },
+          { "id": "c", "text": "Mean time to restore" }
+        ],
+        "correct": "a"
+      }
+    ],
+    "explanation": "The four DORA metrics pair up deliberately: deployment frequency and lead time measure throughput, change failure rate and time to restore measure stability. Optimising one pair while ignoring the other is how teams end up shipping fast and breaking things, or vice versa.",
+    "docs": [
+      { "title": "DevOps metrics", "url": "https://learn.microsoft.com/devops/plan/measure-devops" }
+    ],
+    "tags": ["metrics", "dora"]
+  }
+]

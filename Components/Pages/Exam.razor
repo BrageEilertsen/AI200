@@ -1,11 +1,11 @@
 @page "/exam"
 @rendermode InteractiveServer
 @implements IDisposable
-@inject QuestionBank Bank
+@inject ExamContext Exams
 @inject ProgressStore Progress
 @inject SessionHost Host
 
-<PageTitle>Exam simulation — AI-200 Trainer</PageTitle>
+<PageTitle>Exam simulation — @Exams.Exam.Code Trainer</PageTitle>
 
 <div @ref="_root" tabindex="0" @onkeydown="HandleKey" style="outline:none">
 
@@ -15,7 +15,7 @@
         <div class="eyebrow">Exam simulation</div>
         <h1>Sit a full mock</h1>
         <p class="lede">
-            Questions are drawn across the four skill areas in the published weightings, the clock
+            Questions are drawn across the skill areas in the published weightings, the clock
             runs, and nothing is graded until you submit. Sit one cold to find out where you
             actually are.
         </p>
@@ -24,7 +24,7 @@
     <div class="card section">
         <h3>Questions</h3>
         <div class="segmented" style="margin-bottom:24px">
-            @foreach (var size in new[] { 40, 50, 60 })
+            @foreach (var size in Exams.Exam.MockSizes)
             {
                 <button type="button" class="segment @(_count == size ? "on" : "")" @onclick="() => SetCount(size)">@size</button>
             }
@@ -33,7 +33,7 @@
         <h3>Time limit</h3>
         <div class="row" style="margin-bottom:24px">
             <div class="segmented">
-                @foreach (var minutes in new[] { 90, 110, 120 })
+                @foreach (var minutes in Exams.Exam.MockMinutes)
                 {
                     <button type="button" class="segment @(_minutes == minutes ? "on" : "")" @onclick="() => _minutes = minutes">
                         @minutes min
@@ -59,10 +59,10 @@
                 <tr><th>Skill area</th><th style="width:70px">Weight</th><th style="width:90px">Questions</th><th></th></tr>
             </thead>
             <tbody>
-                @foreach (var (key, want) in ExamDomains.Allocate(_count))
+                @foreach (var (key, want) in Exams.Exam.Allocate(_count))
                 {
-                    var domain = ExamDomains.Get(key);
-                    var have = Bank.CountFor(key);
+                    var domain = Exams.Exam.Domain(key);
+                    var have = Exams.Bank.CountFor(key);
                     <tr>
                         <td style="color:var(--text)">
                             <span class="swatch" style="background-color:@domain.Accent;margin-right:8px"></span>
@@ -79,7 +79,7 @@
         </table>
     </div>
 
-    <button class="btn primary lg" disabled="@(Bank.All.Count == 0)" @onclick="Start">
+    <button class="btn primary lg" disabled="@(Exams.Bank.Questions.Count == 0)" @onclick="Start">
         Begin @_count-question mock · @_minutes min
     </button>
 
@@ -97,11 +97,11 @@
                         <tr>
                             <td class="nowrap">@record.FinishedAt.ToString("d MMM HH:mm")</td>
                             <td class="nowrap num">@record.Correct / @record.Total</td>
-                            <td class="nowrap num" style="color:@(record.ScaledScore >= 700 ? "var(--good)" : "var(--bad)")">
+                            <td class="nowrap num" style="color:@(record.ScaledScore >= Exams.Exam.PassMark ? "var(--good)" : "var(--bad)")">
                                 <b>@record.ScaledScore</b>
                             </td>
                             <td class="nowrap faint num">@($"{record.ElapsedMinutes:F0}") min</td>
-                            <td class="nowrap xs">@(record.ScaledScore >= 700 ? "Pass" : "Below cut")</td>
+                            <td class="nowrap xs">@(record.ScaledScore >= Exams.Exam.PassMark ? "Pass" : "Below cut")</td>
                         </tr>
                     }
                 </tbody>
@@ -163,7 +163,7 @@ else if (!_session.Finished)
         <QuestionView Question="item.Question"
                       Selected="item.Selected"
                       Revealed="false"
-                      CaseStudy="Bank.CaseStudyFor(item.Question)"
+                      CaseStudy="Exams.Bank.CaseStudyFor(item.Question)"
                       OnToggle="Toggle"
                       OnSetBlank="SetBlank" />
 
@@ -216,8 +216,8 @@ else
     private StudySession? _session;
     private ElementReference _root;
     private System.Threading.Timer? _ticker;
-    private int _count = 50;
-    private int _minutes = 110;
+    private int _count;
+    private int _minutes;
     private bool _focusWeak;
     private bool _confirmSubmit;
     private bool _shouldFocus;
@@ -225,6 +225,9 @@ else
 
     protected override void OnInitialized()
     {
+        Exams.Changed += OnExamChanged;
+        ApplyExamDefaults();
+
         if (Host.Current is { Mode: SessionMode.Exam } existing)
         {
             _session = existing;
@@ -234,12 +237,34 @@ else
         _pastExams = Progress.Sessions.Where(s => s.Mode == SessionMode.Exam).ToList();
     }
 
+    /// <summary>
+    /// A mock in progress belongs to the certification it was drawn from, so switching
+    /// abandons it rather than leaving another exam's questions on a running clock.
+    /// </summary>
+    private void OnExamChanged()
+    {
+        StopTicker();
+        Host.Clear();
+        _session = null;
+        _confirmSubmit = false;
+        ApplyExamDefaults();
+        _pastExams = Progress.Sessions.Where(s => s.Mode == SessionMode.Exam).ToList();
+        InvokeAsync(StateHasChanged);
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender && await Progress.EnsureLoadedAsync())
+        if (firstRender)
         {
-            _pastExams = Progress.Sessions.Where(s => s.Mode == SessionMode.Exam).ToList();
-            StateHasChanged();
+            var switched = await Exams.EnsureLoadedAsync();
+            var loaded = await Progress.EnsureLoadedAsync();
+
+            if (switched) ApplyExamDefaults();
+            if (switched || loaded)
+            {
+                _pastExams = Progress.Sessions.Where(s => s.Mode == SessionMode.Exam).ToList();
+                StateHasChanged();
+            }
         }
 
         if (_shouldFocus || firstRender)
@@ -249,11 +274,23 @@ else
         }
     }
 
+    private void ApplyExamDefaults()
+    {
+        _count = Exams.Exam.DefaultMockSize;
+        _minutes = Exams.Exam.DefaultMockMinutes;
+    }
+
     private void SetCount(int count)
     {
         _count = count;
-        // Keep the per-question pace sensible when the length changes.
-        _minutes = count switch { 40 => 90, 60 => 120, _ => 110 };
+
+        // Keep the per-question pace sensible when the length changes, by taking the time
+        // limit the exam pairs with that size.
+        var index = Exams.Exam.MockSizes.IndexOf(count);
+        if (index >= 0 && index < Exams.Exam.MockMinutes.Count)
+        {
+            _minutes = Exams.Exam.MockMinutes[index];
+        }
     }
 
     private void Start()
@@ -394,5 +431,9 @@ else
         return index < optionCount ? index : -1;
     }
 
-    public void Dispose() => StopTicker();
+    public void Dispose()
+    {
+        Exams.Changed -= OnExamChanged;
+        StopTicker();
+    }
 }

@@ -1,0 +1,49 @@
+{
+  "slug": "ai-200",
+  "code": "AI-200",
+  "title": "Developing AI Cloud Solutions on Azure",
+  "certification": "Azure AI Cloud Developer Associate",
+  "blurb": "The exam that replaces AZ-204. A back-end developer paper: containers, Cosmos DB, PostgreSQL with pgvector, Managed Redis, messaging, Functions, and security and observability. Very little prompt engineering.",
+  "minQuestions": 40,
+  "maxQuestions": 60,
+  "minMinutes": 100,
+  "maxMinutes": 120,
+  "passMark": 700,
+  "mockSizes": [40, 50, 60],
+  "mockMinutes": [90, 110, 120],
+  "studyGuideUrl": "https://learn.microsoft.com/credentials/certifications/resources/study-guides/ai-200",
+  "domains": [
+    {
+      "key": "containers",
+      "name": "Develop containerized solutions on Azure",
+      "shortName": "Containers",
+      "minWeight": 20,
+      "maxWeight": 25,
+      "accent": "var(--d-1)"
+    },
+    {
+      "key": "data",
+      "name": "Develop AI solutions by using Azure data management services",
+      "shortName": "AI data services",
+      "minWeight": 25,
+      "maxWeight": 30,
+      "accent": "var(--d-2)"
+    },
+    {
+      "key": "integration",
+      "name": "Connect to and consume Azure services",
+      "shortName": "Messaging & Functions",
+      "minWeight": 20,
+      "maxWeight": 25,
+      "accent": "var(--d-3)"
+    },
+    {
+      "key": "operations",
+      "name": "Secure, monitor, and troubleshoot Azure solutions",
+      "shortName": "Security & observability",
+      "minWeight": 20,
+      "maxWeight": 25,
+      "accent": "var(--d-4)"
+    }
+  ]
+}

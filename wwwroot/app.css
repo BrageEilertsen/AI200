@@ -35,10 +35,13 @@
     --warn:          #b25000;
     --warn-tint:     rgba(178, 80, 0, .09);
 
-    --d-containers:  #0071e3;
-    --d-data:        #8944ab;
-    --d-integration: #00827a;
-    --d-operations:  #b25000;
+    /* Domain accents, assigned by position so any exam can use them.
+       AI-200 has four skill areas, AZ-400 has five. */
+    --d-1: #0071e3;
+    --d-2: #8944ab;
+    --d-3: #00827a;
+    --d-4: #b25000;
+    --d-5: #b3123f;
 
     --material:      rgba(250, 250, 252, .72);
 
@@ -92,10 +95,11 @@
         --warn:          #ff9f0a;
         --warn-tint:     rgba(255, 159, 10, .15);
 
-        --d-containers:  #2997ff;
-        --d-data:        #bf5af2;
-        --d-integration: #40cbe0;
-        --d-operations:  #ff9f0a;
+        --d-1: #2997ff;
+        --d-2: #bf5af2;
+        --d-3: #40cbe0;
+        --d-4: #ff9f0a;
+        --d-5: #ff6482;
 
         --material:      rgba(28, 28, 30, .72);
 
@@ -132,10 +136,11 @@
     --warn:          #ff9f0a;
     --warn-tint:     rgba(255, 159, 10, .15);
 
-    --d-containers:  #2997ff;
-    --d-data:        #bf5af2;
-    --d-integration: #40cbe0;
-    --d-operations:  #ff9f0a;
+    --d-1: #2997ff;
+    --d-2: #bf5af2;
+    --d-3: #40cbe0;
+    --d-4: #ff9f0a;
+    --d-5: #ff6482;
 
     --material:      rgba(28, 28, 30, .72);
 
@@ -967,6 +972,27 @@ tbody tr:first-child td { border-top: none; }
 .banner.warn { background-color: var(--warn-tint); color: var(--text-2); }
 .banner.bad  { background-color: var(--bad-tint);  color: var(--text-2); }
 .banner b { color: var(--text); font-weight: 600; }
+
+/* ═══════════════ exam switcher ═══════════════ */
+
+.exam-switch { padding: 0 4px; }
+
+.exam-switch-label {
+    font-size: 10.5px;
+    font-weight: 620;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin: 0 6px 6px;
+}
+
+.exam-switch select {
+    width: 100%;
+    font-size: 12.5px;
+    font-weight: 500;
+    padding: 7px 9px;
+    background-color: var(--surface);
+}
 
 /* ═══════════════ countdown ═══════════════ */
 

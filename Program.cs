@@ -6,18 +6,20 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-// The bank is shared and read-only at runtime, so one instance serves every visitor.
-builder.Services.AddSingleton<QuestionBank>();
+// Every exam under Data/ is loaded once and shared: read-only at runtime.
+builder.Services.AddSingleton<ExamCatalog>();
 
-// Progress and the run in flight are per visitor: scoped to the Blazor circuit.
-// ProgressStore persists to the browser's localStorage, not to the server — see the
-// class comment for why that matters on a publicly reachable deployment.
+// Per visitor, scoped to the Blazor circuit: which exam they are studying, their progress
+// for each exam, and the run currently in flight. ProgressStore persists to the browser's
+// localStorage rather than the server — see its class comment for why that matters on a
+// publicly reachable deployment.
+builder.Services.AddScoped<ExamContext>();
 builder.Services.AddScoped<ProgressStore>();
 builder.Services.AddScoped<SessionHost>();
 
 var app = builder.Build();
 
-app.Services.GetRequiredService<QuestionBank>().Load();
+app.Services.GetRequiredService<ExamCatalog>().Load();
 
 if (!app.Environment.IsDevelopment())
 {

@@ -1,9 +1,10 @@
 @page "/browse"
 @rendermode InteractiveServer
-@inject QuestionBank Bank
+@implements IDisposable
+@inject ExamContext Exams
 @inject ProgressStore Progress
 
-<PageTitle>Browse questions — AI-200 Trainer</PageTitle>
+<PageTitle>Browse questions — @Exams.Exam.Code Trainer</PageTitle>
 
 <div class="page-head">
     <div class="eyebrow">Question bank</div>
@@ -16,7 +17,7 @@
 
 <div class="card section">
     <div class="row" style="margin-bottom:12px">
-        @foreach (var domain in ExamDomains.All)
+        @foreach (var domain in Exams.Exam.Domains)
         {
             var on = _domains.Contains(domain.Key);
             <button type="button" class="chip @(on ? "on" : "")" @onclick="() => ToggleDomain(domain.Key)">
@@ -34,7 +35,7 @@
            value="@_search" @oninput="OnSearchInput" />
 
     <div class="row xs faint" style="margin-top:10px">
-        <span class="num">@Filtered.Count of @Bank.All.Count questions</span>
+        <span class="num">@Filtered.Count of @Exams.Bank.Questions.Count questions</span>
         <span class="spacer"></span>
         <button class="btn ghost sm" @onclick="() => _allRevealed = !_allRevealed">
             @(_allRevealed ? "Hide all answers" : "Reveal all answers")
@@ -58,7 +59,7 @@ else
             <QuestionView Question="question"
                           Selected="@(revealed ? question.Correct : [])"
                           Revealed="revealed"
-                          CaseStudy="Bank.CaseStudyFor(question)"
+                          CaseStudy="Exams.Bank.CaseStudyFor(question)"
                           ScenarioOpen="false" />
 
             <div class="row between" style="margin-top:14px">
@@ -99,10 +100,29 @@ else
         return shuffled;
     }
 
+    protected override void OnInitialized() => Exams.Changed += OnExamChanged;
+
+    public void Dispose() => Exams.Changed -= OnExamChanged;
+
+    /// <summary>The filters and the shuffle cache are keyed to one bank, so a switch resets them.</summary>
+    private void OnExamChanged()
+    {
+        _presented.Clear();
+        _domains.Clear();
+        _revealed.Clear();
+        _allRevealed = false;
+        InvokeAsync(StateHasChanged);
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        // The per-question attempt counts come from browser storage.
-        if (firstRender && await Progress.EnsureLoadedAsync())
+        if (!firstRender) return;
+
+        // Which exam is being studied, and the per-question attempt counts, both come from
+        // browser storage and so are unknown until the circuit is connected.
+        await Exams.EnsureLoadedAsync();
+
+        if (await Progress.EnsureLoadedAsync())
         {
             StateHasChanged();
         }
@@ -118,7 +138,7 @@ else
     {
         get
         {
-            IEnumerable<Question> query = Bank.All;
+            IEnumerable<Question> query = Exams.Bank.Questions;
 
             if (_domains.Count > 0)
             {

@@ -1,6 +1,6 @@
 @* Post-run summary: headline score, per-domain breakdown, and a reviewable list of
    everything that was missed. Shared by practice sets and exam simulations. *@
-@inject QuestionBank Bank
+@inject ExamContext Exams
 
 <div class="page-head">
     <div class="eyebrow">@(Session.Mode == SessionMode.Exam ? "Exam simulation" : "Practice set")</div>
@@ -23,7 +23,7 @@
             <div class="stat-body">
                 <div class="stat-label">Estimated scaled</div>
                 <div class="stat-value" style="color:@ScoreColour">@Session.EstimatedScaledScore</div>
-                <div class="stat-note">@(Session.Passed ? "above" : "below") the 700 cut</div>
+                <div class="stat-note">@(Session.EstimatedScaledScore >= Exams.Exam.PassMark ? "above" : "below") the @Exams.Exam.PassMark cut</div>
             </div>
         </div>
     }
@@ -50,7 +50,7 @@
 @if (Session.Mode == SessionMode.Exam)
 {
     <div class="banner">
-        The scaled figure is a linear estimate where 70% maps to 700. Microsoft does not publish its
+        The scaled figure is a linear estimate where 70% maps to @Exams.Exam.PassMark. Microsoft does not publish its
         scaling curve, so treat anything near the line as "not safe yet" rather than a pass.
     </div>
 }
@@ -58,7 +58,7 @@
 <h2 style="margin-bottom:16px">By skill area</h2>
 <div class="card flush section">
     <div class="inset-list">
-        @foreach (var domain in ExamDomains.All)
+        @foreach (var domain in Exams.Exam.Domains)
         {
             var tally = Session.ByDomain().GetValueOrDefault(domain.Key);
             if (tally.Total == 0) continue;
@@ -135,7 +135,7 @@ else
             <QuestionView Question="item.Question"
                           Selected="item.Selected"
                           Revealed="true"
-                          CaseStudy="Bank.CaseStudyFor(item.Question)"
+                          CaseStudy="Exams.Bank.CaseStudyFor(item.Question)"
                           ScenarioOpen="false" />
         </div>
     }
@@ -147,7 +147,7 @@ else
 
     private bool _showAll;
 
-    private string Headline => Session.Passed ? "Above the pass mark" : "Below the pass mark";
+    private string Headline => Session.EstimatedScaledScore >= Exams.Exam.PassMark ? "Above the pass mark" : "Below the pass mark";
 
     private string ScoreColour => Colour(Session.ScorePercent);
 

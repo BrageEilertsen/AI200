@@ -1,0 +1,203 @@
+[
+  {
+    "id": "p-iac-004",
+    "domain": "pipelines",
+    "objective": "Design and implement infrastructure as code (IaC)",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "Two teams deploy Bicep to the same resource group. One deployment removed a resource the other team owns. Which deployment mode caused this?",
+    "options": [
+      { "id": "A", "text": "Complete mode, which deletes resources in the group that are not in the template" },
+      { "id": "B", "text": "Incremental mode, which reconciles the group against the template" },
+      { "id": "C", "text": "Validate mode, which rolls back unrecognised resources" },
+      { "id": "D", "text": "What-if mode, which applies the previewed deletions" }
+    ],
+    "correct": ["A"],
+    "explanation": "Complete mode treats the template as the full definition of the resource group and deletes anything not declared in it. Incremental — the default — leaves unlisted resources alone, which is why shared resource groups should stay on incremental.",
+    "whyWrong": {
+      "B": "Incremental never deletes resources missing from the template.",
+      "C": "Validation does not deploy anything.",
+      "D": "What-if only previews; it applies nothing."
+    },
+    "docs": [
+      { "title": "Azure Resource Manager deployment modes", "url": "https://learn.microsoft.com/azure/azure-resource-manager/templates/deployment-modes" }
+    ],
+    "tags": ["iac", "arm", "deployment-modes"]
+  },
+  {
+    "id": "p-iac-005",
+    "domain": "pipelines",
+    "objective": "Design and implement infrastructure as code (IaC)",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Where should Terraform state live when the plan and apply run from an Azure Pipelines agent?",
+    "options": [
+      { "id": "A", "text": "A remote backend such as an Azure Storage blob container, with state locking enabled" },
+      { "id": "B", "text": "On the agent's working directory, published as a pipeline artifact" },
+      { "id": "C", "text": "Committed to the repository alongside the `.tf` files" },
+      { "id": "D", "text": "In a pipeline variable group as a secret" }
+    ],
+    "correct": ["A"],
+    "explanation": "Agents are ephemeral and several runs may overlap, so state has to be shared and locked externally. Azure Storage backends use blob leases for locking, which prevents two applies corrupting the same state.",
+    "whyWrong": {
+      "B": "Agent-local state disappears with the agent and does not lock across concurrent runs.",
+      "C": "State contains secrets in plain text and would conflict on every merge.",
+      "D": "Variable groups hold small values and cannot be written back to during a run."
+    },
+    "docs": [
+      { "title": "Store Terraform state in Azure Storage", "url": "https://learn.microsoft.com/azure/developer/terraform/store-state-in-azure-storage" }
+    ],
+    "tags": ["iac", "terraform", "state"]
+  },
+  {
+    "id": "p-cont-001",
+    "domain": "pipelines",
+    "objective": "Design and implement pipelines",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "A pipeline builds a container image and must tag it so any running container can be traced back to the exact build. Which tag serves that best?",
+    "options": [
+      { "id": "A", "text": "The build id or the commit SHA, alongside a moving `latest` tag" },
+      { "id": "B", "text": "`latest` only, since it always points at the newest build" },
+      { "id": "C", "text": "The branch name, so the environment is obvious" },
+      { "id": "D", "text": "The date the image was built" }
+    ],
+    "correct": ["A"],
+    "explanation": "An immutable, unique tag is what makes an image traceable — you can map a running container straight back to a build and a commit. `latest` is convenient for humans but ambiguous, since it means something different tomorrow.",
+    "whyWrong": {
+      "B": "`latest` cannot identify which build is actually running.",
+      "C": "A branch produces many builds, so the tag is not unique.",
+      "D": "Multiple builds happen on the same day, so the date is not unique either."
+    },
+    "docs": [
+      { "title": "Recommendations for tagging and versioning images", "url": "https://learn.microsoft.com/azure/container-registry/container-registry-image-tag-version" }
+    ],
+    "tags": ["containers", "tagging", "traceability"]
+  },
+  {
+    "id": "p-cont-002",
+    "domain": "pipelines",
+    "objective": "Design and implement deployments",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "A pipeline deploys to AKS. If the new pods never pass their readiness probes, the previous version must keep serving traffic. Which approach gives that natively?",
+    "options": [
+      { "id": "A", "text": "A Kubernetes rolling update, which halts and leaves the previous ReplicaSet serving traffic if new pods never become ready" },
+      { "id": "B", "text": "Deleting the Deployment and recreating it from the new manifest" },
+      { "id": "C", "text": "Scaling the Deployment to zero before applying the new image" },
+      { "id": "D", "text": "Applying the manifest with `kubectl replace --force`" }
+    ],
+    "correct": ["A"],
+    "explanation": "A rolling update only replaces old pods as new ones report ready, so a failing readiness probe stalls the rollout with the previous version still serving. `kubectl rollout undo` then returns to the last good revision.",
+    "whyWrong": {
+      "B": "Deleting first means there is nothing left to serve traffic during the failure.",
+      "C": "Scaling to zero causes an outage and discards the fallback.",
+      "D": "`--force` deletes and recreates the resource, losing the safety of the gradual rollout."
+    },
+    "docs": [
+      { "title": "Kubernetes manifest deployment strategies", "url": "https://learn.microsoft.com/azure/devops/pipelines/ecosystems/kubernetes/deploy" }
+    ],
+    "tags": ["containers", "aks", "rollback", "deployment-strategy"]
+  },
+  {
+    "id": "p-mon-002",
+    "domain": "pipelines",
+    "objective": "Maintain pipelines",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "A nightly pipeline fails only when it runs on one particular self-hosted agent. What is the most likely cause?",
+    "options": [
+      { "id": "A", "text": "That agent's software or environment has drifted from the others" },
+      { "id": "B", "text": "The pipeline YAML contains a syntax error" },
+      { "id": "C", "text": "The schedule is set to the wrong time zone" },
+      { "id": "D", "text": "The repository has diverged from main" }
+    ],
+    "correct": ["A"],
+    "explanation": "A failure that follows one agent points at that agent, not the pipeline. Hand-maintained agents drift; the durable fix is to build agents from an image or run them as containers so every agent is identical.",
+    "whyWrong": {
+      "B": "A YAML error would fail on every agent.",
+      "C": "A wrong time zone changes when it runs, not whether it passes.",
+      "D": "Repository state is the same regardless of which agent picks up the job."
+    },
+    "docs": [
+      { "title": "Self-hosted agents", "url": "https://learn.microsoft.com/azure/devops/pipelines/agents/agents" }
+    ],
+    "tags": ["pipeline-health", "agents", "troubleshooting"]
+  },
+  {
+    "id": "p-mon-003",
+    "domain": "pipelines",
+    "objective": "Maintain pipelines",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Pipeline runs queue for long periods while agents sit idle in another pool. What should you check first?",
+    "options": [
+      { "id": "A", "text": "Whether the pipeline's demands match the capabilities of agents in the pool it targets" },
+      { "id": "B", "text": "Whether the organisation has enough parallel jobs purchased" },
+      { "id": "C", "text": "Whether the repository is too large to clone" },
+      { "id": "D", "text": "Whether the build has too many stages" }
+    ],
+    "correct": ["A"],
+    "explanation": "A job waits when no agent in its pool satisfies its demands. Idle agents elsewhere are irrelevant — pools are the unit of allocation, and demands are matched against agent capabilities within the targeted pool.",
+    "whyWrong": {
+      "B": "Parallelism limits are worth checking, but they would not leave agents idle in the pool being targeted.",
+      "C": "Clone size affects run duration, not queue time.",
+      "D": "Stage count affects how many jobs are queued, not whether an agent can accept them."
+    },
+    "docs": [
+      { "title": "Agent pools", "url": "https://learn.microsoft.com/azure/devops/pipelines/agents/pools-queues" }
+    ],
+    "tags": ["pipeline-health", "agent-pools", "troubleshooting"]
+  },
+  {
+    "id": "p-pkg-003",
+    "domain": "pipelines",
+    "objective": "Design and implement a package management strategy",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "A package should be visible to a pilot team for testing, and only promoted to everyone once it is signed off. Which Azure Artifacts feature does this?",
+    "options": [
+      { "id": "A", "text": "Feed views, promoting a package version from `@Prerelease` to `@Release`" },
+      { "id": "B", "text": "Upstream sources, adding the feed as an upstream of itself" },
+      { "id": "C", "text": "Retention policies, keeping only reviewed versions" },
+      { "id": "D", "text": "A separate organisation for the pilot team" }
+    ],
+    "correct": ["A"],
+    "explanation": "Views are filtered slices of a feed. Consumers subscribe to a view, and promoting a version into `@Release` publishes it to that audience without republishing the package — the artifact stays byte-identical.",
+    "whyWrong": {
+      "B": "Upstreams pull packages in from elsewhere and have nothing to do with promotion.",
+      "C": "Retention deletes old versions; it does not control visibility.",
+      "D": "A second organisation duplicates everything and breaks traceability."
+    },
+    "docs": [
+      { "title": "Feed views", "url": "https://learn.microsoft.com/azure/devops/artifacts/concepts/views" }
+    ],
+    "tags": ["azure-artifacts", "package-management", "promotion"]
+  },
+  {
+    "id": "p-test-004",
+    "domain": "pipelines",
+    "objective": "Design and implement a testing strategy for pipelines",
+    "kind": "multi",
+    "difficulty": 3,
+    "stem": "Which two practices most improve the speed of the feedback loop for developers? Choose two.",
+    "options": [
+      { "id": "A", "text": "Run fast unit tests and static analysis on the pull request build" },
+      { "id": "B", "text": "Parallelise the test suite across multiple agents" },
+      { "id": "C", "text": "Move all tests to a nightly run so PR builds stay short" },
+      { "id": "D", "text": "Increase the pull request reviewer requirement to three people" },
+      { "id": "E", "text": "Publish test results only when the build fails" }
+    ],
+    "correct": ["A", "B"],
+    "explanation": "Shift-left plus parallelisation is the standard answer: catch what you can cheaply on the PR, and cut wall-clock time by splitting the suite. Both shorten the gap between writing a defect and learning about it.",
+    "whyWrong": {
+      "C": "This makes PR builds fast but delays every failure by up to a day.",
+      "D": "More reviewers lengthens the loop.",
+      "E": "Withholding results on success removes trend data such as coverage and duration."
+    },
+    "docs": [
+      { "title": "Run tests in parallel", "url": "https://learn.microsoft.com/azure/devops/pipelines/test/parallel-testing-any-test-runner" }
+    ],
+    "tags": ["testing", "feedback-loop", "parallelism"]
+  }
+]

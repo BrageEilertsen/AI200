@@ -6,7 +6,7 @@ namespace Ai200Trainer.Services;
 /// Holds the run in progress. Scoped, so it lives for the lifetime of the Blazor circuit —
 /// you can navigate between pages mid-quiz and come back to where you were.
 /// </summary>
-public sealed class SessionHost(QuestionBank bank, ProgressStore progress)
+public sealed class SessionHost(ExamContext exams, ProgressStore progress)
 {
     public StudySession? Current { get; private set; }
 
@@ -18,7 +18,7 @@ public sealed class SessionHost(QuestionBank bank, ProgressStore progress)
         bool focusWeak,
         bool retryMissed = false)
     {
-        var questions = bank.Draw(domains, count, focusWeak, progress.Stats);
+        var questions = exams.Draw(domains, count, focusWeak, progress.Stats);
         Current = new StudySession
         {
             Mode = SessionMode.Practice,
@@ -30,7 +30,7 @@ public sealed class SessionHost(QuestionBank bank, ProgressStore progress)
 
     public StudySession StartExam(int count, int minutes, bool focusWeak)
     {
-        var questions = bank.DrawExam(count, focusWeak, progress.Stats);
+        var questions = exams.DrawExam(count, focusWeak, progress.Stats);
         Current = new StudySession
         {
             Mode = SessionMode.Exam,

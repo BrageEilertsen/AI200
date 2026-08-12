@@ -1,8 +1,9 @@
 @* Renders one question: case-study scenario, metadata, stem, optional code block, the
    answer control for its kind, and — once revealed — the explanation and doc links. *@
+@inject ExamContext Exams
 
 @{
-    var domain = ExamDomains.Get(Question.Domain);
+    var domain = Exams.Exam.Domain(Question.Domain);
 }
 
 @if (CaseStudy is { } study)

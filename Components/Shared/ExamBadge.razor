@@ -1,0 +1,22 @@
+@rendermode InteractiveServer
+@implements IDisposable
+@inject ExamContext Exams
+
+@* The exam code in the wordmark. Interactive so it follows a switch without a reload. *@
+<span class="code">@Exams.Exam.Code</span>
+
+@code {
+    protected override void OnInitialized() => Exams.Changed += Refresh;
+
+    public void Dispose() => Exams.Changed -= Refresh;
+
+    private void Refresh() => InvokeAsync(StateHasChanged);
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && await Exams.EnsureLoadedAsync())
+        {
+            StateHasChanged();
+        }
+    }
+}

@@ -1,0 +1,679 @@
+[
+  {
+    "id": "p-yaml-001",
+    "domain": "pipelines",
+    "objective": "Design and implement pipelines",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "A YAML pipeline must run its build stage on every push to `main`, but the deploy stage only after a human approves. Where is that approval configured?",
+    "options": [
+      { "id": "A", "text": "On the environment the deploy stage targets, as an approval check" },
+      { "id": "B", "text": "On the pipeline, as a `condition` expression on the deploy stage" },
+      { "id": "C", "text": "On the branch, as a branch policy requiring a reviewer" },
+      { "id": "D", "text": "On the service connection, as a usage restriction" }
+    ],
+    "correct": ["A"],
+    "explanation": "Approvals and checks live on the **environment** or other protected resource, not in the pipeline YAML. That is deliberate: it means the person who can edit the pipeline cannot grant themselves a bypass, because the check belongs to the resource being deployed to.",
+    "whyWrong": {
+      "B": "A condition decides whether a stage runs based on expressions, and anyone editing the YAML can change it.",
+      "C": "A branch policy gates merging into the branch, not deploying from a pipeline.",
+      "D": "Service connection restrictions control which pipelines may use it, not human sign-off per run."
+    },
+    "docs": [
+      { "title": "Approvals and checks", "url": "https://learn.microsoft.com/azure/devops/pipelines/process/approvals" }
+    ],
+    "tags": ["azure-pipelines", "environments", "approvals", "yaml"]
+  },
+  {
+    "id": "p-yaml-002",
+    "domain": "pipelines",
+    "objective": "Design and implement pipelines",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Several pipelines repeat the same twelve build steps. You want one definition that each pipeline can call and pass parameters to. What do you use?",
+    "options": [
+      { "id": "A", "text": "A YAML template, referenced with `extends` or `template` and given parameters" },
+      { "id": "B", "text": "A variable group linked from each pipeline" },
+      { "id": "C", "text": "A pipeline artifact published by a shared pipeline" },
+      { "id": "D", "text": "A deployment group shared across the pipelines" }
+    ],
+    "correct": ["A"],
+    "explanation": "Templates are the reuse unit in YAML pipelines. They can be included at step, job or stage level, take typed parameters, and live in another repository so a platform team owns them centrally.",
+    "whyWrong": {
+      "B": "Variable groups share values, not steps.",
+      "C": "Artifacts move build output between stages; they do not define behaviour.",
+      "D": "Deployment groups are sets of target machines in classic release pipelines."
+    },
+    "docs": [
+      { "title": "Template usage reference", "url": "https://learn.microsoft.com/azure/devops/pipelines/process/templates" }
+    ],
+    "tags": ["azure-pipelines", "yaml", "templates", "reuse"]
+  },
+  {
+    "id": "p-yaml-003",
+    "domain": "pipelines",
+    "objective": "Design and implement pipelines",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "A platform team must guarantee that every pipeline runs a mandatory security scan, and that product teams cannot remove it. Which mechanism enforces that?",
+    "options": [
+      { "id": "A", "text": "A required `extends` template, enforced by a template check on the protected resource" },
+      { "id": "B", "text": "A shared step template that teams are asked to include" },
+      { "id": "C", "text": "A branch policy requiring a build to succeed" },
+      { "id": "D", "text": "A pipeline variable marked as settable at queue time" }
+    ],
+    "correct": ["A"],
+    "explanation": "A template check on a protected resource — an environment, service connection or agent pool — refuses the run unless the pipeline extends an approved template. That is what turns a convention into an enforced control.",
+    "whyWrong": {
+      "B": "An included template can simply be removed by whoever edits the pipeline.",
+      "C": "That requires a build to pass but says nothing about what the build contains.",
+      "D": "Queue-time variables change values, not required steps."
+    },
+    "docs": [
+      { "title": "Approvals and checks", "url": "https://learn.microsoft.com/azure/devops/pipelines/process/approvals" }
+    ],
+    "tags": ["azure-pipelines", "templates", "governance", "security"]
+  },
+  {
+    "id": "p-yaml-004",
+    "domain": "pipelines",
+    "objective": "Design and implement pipelines",
+    "kind": "blanks",
+    "difficulty": 2,
+    "stem": "Complete the YAML so the pipeline runs only on pushes to `main` and to any `release/*` branch, and not on pull requests.",
+    "code": "[1]:\n  branches:\n    include:\n      - main\n      - release/*\n\n[2]: none",
+    "blanks": [
+      {
+        "id": "b1",
+        "label": "Blank 1 — the push trigger",
+        "choices": [
+          { "id": "a", "text": "trigger" },
+          { "id": "b", "text": "schedules" },
+          { "id": "c", "text": "resources" }
+        ],
+        "correct": "a"
+      },
+      {
+        "id": "b2",
+        "label": "Blank 2 — disabling pull request builds",
+        "choices": [
+          { "id": "a", "text": "pr" },
+          { "id": "b", "text": "trigger" },
+          { "id": "c", "text": "pool" }
+        ],
+        "correct": "a"
+      }
+    ],
+    "explanation": "`trigger` is the CI trigger for pushes; `pr` is the separate pull-request trigger. Setting `pr: none` disables PR validation runs. Note that in Azure Repos a PR build is usually driven by a branch policy rather than the `pr` trigger, which only applies to GitHub and Bitbucket.",
+    "docs": [
+      { "title": "Pipeline triggers", "url": "https://learn.microsoft.com/azure/devops/pipelines/build/triggers" }
+    ],
+    "tags": ["azure-pipelines", "yaml", "triggers"]
+  },
+  {
+    "id": "p-dep-001",
+    "domain": "pipelines",
+    "objective": "Design and implement deployments",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "A release must go to 1% of users, then 10%, then everyone, with automated rollback if error rates rise. Which deployment strategy is this?",
+    "options": [
+      { "id": "A", "text": "Canary, increasing exposure in stages while watching health signals" },
+      { "id": "B", "text": "Blue-green, switching all traffic between two identical environments" },
+      { "id": "C", "text": "Rolling, replacing instances a few at a time" },
+      { "id": "D", "text": "Recreate, stopping the old version before starting the new" }
+    ],
+    "correct": ["A"],
+    "explanation": "Canary exposes a small slice of real traffic first and widens only if the signals hold. Blue-green is the all-at-once cousin: instant cutover, instant rollback, but no partial exposure.",
+    "whyWrong": {
+      "B": "Blue-green flips 100% of traffic at once, so there is no 1% stage.",
+      "C": "Rolling replaces instances gradually but does not target a percentage of users or gate on health.",
+      "D": "Recreate involves downtime and no gradual exposure at all."
+    },
+    "docs": [
+      { "title": "Deployment jobs and strategies", "url": "https://learn.microsoft.com/azure/devops/pipelines/process/deployment-jobs" }
+    ],
+    "tags": ["deployment-strategy", "canary", "progressive-exposure"]
+  },
+  {
+    "id": "p-dep-002",
+    "domain": "pipelines",
+    "objective": "Design and implement deployments",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "A feature must be shipped to production but stay invisible until marketing is ready, with no redeploy to turn it on. Which approach fits?",
+    "options": [
+      { "id": "A", "text": "A feature flag in Azure App Configuration, read at runtime by the app" },
+      { "id": "B", "text": "A release branch held back until launch day" },
+      { "id": "C", "text": "A deployment slot that is swapped on launch day" },
+      { "id": "D", "text": "A pipeline variable set at queue time" }
+    ],
+    "correct": ["A"],
+    "explanation": "Feature flags separate deploy from release. The code ships dark, and the flag is flipped independently — which also gives an instant kill switch if the feature misbehaves.",
+    "whyWrong": {
+      "B": "Holding the branch means the code is not in production, so launch day still requires a deployment.",
+      "C": "A swap is a deployment action, and the requirement is to avoid one.",
+      "D": "A queue-time variable only affects that pipeline run, not a running application."
+    },
+    "docs": [
+      { "title": "Feature management overview", "url": "https://learn.microsoft.com/azure/azure-app-configuration/concept-feature-management" }
+    ],
+    "tags": ["feature-flags", "app-configuration", "deployment-strategy"]
+  },
+  {
+    "id": "p-dep-003",
+    "domain": "pipelines",
+    "objective": "Design and implement deployments",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "A deployment includes a database schema change. What ordering keeps the release safe and rollback-able?",
+    "options": [
+      { "id": "A", "text": "Apply a backward-compatible schema change first, deploy the code, then remove the old columns in a later release" },
+      { "id": "B", "text": "Deploy the code and the breaking schema change together in one transaction" },
+      { "id": "C", "text": "Deploy the code first, then apply the schema change once traffic is stable" },
+      { "id": "D", "text": "Take the application offline, migrate, then bring it back up" }
+    ],
+    "correct": ["A"],
+    "explanation": "The expand/contract pattern: add the new shape without breaking the old one, ship code that can use either, then contract in a later release once nothing depends on the old shape. That keeps every intermediate state deployable and reversible.",
+    "whyWrong": {
+      "B": "A breaking change deployed with the code means rolling back the code leaves the schema wrong.",
+      "C": "The new code would run against the old schema and fail until the migration lands.",
+      "D": "This works but accepts downtime, which the resiliency objectives push you to avoid."
+    },
+    "docs": [
+      { "title": "Database deployment", "url": "https://learn.microsoft.com/azure/devops/pipelines/apps/cd/azure/sql-database-deploy" }
+    ],
+    "tags": ["deployment", "database", "expand-contract", "rollback"]
+  },
+  {
+    "id": "p-dep-004",
+    "domain": "pipelines",
+    "objective": "Design and implement deployments",
+    "kind": "ordering",
+    "difficulty": 2,
+    "stem": "Put a blue-green App Service release into the order that gives zero downtime and instant rollback.",
+    "options": [
+      { "id": "1", "text": "Deploy the new build to the staging slot" },
+      { "id": "2", "text": "Warm the staging slot and run smoke tests against it" },
+      { "id": "3", "text": "Swap the staging slot with production" },
+      { "id": "4", "text": "Keep the previous build in the now-staging slot, ready to swap back" }
+    ],
+    "correct": ["1", "2", "3", "4"],
+    "explanation": "Deploying to staging keeps production untouched, warming avoids users hitting a cold instance on swap, and the swap itself is a routing change rather than a restart. The last step is what makes rollback instant — the old build is still sitting in the other slot.",
+    "docs": [
+      { "title": "Set up staging environments", "url": "https://learn.microsoft.com/azure/app-service/deploy-staging-slots" }
+    ],
+    "tags": ["deployment-strategy", "blue-green", "app-service", "slots"]
+  },
+  {
+    "id": "p-iac-001",
+    "domain": "pipelines",
+    "objective": "Design and implement infrastructure as code (IaC)",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Which statement best describes an idempotent infrastructure-as-code deployment?",
+    "options": [
+      { "id": "A", "text": "Running the same template repeatedly converges on the same end state" },
+      { "id": "B", "text": "Each run creates a fresh copy of every resource it defines" },
+      { "id": "C", "text": "The template can only be applied once per environment" },
+      { "id": "D", "text": "Changes are applied in the order the resources appear in the file" }
+    ],
+    "correct": ["A"],
+    "explanation": "Idempotence means the template describes desired state rather than steps, so applying it once or ten times leaves the same result. That is what makes IaC safe to re-run in a pipeline after a partial failure.",
+    "whyWrong": {
+      "B": "Creating duplicates on every run is the opposite of idempotence.",
+      "C": "Templates are designed to be applied repeatedly.",
+      "D": "ARM and Bicep infer ordering from dependencies, not file order."
+    },
+    "docs": [
+      { "title": "What is infrastructure as code?", "url": "https://learn.microsoft.com/devops/deliver/what-is-infrastructure-as-code" }
+    ],
+    "tags": ["iac", "bicep", "arm"]
+  },
+  {
+    "id": "p-iac-002",
+    "domain": "pipelines",
+    "objective": "Design and implement infrastructure as code (IaC)",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "A team wants to see exactly which resources a Bicep deployment would add, change or delete before it runs. Which command gives that?",
+    "options": [
+      { "id": "A", "text": "`az deployment group what-if`" },
+      { "id": "B", "text": "`az deployment group validate`" },
+      { "id": "C", "text": "`bicep build`" },
+      { "id": "D", "text": "`az deployment group create --confirm-with-what-if` run after the fact" }
+    ],
+    "correct": ["A"],
+    "explanation": "What-if performs a preview against the current state of the resource group and reports the deltas. Validate only checks that the template is syntactically and semantically deployable — it does not tell you what would change.",
+    "whyWrong": {
+      "B": "Validation catches malformed templates but reports no diff.",
+      "C": "`bicep build` transpiles Bicep to ARM JSON locally and never contacts Azure.",
+      "D": "That flag does show a what-if preview, but it is part of running the deployment rather than a separate check, and the wording here has it running afterwards."
+    },
+    "docs": [
+      { "title": "ARM template deployment what-if", "url": "https://learn.microsoft.com/azure/azure-resource-manager/templates/deploy-what-if" }
+    ],
+    "tags": ["iac", "bicep", "what-if"]
+  },
+  {
+    "id": "p-iac-003",
+    "domain": "pipelines",
+    "objective": "Design and implement infrastructure as code (IaC)",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Which Azure service applies and continuously enforces a desired configuration on virtual machines?",
+    "options": [
+      { "id": "A", "text": "Azure Machine Configuration, formerly Azure Policy guest configuration" },
+      { "id": "B", "text": "Azure Resource Manager templates" },
+      { "id": "C", "text": "Azure Deployment Environments" },
+      { "id": "D", "text": "Azure Blueprints" }
+    ],
+    "correct": ["A"],
+    "explanation": "Machine Configuration audits and can remediate settings inside the guest OS on a schedule, which is what makes it continuous rather than one-shot. ARM and Bicep describe the resource, not the state inside it.",
+    "whyWrong": {
+      "B": "ARM provisions and updates resources; it does not police in-guest settings between deployments.",
+      "C": "Deployment Environments give developers self-service, pre-approved environment templates.",
+      "D": "Blueprints package artifacts for subscription setup and are being superseded by Template Specs and deployment stacks."
+    },
+    "docs": [
+      { "title": "Azure Machine Configuration", "url": "https://learn.microsoft.com/azure/governance/machine-configuration/overview" }
+    ],
+    "tags": ["iac", "configuration-management", "machine-configuration"]
+  },
+  {
+    "id": "p-pkg-001",
+    "domain": "pipelines",
+    "objective": "Design and implement a package management strategy",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "An Azure Artifacts feed should serve your internal packages and also proxy nuget.org, so builds have a single source. What do you configure?",
+    "options": [
+      { "id": "A", "text": "An upstream source on the feed pointing at nuget.org" },
+      { "id": "B", "text": "A second feed for public packages, added to the build's sources list" },
+      { "id": "C", "text": "A feed view named `@Release`" },
+      { "id": "D", "text": "A retention policy that keeps public packages" }
+    ],
+    "correct": ["A"],
+    "explanation": "Upstream sources make the feed a proxy: a package not found locally is fetched from the upstream and then cached in your feed. That gives one URL for builds and protects you if the public package is later removed.",
+    "whyWrong": {
+      "B": "Two sources means builds resolve from two places, which is what the requirement asks you to avoid.",
+      "C": "Views such as `@Release` control which package versions consumers can see, not where packages come from.",
+      "D": "Retention decides what is kept over time, not what is proxied."
+    },
+    "docs": [
+      { "title": "Upstream sources", "url": "https://learn.microsoft.com/azure/devops/artifacts/concepts/upstream-sources" }
+    ],
+    "tags": ["azure-artifacts", "package-management", "upstream"]
+  },
+  {
+    "id": "p-pkg-002",
+    "domain": "pipelines",
+    "objective": "Design and implement a package management strategy",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Under semantic versioning, which part of the version must increase when a library removes a public method?",
+    "options": [
+      { "id": "A", "text": "Major, because the change breaks existing consumers" },
+      { "id": "B", "text": "Minor, because functionality changed" },
+      { "id": "C", "text": "Patch, because no new feature was added" },
+      { "id": "D", "text": "The build metadata suffix, because the API surface shrank" }
+    ],
+    "correct": ["A"],
+    "explanation": "SemVer is a contract with consumers: major for breaking changes, minor for backward-compatible additions, patch for backward-compatible fixes. Removing a public member breaks callers, so it is major.",
+    "whyWrong": {
+      "B": "Minor is reserved for additions that keep existing code working.",
+      "C": "Patch is for fixes that change no API surface.",
+      "D": "Build metadata is ignored when determining version precedence."
+    },
+    "docs": [
+      { "title": "Package versioning", "url": "https://learn.microsoft.com/azure/devops/artifacts/artifacts-key-concepts" }
+    ],
+    "tags": ["package-management", "semver", "versioning"]
+  },
+  {
+    "id": "p-test-001",
+    "domain": "pipelines",
+    "objective": "Design and implement a testing strategy for pipelines",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "A pipeline should block a release automatically if the change drops code coverage below the agreed threshold. Where does that belong?",
+    "options": [
+      { "id": "A", "text": "A quality gate that fails the build when the coverage policy is not met" },
+      { "id": "B", "text": "A manual approval on the release environment" },
+      { "id": "C", "text": "A branch policy requiring two reviewers" },
+      { "id": "D", "text": "A scheduled pipeline that reports coverage nightly" }
+    ],
+    "correct": ["A"],
+    "explanation": "Automated quality gates evaluate an objective signal and stop the pipeline without a human in the loop. That is what makes them reliable — a rule nobody has to remember to apply.",
+    "whyWrong": {
+      "B": "A human approval relies on someone noticing the coverage number.",
+      "C": "Reviewers approve code, and few will compute coverage deltas by eye.",
+      "D": "A nightly report tells you after the fact rather than blocking the release."
+    },
+    "docs": [
+      { "title": "Review code coverage results", "url": "https://learn.microsoft.com/azure/devops/pipelines/test/review-code-coverage-results" }
+    ],
+    "tags": ["testing", "quality-gates", "code-coverage"]
+  },
+  {
+    "id": "p-test-002",
+    "domain": "pipelines",
+    "objective": "Design and implement a testing strategy for pipelines",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "A suite of integration tests fails roughly one run in ten, always on different tests, and passes on re-run. What is the right first response?",
+    "options": [
+      { "id": "A", "text": "Identify them as flaky, quarantine them from the gate, and fix the underlying nondeterminism" },
+      { "id": "B", "text": "Configure the pipeline to retry the whole suite until it passes" },
+      { "id": "C", "text": "Delete the tests that fail most often" },
+      { "id": "D", "text": "Move the tests to a nightly schedule and merge regardless" }
+    ],
+    "correct": ["A"],
+    "explanation": "Flaky tests destroy trust in the gate: once people expect red, they stop reading it. Azure Pipelines can detect and mark flaky tests so they stop blocking, which buys time to fix the timing or shared-state problem causing them.",
+    "whyWrong": {
+      "B": "Blind retries hide real intermittent product bugs and lengthen every build.",
+      "C": "Deleting them removes the coverage along with the noise.",
+      "D": "Moving them out of the gate without fixing them means failures are found later and by someone else."
+    },
+    "docs": [
+      { "title": "Manage flaky tests", "url": "https://learn.microsoft.com/azure/devops/pipelines/test/flaky-test-management" }
+    ],
+    "tags": ["testing", "flaky-tests", "pipeline-health"]
+  },
+  {
+    "id": "p-agent-001",
+    "domain": "pipelines",
+    "objective": "Design and implement pipelines",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "A build must reach a database on a private network with no public endpoint. Which agent choice makes that possible?",
+    "options": [
+      { "id": "A", "text": "A self-hosted agent running inside that network" },
+      { "id": "B", "text": "A Microsoft-hosted agent with a firewall rule for its IP range" },
+      { "id": "C", "text": "A Microsoft-hosted agent with a service connection to the database" },
+      { "id": "D", "text": "A deployment group agent registered in another subscription" }
+    ],
+    "correct": ["A"],
+    "explanation": "Only an agent inside the network can reach a private endpoint. That is the standard reason to run self-hosted agents, alongside custom tooling and faster builds from a warm cache.",
+    "whyWrong": {
+      "B": "Microsoft-hosted agent IPs are large, change regularly, and allow-listing them effectively exposes the database to all of Azure Pipelines.",
+      "C": "A service connection carries credentials; it does not create network reachability.",
+      "D": "The subscription is irrelevant — what matters is which network the agent sits in."
+    },
+    "docs": [
+      { "title": "Azure Pipelines agents", "url": "https://learn.microsoft.com/azure/devops/pipelines/agents/agents" }
+    ],
+    "tags": ["azure-pipelines", "agents", "networking"]
+  },
+  {
+    "id": "p-agent-002",
+    "domain": "pipelines",
+    "objective": "Maintain pipelines",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "Build times have crept from 6 minutes to 25. The largest single step is restoring dependencies. What addresses this most directly?",
+    "options": [
+      { "id": "A", "text": "Add a pipeline cache keyed on the lock file so unchanged dependencies are restored from cache" },
+      { "id": "B", "text": "Increase the number of parallel jobs on the pipeline" },
+      { "id": "C", "text": "Move the pipeline to a larger Microsoft-hosted agent size" },
+      { "id": "D", "text": "Split the build into two stages" }
+    ],
+    "correct": ["A"],
+    "explanation": "Caching keyed on the lock file means the restore is skipped entirely whenever dependencies have not changed, and invalidates correctly when they have. That is the targeted fix for restore-dominated build time.",
+    "whyWrong": {
+      "B": "Parallelism helps when there are independent jobs; it does not speed up one slow step.",
+      "C": "A faster agent shaves a percentage off, whereas caching removes the work.",
+      "D": "Splitting stages redistributes the same work and adds handover overhead."
+    },
+    "docs": [
+      { "title": "Pipeline caching", "url": "https://learn.microsoft.com/azure/devops/pipelines/release/caching" }
+    ],
+    "tags": ["pipeline-health", "caching", "performance"]
+  },
+  {
+    "id": "p-gha-001",
+    "domain": "pipelines",
+    "objective": "Design and implement pipelines",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "In a GitHub Actions workflow, which keyword makes one job wait for another to finish successfully?",
+    "options": [
+      { "id": "A", "text": "`needs`" },
+      { "id": "B", "text": "`depends-on`" },
+      { "id": "C", "text": "`dependsOn`" },
+      { "id": "D", "text": "`if: success()`" }
+    ],
+    "correct": ["A"],
+    "explanation": "GitHub Actions uses `needs` to declare job dependencies; jobs without it run in parallel. Azure Pipelines uses `dependsOn` for the same purpose, and mixing the two up is an easy mistake when you work in both.",
+    "whyWrong": {
+      "B": "Not a keyword in either system.",
+      "C": "`dependsOn` is the Azure Pipelines spelling, not Actions.",
+      "D": "`if: success()` is a condition on the current job and does not create an ordering relationship."
+    },
+    "docs": [
+      { "title": "Workflow syntax for GitHub Actions", "url": "https://docs.github.com/actions/using-workflows/workflow-syntax-for-github-actions" }
+    ],
+    "tags": ["github-actions", "workflow", "yaml"]
+  },
+  {
+    "id": "p-gha-002",
+    "domain": "pipelines",
+    "objective": "Design and implement pipelines",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "A GitHub Actions workflow must deploy only after a manual approval by the platform team. How is that configured?",
+    "options": [
+      { "id": "A", "text": "Target a GitHub environment that has required reviewers configured" },
+      { "id": "B", "text": "Add an `if: github.actor == 'platform-team'` condition to the deploy job" },
+      { "id": "C", "text": "Protect the `main` branch with a required review" },
+      { "id": "D", "text": "Use a `workflow_dispatch` trigger so a human must start it" }
+    ],
+    "correct": ["A"],
+    "explanation": "GitHub environments carry protection rules — required reviewers, wait timers and deployment branch restrictions. A job referencing the environment pauses until a reviewer approves, and the rule is owned by the repository settings rather than the workflow file.",
+    "whyWrong": {
+      "B": "That checks who triggered the run, which is not an approval and is trivially bypassed.",
+      "C": "Branch protection gates merging, not deploying.",
+      "D": "Manual dispatch means a human starts it, but anyone with write access can, and there is no approval step."
+    },
+    "docs": [
+      { "title": "Using environments for deployment", "url": "https://docs.github.com/actions/deployment/targeting-different-environments/using-environments-for-deployment" }
+    ],
+    "tags": ["github-actions", "environments", "approvals"]
+  },
+  {
+    "id": "p-var-001",
+    "domain": "pipelines",
+    "objective": "Design and implement pipelines",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Connection strings differ per environment and are shared by several pipelines. Where should they live?",
+    "options": [
+      { "id": "A", "text": "A variable group per environment, linked to the pipelines that need it" },
+      { "id": "B", "text": "Inline `variables` blocks in each pipeline YAML file" },
+      { "id": "C", "text": "Pipeline variables set at queue time for every run" },
+      { "id": "D", "text": "Committed to a settings file in the repository" }
+    ],
+    "correct": ["A"],
+    "explanation": "Variable groups exist for values shared across pipelines, and can be linked to Key Vault so the pipeline reads secrets at run time rather than storing them. One group per environment keeps the separation clear.",
+    "whyWrong": {
+      "B": "Inline duplicates the values in every pipeline and drifts.",
+      "C": "Requiring a human to type them per run is error-prone and unauditable.",
+      "D": "Connection strings in the repository are visible to everyone with read access."
+    },
+    "docs": [
+      { "title": "Variable groups", "url": "https://learn.microsoft.com/azure/devops/pipelines/library/variable-groups" }
+    ],
+    "tags": ["azure-pipelines", "variables", "configuration"]
+  },
+  {
+    "id": "p-var-002",
+    "domain": "pipelines",
+    "objective": "Design and implement pipelines",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "A secret variable is printed by a script step as part of a diagnostic message. What does Azure Pipelines do?",
+    "options": [
+      { "id": "A", "text": "Masks the value in the log, though the secret should not be echoed in the first place" },
+      { "id": "B", "text": "Fails the step for attempting to expose a secret" },
+      { "id": "C", "text": "Prints it normally, because masking applies only to variable groups" },
+      { "id": "D", "text": "Replaces the whole log line with a warning" }
+    ],
+    "correct": ["A"],
+    "explanation": "The agent scrubs known secret values from log output, replacing them with asterisks. It is a safety net rather than a guarantee — a transformed secret, for example base64-encoded or split, will not be recognised and will appear in full.",
+    "whyWrong": {
+      "B": "The step is not failed; the value is masked.",
+      "C": "Masking applies to any variable marked secret, however it was defined.",
+      "D": "Only the matched value is replaced, not the surrounding text."
+    },
+    "docs": [
+      { "title": "Set secret variables", "url": "https://learn.microsoft.com/azure/devops/pipelines/process/set-secret-variables" }
+    ],
+    "tags": ["azure-pipelines", "secrets", "logging"]
+  },
+  {
+    "id": "p-art-001",
+    "domain": "pipelines",
+    "objective": "Design and implement pipelines",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "A multi-stage pipeline builds once and deploys the same bits to test and then production. How does the deploy stage get the build output?",
+    "options": [
+      { "id": "A", "text": "The build stage publishes a pipeline artifact, and deploy stages download it" },
+      { "id": "B", "text": "Each stage rebuilds from source at its own commit" },
+      { "id": "C", "text": "The build stage writes to a shared folder on the agent" },
+      { "id": "D", "text": "The stages pass the output as an output variable" }
+    ],
+    "correct": ["A"],
+    "explanation": "Publishing an artifact is what makes build-once-deploy-many possible: every environment receives byte-identical output, so a difference between test and production cannot come from the build.",
+    "whyWrong": {
+      "B": "Rebuilding per stage means test and production may not be the same bits.",
+      "C": "Stages can run on different agents, so agent-local paths do not carry over.",
+      "D": "Output variables carry small values, not build output."
+    },
+    "docs": [
+      { "title": "Publish and download pipeline artifacts", "url": "https://learn.microsoft.com/azure/devops/pipelines/artifacts/pipeline-artifacts" }
+    ],
+    "tags": ["azure-pipelines", "artifacts", "multi-stage"]
+  },
+  {
+    "id": "p-mig-001",
+    "domain": "pipelines",
+    "objective": "Maintain pipelines",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Which is the strongest argument for migrating a classic release pipeline to YAML?",
+    "options": [
+      { "id": "A", "text": "The definition is versioned with the code and reviewed through pull requests" },
+      { "id": "B", "text": "YAML pipelines run faster than classic ones" },
+      { "id": "C", "text": "Classic pipelines cannot deploy to Azure" },
+      { "id": "D", "text": "YAML removes the need for service connections" }
+    ],
+    "correct": ["A"],
+    "explanation": "Pipeline-as-code means the definition branches with the code, changes go through review, and history explains why a step exists. Classic pipelines are edited in a UI with no meaningful diff or review.",
+    "whyWrong": {
+      "B": "Execution speed is broadly the same; the same agents run the same work.",
+      "C": "Classic pipelines deploy to Azure perfectly well.",
+      "D": "Service connections are still how a pipeline authenticates to Azure."
+    },
+    "docs": [
+      { "title": "Migrate from classic to YAML", "url": "https://learn.microsoft.com/azure/devops/pipelines/migrate/from-classic-pipelines" }
+    ],
+    "tags": ["azure-pipelines", "yaml", "migration"]
+  },
+  {
+    "id": "p-mon-001",
+    "domain": "pipelines",
+    "objective": "Maintain pipelines",
+    "kind": "multi",
+    "difficulty": 3,
+    "stem": "Which two signals best indicate that pipeline health is degrading? Choose two.",
+    "options": [
+      { "id": "A", "text": "A rising build failure rate on the main branch" },
+      { "id": "B", "text": "A growing number of tests marked flaky" },
+      { "id": "C", "text": "An increase in the number of pipelines in the project" },
+      { "id": "D", "text": "More frequent commits to feature branches" },
+      { "id": "E", "text": "A larger repository size on disk" }
+    ],
+    "correct": ["A", "B"],
+    "explanation": "Failure rate and flakiness both measure whether the pipeline is still a trustworthy signal, which is the point of pipeline health. Duration is the third of the standard trio.",
+    "whyWrong": {
+      "C": "More pipelines reflects project growth, not health.",
+      "D": "Commit frequency is a throughput measure and is often a good sign.",
+      "E": "Repository size affects clone time but is not itself a health signal."
+    },
+    "docs": [
+      { "title": "Pipeline reports", "url": "https://learn.microsoft.com/azure/devops/pipelines/reports/pipelinereport" }
+    ],
+    "tags": ["pipeline-health", "metrics"]
+  },
+  {
+    "id": "p-dep-005",
+    "domain": "pipelines",
+    "objective": "Design and implement deployments",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "A critical production bug needs a fix released today, but `main` contains unreleased work that is not ready. What is the appropriate path?",
+    "options": [
+      { "id": "A", "text": "Branch from the release tag, fix, release, then merge the fix back into main" },
+      { "id": "B", "text": "Fix on main and release main as it stands" },
+      { "id": "C", "text": "Revert the unreleased work on main, then fix and release" },
+      { "id": "D", "text": "Fix directly on the production servers and backfill the change later" }
+    ],
+    "correct": ["A"],
+    "explanation": "A hotfix path branches from what is actually in production, so the release contains only the fix. Merging back afterwards is the step people forget, and skipping it means the bug returns with the next release.",
+    "whyWrong": {
+      "B": "That ships the unready work along with the fix.",
+      "C": "Reverting and re-applying good work is disruptive and risks losing it.",
+      "D": "Changing production directly leaves no trace in source control and will be overwritten."
+    },
+    "docs": [
+      { "title": "Release branching strategies", "url": "https://learn.microsoft.com/azure/devops/repos/git/git-branching-guidance" }
+    ],
+    "tags": ["deployment", "hotfix", "branching"]
+  },
+  {
+    "id": "p-test-003",
+    "domain": "pipelines",
+    "objective": "Design and implement a testing strategy for pipelines",
+    "kind": "blanks",
+    "difficulty": 2,
+    "stem": "For each requirement, choose the level of test that belongs in the pipeline at that point.",
+    "blanks": [
+      {
+        "id": "b1",
+        "label": "Runs on every commit, in seconds, with no external dependencies",
+        "choices": [
+          { "id": "a", "text": "Unit tests" },
+          { "id": "b", "text": "Load tests" },
+          { "id": "c", "text": "Integration tests" }
+        ],
+        "correct": "a"
+      },
+      {
+        "id": "b2",
+        "label": "Verifies the app against a real database and message broker",
+        "choices": [
+          { "id": "a", "text": "Unit tests" },
+          { "id": "b", "text": "Integration tests" },
+          { "id": "c", "text": "Static analysis" }
+        ],
+        "correct": "b"
+      },
+      {
+        "id": "b3",
+        "label": "Confirms the release holds up at expected peak traffic",
+        "choices": [
+          { "id": "a", "text": "Load tests" },
+          { "id": "b", "text": "Unit tests" },
+          { "id": "c", "text": "Smoke tests" }
+        ],
+        "correct": "a"
+      }
+    ],
+    "explanation": "The test pyramid maps onto pipeline stages: many fast unit tests gate every commit, fewer integration tests run against real dependencies later, and slow load tests run before a production release or on a schedule. Putting slow tests early destroys the feedback loop that makes CI useful.",
+    "docs": [
+      { "title": "Testing strategy", "url": "https://learn.microsoft.com/devops/develop/shift-left-make-testing-fast-reliable" }
+    ],
+    "tags": ["testing", "test-pyramid", "pipeline-design"]
+  }
+]

@@ -1,0 +1,36 @@
+@rendermode InteractiveServer
+@inject ExamContext Exams
+
+@if (Exams.HasMultipleExams)
+{
+    <div class="exam-switch">
+        <div class="exam-switch-label">Studying</div>
+        <select value="@Exams.Exam.Slug" @onchange="OnChanged" aria-label="Certification exam">
+            @foreach (var bank in Exams.All)
+            {
+                <option value="@bank.Definition.Slug" selected="@(bank.Definition.Slug == Exams.Exam.Slug)">
+                    @bank.Definition.Code — @bank.Definition.Certification
+                </option>
+            }
+        </select>
+    </div>
+}
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // The remembered exam lives in the browser, so the first render shows the default.
+        if (firstRender && await Exams.EnsureLoadedAsync())
+        {
+            StateHasChanged();
+        }
+    }
+
+    private async Task OnChanged(ChangeEventArgs e)
+    {
+        if (e.Value?.ToString() is { Length: > 0 } slug)
+        {
+            await Exams.SelectAsync(slug);
+        }
+    }
+}

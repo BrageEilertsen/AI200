@@ -10,7 +10,10 @@
     <link rel="stylesheet" href="@Assets["app.css"]" />
     <link rel="stylesheet" href="@Assets["ai-200-trainer.styles.css"]" />
     <ImportMap />
-    <HeadOutlet />
+    @* Interactive so the tab title follows an exam switch — every PageTitle names the
+       exam code, and a static HeadOutlet would freeze it at whichever exam the first
+       server render used. *@
+    <HeadOutlet @rendermode="InteractiveServer" />
 
     @* Applied before first paint so an explicit theme choice never flashes the wrong palette. *@
     <script>
@@ -78,6 +81,20 @@
                 },
                 save: function (json) {
                     try { localStorage.setItem(KEY, json); } catch (e) { /* private mode or quota */ }
+                }
+            };
+        })();
+
+        // Which certification is being studied. Remembered per browser so a reload keeps you
+        // where you were, and so two people sharing the deployment can study different exams.
+        (function () {
+            var KEY = 'ai200-exam';
+            window.ai200Exam = {
+                get: function () {
+                    try { return localStorage.getItem(KEY); } catch (e) { return null; }
+                },
+                set: function (slug) {
+                    try { localStorage.setItem(KEY, slug); } catch (e) { }
                 }
             };
         })();
