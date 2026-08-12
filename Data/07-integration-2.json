@@ -393,10 +393,10 @@
     "difficulty": 2,
     "stem": "Which capability is available only on the Service Bus Premium tier?",
     "options": [
-      { "id": "A", "text": "Resource isolation with predictable performance and larger message sizes" },
-      { "id": "B", "text": "Topics and subscriptions" },
-      { "id": "C", "text": "Dead-letter queues" },
-      { "id": "D", "text": "Sessions" }
+      { "id": "A", "text": "Dedicated resource isolation, giving predictable throughput and latency" },
+      { "id": "B", "text": "Topics and subscriptions for publish/subscribe fan-out to many readers" },
+      { "id": "C", "text": "Dead-letter queues holding messages that could not be processed" },
+      { "id": "D", "text": "Message sessions giving FIFO ordering within a session id" }
     ],
     "correct": ["A"],
     "explanation": "Premium runs on dedicated resources, which is what gives predictable throughput and latency, plus much larger messages. Sessions, topics and dead-lettering are all available on Standard.",

@@ -878,52 +878,6 @@
     ]
   },
   {
-    "id": "o-kql-001",
-    "domain": "operations",
-    "objective": "Monitor and troubleshoot Azure solutions",
-    "kind": "single",
-    "difficulty": 2,
-    "stem": "Complete the query so it returns the count of failed requests in five-minute buckets over the last hour.",
-    "code": "requests\n| where timestamp > ago(1h)\n| where success == false\n<?>",
-    "options": [
-      {
-        "id": "A",
-        "text": "`| summarize count() by bin(timestamp, 5m)`"
-      },
-      {
-        "id": "B",
-        "text": "`| project count() by timestamp`"
-      },
-      {
-        "id": "C",
-        "text": "`| extend count = count() by bin(timestamp, 5m)`"
-      },
-      {
-        "id": "D",
-        "text": "`| order by timestamp asc | take 5m`"
-      }
-    ],
-    "correct": [
-      "A"
-    ],
-    "explanation": "`summarize` performs the aggregation and `bin()` rounds the timestamp down into fixed buckets, which is the standard KQL time-series shape.",
-    "whyWrong": {
-      "B": "project selects and computes columns row by row; it cannot aggregate across rows.",
-      "C": "extend adds a column per row and does not support a by clause.",
-      "D": "take limits rows and does not accept a timespan."
-    },
-    "docs": [
-      {
-        "title": "KQL summarize operator",
-        "url": "https://learn.microsoft.com/kusto/query/summarize-operator"
-      }
-    ],
-    "tags": [
-      "kql",
-      "aggregation"
-    ]
-  },
-  {
     "id": "o-kql-002",
     "domain": "operations",
     "objective": "Monitor and troubleshoot Azure solutions",
@@ -945,7 +899,7 @@
       },
       {
         "id": "D",
-        "text": "traces | where `customDimensions`.operationId == \"abc123\""
+        "text": "`traces | where customDimensions.operationId == \"abc123\"`"
       }
     ],
     "correct": [

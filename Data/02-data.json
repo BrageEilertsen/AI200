@@ -185,53 +185,6 @@
     ]
   },
   {
-    "id": "d-cos-005",
-    "domain": "data",
-    "objective": "Develop AI solutions by using Azure Cosmos DB for NoSQL",
-    "kind": "single",
-    "difficulty": 2,
-    "stem": "Complete the NoSQL query so it returns the ten chunks most similar to the query embedding.",
-    "code": "SELECT TOP 10 c.id, c.text,\n       VectorDistance(c.embedding, @queryVector) AS score\nFROM c\n<?>",
-    "options": [
-      {
-        "id": "A",
-        "text": "ORDER BY `VectorDistance`(c.embedding, @queryVector)"
-      },
-      {
-        "id": "B",
-        "text": "ORDER BY score DESC"
-      },
-      {
-        "id": "C",
-        "text": "WHERE `VectorDistance`(c.embedding, @queryVector) < 0.2"
-      },
-      {
-        "id": "D",
-        "text": "GROUP BY `VectorDistance`(c.embedding, @queryVector)"
-      }
-    ],
-    "correct": [
-      "A"
-    ],
-    "explanation": "Vector search in Cosmos DB is expressed as ORDER BY `VectorDistance`(...). Only that form lets the engine use the vector index; the distance function must appear in the ORDER BY clause.",
-    "whyWrong": {
-      "B": "Ordering by the projected alias does not engage the vector index, and DESC would rank the least similar first for a distance metric.",
-      "C": "A WHERE filter on distance forces evaluation over the candidate set rather than an indexed nearest-neighbour search.",
-      "D": "GROUP BY aggregates rows; it has no role in a similarity ranking."
-    },
-    "docs": [
-      {
-        "title": "VectorDistance in Cosmos DB",
-        "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/query/vectordistance"
-      }
-    ],
-    "tags": [
-      "cosmos-db",
-      "vector-search",
-      "query"
-    ]
-  },
-  {
     "id": "d-cos-006",
     "domain": "data",
     "objective": "Develop AI solutions by using Azure Cosmos DB for NoSQL",
@@ -847,19 +800,19 @@
     "options": [
       {
         "id": "A",
-        "text": "IVFFlat derives its cluster centroids from the data present when the index is built, so building on an empty table produces a useless partitioning"
+        "text": "IVFFlat centroids are computed from the data present when the index is built"
       },
       {
         "id": "B",
-        "text": "IVFFlat does not support the cosine operator class"
+        "text": "IVFFlat does not support the cosine operator class for normalised vectors"
       },
       {
         "id": "C",
-        "text": "The lists parameter must always equal the number of rows"
+        "text": "The lists parameter must be set to the number of rows in the table"
       },
       {
         "id": "D",
-        "text": "IVFFlat requires the vectors to be normalised to unit length"
+        "text": "IVFFlat requires vectors to be normalised to unit length before insert"
       }
     ],
     "correct": [
@@ -993,19 +946,19 @@
     "options": [
       {
         "id": "A",
-        "text": "The ANN index returns a fixed candidate set before the tenant filter is applied, so few or none of the candidates belong to that tenant"
+        "text": "The ANN index returns a bounded candidate set before the filter is applied"
       },
       {
         "id": "B",
-        "text": "The vector column contains NULLs for that tenant"
+        "text": "The vector column contains NULLs for that tenant's newer chunks"
       },
       {
         "id": "C",
-        "text": "LIMIT cannot be combined with a vector ORDER BY"
+        "text": "LIMIT cannot be combined with a vector ORDER BY in the same query"
       },
       {
         "id": "D",
-        "text": "The tenant_id column is missing a NOT NULL constraint"
+        "text": "The tenant_id column lacks an index, so the filter is not pushed down"
       }
     ],
     "correct": [
@@ -1654,11 +1607,11 @@
       },
       {
         "id": "C",
-        "text": "`GEORADIUS` idx 0 0 5 km"
+        "text": "`GEORADIUS idx 0 0 5 km WITHDIST COUNT 5`"
       },
       {
         "id": "D",
-        "text": "`ZRANGEBYSCORE` idx 0 5"
+        "text": "`ZRANGEBYSCORE idx 0 5 WITHSCORES LIMIT 0 5`"
       }
     ],
     "correct": [

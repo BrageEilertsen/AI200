@@ -32,10 +32,10 @@
     "difficulty": 3,
     "stem": "A container-based App Service takes 90 seconds to become healthy after a restart, and requests fail during that window. Which setting stops traffic reaching an instance too early?",
     "options": [
-      { "id": "A", "text": "A health check path, so App Service only routes to instances that report healthy" },
-      { "id": "B", "text": "Always On" },
-      { "id": "C", "text": "`WEBSITES_PORT`" },
-      { "id": "D", "text": "ARR affinity" }
+      { "id": "A", "text": "A health check path, so unhealthy instances are pulled from load balancing" },
+      { "id": "B", "text": "Always On, so the app is not unloaded when it goes idle" },
+      { "id": "C", "text": "`WEBSITES_PORT`, so requests reach the port the container listens on" },
+      { "id": "D", "text": "ARR affinity, so a client keeps returning to the same instance" }
     ],
     "correct": ["A"],
     "explanation": "Configuring a health check path makes App Service poll each instance and exclude unhealthy ones from load balancing, which is exactly the readiness behaviour a slow-starting container needs.",
@@ -132,10 +132,10 @@
     "difficulty": 2,
     "stem": "You need to remove old image versions from a registry automatically while keeping the most recent ones. What supports this?",
     "options": [
-      { "id": "A", "text": "A retention policy for untagged manifests, combined with a tagging strategy that untags superseded versions" },
-      { "id": "B", "text": "Content trust" },
-      { "id": "C", "text": "Geo-replication" },
-      { "id": "D", "text": "A private endpoint" }
+      { "id": "A", "text": "A retention policy that removes untagged manifests after a set number of days" },
+      { "id": "B", "text": "Content trust, which signs images so consumers can verify the publisher" },
+      { "id": "C", "text": "Geo-replication, which copies images to replicas in other regions" },
+      { "id": "D", "text": "A private endpoint, which limits registry access to a virtual network" }
     ],
     "correct": ["A"],
     "explanation": "ACR expires untagged manifests on a retention policy. Pushing a new build to the same tag leaves the previous manifest untagged, so the policy reclaims it after the configured number of days.",

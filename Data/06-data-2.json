@@ -291,19 +291,19 @@
     "options": [
       {
         "id": "A",
-        "text": "Client-side connection handling — a multiplexer per request or thread-pool starvation"
+        "text": "Client-side connection handling, such as a multiplexer created per request"
       },
       {
         "id": "B",
-        "text": "The eviction policy"
+        "text": "The eviction policy, which may be discarding hot keys too early"
       },
       {
         "id": "C",
-        "text": "The number of shards in the cache"
+        "text": "The number of shards, which may be capping total throughput"
       },
       {
         "id": "D",
-        "text": "The TTL on cached values"
+        "text": "The TTL on cached values, which may be expiring them too soon"
       }
     ],
     "correct": [
@@ -573,7 +573,7 @@
       },
       {
         "id": "B",
-        "text": "`ivfflat`.lists"
+        "text": "`ivfflat.lists`"
       },
       {
         "id": "C",

@@ -472,19 +472,19 @@
     "options": [
       {
         "id": "A",
-        "text": "@Microsoft.KeyVault(SecretUri=https://kv-contoso.vault.azure.net/secrets/openai-key/)"
+        "text": "`@Microsoft.KeyVault(VaultName=kv-contoso;SecretName=openai-key)`"
       },
       {
         "id": "B",
-        "text": "$(KeyVault:kv-contoso:openai-key)"
+        "text": "`$(KeyVault:kv-contoso:secrets:openai-key:latest)`"
       },
       {
         "id": "C",
-        "text": "%KEYVAULT_openai-key%"
+        "text": "`%KEYVAULT_kv-contoso_openai-key_LATEST%`"
       },
       {
         "id": "D",
-        "text": "#{kv-contoso/openai-key}#"
+        "text": "`#{azure.keyvault/kv-contoso/openai-key}#`"
       }
     ],
     "correct": [
@@ -662,7 +662,7 @@
     "options": [
       {
         "id": "A",
-        "text": "`secretref`:sb-connection"
+        "text": "`secretref:sb-connection`"
       },
       {
         "id": "B",

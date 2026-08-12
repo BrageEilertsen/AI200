@@ -377,10 +377,10 @@
     "difficulty": 2,
     "stem": "Which signal type should record the number of tokens consumed per model call, for dashboards and alerting over time?",
     "options": [
-      { "id": "A", "text": "A metric, which is pre-aggregated and cheap to query over long ranges" },
-      { "id": "B", "text": "A log entry per call" },
-      { "id": "C", "text": "A span attribute only" },
-      { "id": "D", "text": "A custom event per call" }
+      { "id": "A", "text": "A metric, aggregated at collection time and cheap to query over months" },
+      { "id": "B", "text": "A log entry per call, carrying the token count as a property" },
+      { "id": "C", "text": "A span attribute, recorded on the span for that model call" },
+      { "id": "D", "text": "A custom event per call, with the token count as a dimension" }
     ],
     "correct": ["A"],
     "explanation": "Metrics are aggregated at collection time, so they stay cheap to store and fast to query across long windows — the right choice for a value you want to chart and alert on. Recording it as a span attribute too is useful for per-request debugging.",
@@ -572,10 +572,10 @@
     "difficulty": 3,
     "stem": "After enabling the Azure Monitor OpenTelemetry distro, traces appear but the application's `ILogger` output does not. What is the most likely cause?",
     "options": [
-      { "id": "A", "text": "The logging provider is not wired to the distro, or the minimum level filters the entries out" },
-      { "id": "B", "text": "Logs are not supported by the distro" },
-      { "id": "C", "text": "The connection string is invalid" },
-      { "id": "D", "text": "Sampling removes all log records" }
+      { "id": "A", "text": "The logging provider is not wired up, or the minimum level filters the entries out" },
+      { "id": "B", "text": "The distro exports traces and metrics but never log records" },
+      { "id": "C", "text": "The connection string is missing the log ingestion endpoint" },
+      { "id": "D", "text": "Sampling is discarding the log records before they are exported" }
     ],
     "correct": ["A"],
     "explanation": "The distro covers traces, metrics and logs, but log records still pass through the normal logging pipeline — so a minimum level set above the entries being written, or a provider that was never registered, produces exactly this asymmetry.",
