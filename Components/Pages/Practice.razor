@@ -53,11 +53,19 @@
             </button>
         </div>
 
-        <label class="check">
+        <label class="check" style="margin-bottom:14px">
             <input type="checkbox" checked="@_focusWeak" @onchange="e => _focusWeak = (bool)e.Value!" />
             <span>
                 <b style="color:var(--text);font-weight:550">Focus weak areas</b><br />
                 Favour questions you have never seen or recently got wrong
+            </span>
+        </label>
+
+        <label class="check">
+            <input type="checkbox" checked="@_retryMissed" @onchange="e => _retryMissed = (bool)e.Value!" />
+            <span>
+                <b style="color:var(--text);font-weight:550">Ask missed questions again</b><br />
+                Anything you get wrong comes back once at the end of the set
             </span>
         </label>
     </div>
@@ -81,6 +89,10 @@ else if (!_session.Finished)
         <div>
             <div class="eyebrow" style="margin-bottom:2px">Practice set</div>
             <b>Question @(_session.Index + 1) <span class="faint">of @_session.Total</span></b>
+            @if (item.IsRetry)
+            {
+                <span class="retry-badge" title="You missed this one earlier in the set">Second look</span>
+            }
         </div>
         <div class="row">
             <span class="xs muted num">
@@ -140,6 +152,7 @@ else
     private readonly HashSet<string> _pickedDomains = [];
     private int _count = 20;
     private bool _focusWeak = true;
+    private bool _retryMissed = true;
     private SessionRecord? _lastResult;
     private bool _shouldFocus;
 
@@ -188,7 +201,7 @@ else
     private void Start()
     {
         var size = _count == int.MaxValue ? AvailableCount : Math.Min(_count, AvailableCount);
-        _session = Host.StartPractice(_pickedDomains, size, _focusWeak);
+        _session = Host.StartPractice(_pickedDomains, size, _focusWeak, _retryMissed);
         _shouldFocus = true;
     }
 

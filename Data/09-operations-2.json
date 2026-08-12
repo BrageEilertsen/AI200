@@ -1,0 +1,612 @@
+[
+  {
+    "id": "o2-sec-001",
+    "domain": "operations",
+    "objective": "Implement secure Azure solutions",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "A container app must read blobs using its managed identity. Which role assignment grants data-plane read access?",
+    "options": [
+      { "id": "A", "text": "Storage Blob Data Reader" },
+      { "id": "B", "text": "Reader" },
+      { "id": "C", "text": "Storage Account Contributor" },
+      { "id": "D", "text": "Contributor" }
+    ],
+    "correct": ["A"],
+    "explanation": "Storage separates control plane from data plane. Only the Storage Blob Data roles grant access to blob contents; the generic management roles grant access to the account resource, not the data inside it.",
+    "whyWrong": {
+      "B": "Reader shows the account exists and lets you read its properties. It cannot read a blob.",
+      "C": "Storage Account Contributor manages the account and can read keys, but grants no direct data-plane access under RBAC.",
+      "D": "Contributor is broad management access and, again, not a data-plane role."
+    },
+    "docs": [
+      { "title": "Assign an Azure role for blob data access", "url": "https://learn.microsoft.com/azure/storage/blobs/assign-azure-role-data-access" }
+    ],
+    "tags": ["security", "rbac", "storage", "managed-identity"]
+  },
+  {
+    "id": "o2-sec-002",
+    "domain": "operations",
+    "objective": "Implement secure Azure solutions",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "A team needs to give an external partner time-limited read access to one blob container, without an Entra identity. What is appropriate?",
+    "options": [
+      { "id": "A", "text": "A user delegation SAS scoped to the container, signed with Entra credentials and given a short expiry" },
+      { "id": "B", "text": "The storage account key" },
+      { "id": "C", "text": "Anonymous public read access on the container" },
+      { "id": "D", "text": "A Contributor role assignment on the storage account" }
+    ],
+    "correct": ["A"],
+    "explanation": "A user delegation SAS is signed with Entra ID credentials rather than the account key, so it can be revoked by revoking the delegation key and it carries the signer's permissions as a ceiling. Scope and expiry limit the blast radius.",
+    "whyWrong": {
+      "B": "The account key grants full control of everything in the account and cannot be scoped or expired.",
+      "C": "Public access removes authentication for everyone, not just the partner.",
+      "D": "That requires the partner to have an identity in your directory and grants far too much."
+    },
+    "docs": [
+      { "title": "User delegation SAS", "url": "https://learn.microsoft.com/rest/api/storageservices/create-user-delegation-sas" }
+    ],
+    "tags": ["security", "sas", "storage", "least-privilege"]
+  },
+  {
+    "id": "o2-sec-003",
+    "domain": "operations",
+    "objective": "Implement secure Azure solutions",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Which App Configuration feature lets you roll out and instantly withdraw a change without redeploying?",
+    "options": [
+      { "id": "A", "text": "Feature flags read through `IFeatureManager`" },
+      { "id": "B", "text": "Labels" },
+      { "id": "C", "text": "Snapshots" },
+      { "id": "D", "text": "Key Vault references" }
+    ],
+    "correct": ["A"],
+    "explanation": "Feature flags exist to separate deploy from release. The code ships with the feature behind a flag, and the flag can be flipped — including by percentage or audience — without touching the deployment.",
+    "whyWrong": {
+      "B": "Labels distinguish values per environment; they are not a runtime toggle.",
+      "C": "Snapshots capture an immutable point-in-time set of configuration.",
+      "D": "Key Vault references resolve secrets and have nothing to do with rollout."
+    },
+    "docs": [
+      { "title": "Feature management overview", "url": "https://learn.microsoft.com/azure/azure-app-configuration/concept-feature-management" }
+    ],
+    "tags": ["app-configuration", "feature-flags", "deployment"]
+  },
+  {
+    "id": "o2-sec-004",
+    "domain": "operations",
+    "objective": "Implement secure Azure solutions",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "An app reads configuration from App Configuration at startup only. Operations need a connection timeout changed without a restart. What is missing?",
+    "options": [
+      { "id": "A", "text": "Refresh registration with a sentinel key and a cache expiration" },
+      { "id": "B", "text": "A second App Configuration store" },
+      { "id": "C", "text": "Geo-replication of the store" },
+      { "id": "D", "text": "A Key Vault reference for the timeout value" }
+    ],
+    "correct": ["A"],
+    "explanation": "The provider only re-reads when refresh is configured. Registering a sentinel key with a cache expiration makes the app poll that one key and reload everything when it changes — which is also why the sentinel is updated last, after the real values.",
+    "whyWrong": {
+      "B": "A second store adds no refresh behaviour.",
+      "C": "Geo-replication improves availability and latency, not refresh.",
+      "D": "A timeout is not a secret, and Key Vault references do not add dynamic refresh."
+    },
+    "docs": [
+      { "title": "Enable dynamic configuration", "url": "https://learn.microsoft.com/azure/azure-app-configuration/enable-dynamic-configuration-aspnet-core" }
+    ],
+    "tags": ["app-configuration", "refresh", "sentinel-key"]
+  },
+  {
+    "id": "o2-sec-005",
+    "domain": "operations",
+    "objective": "Implement secure Azure solutions",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Which statement about a system-assigned managed identity is correct when the resource is deleted and recreated?",
+    "options": [
+      { "id": "A", "text": "A new identity with a new object id is created, so previous role assignments no longer apply" },
+      { "id": "B", "text": "The same identity is restored along with its role assignments" },
+      { "id": "C", "text": "The identity survives in the directory and can be reattached" },
+      { "id": "D", "text": "Role assignments transfer automatically to the new identity" }
+    ],
+    "correct": ["A"],
+    "explanation": "A system-assigned identity shares its resource's lifecycle. Recreating the resource produces a brand-new service principal, so every role assignment must be granted again — which is the main reason infrastructure that is torn down and rebuilt tends to use a user-assigned identity instead.",
+    "whyWrong": {
+      "B": "The old identity is deleted with the resource.",
+      "C": "It is removed from the directory, not orphaned for reattachment.",
+      "D": "Assignments reference the old object id and become stale."
+    },
+    "docs": [
+      { "title": "Managed identity types", "url": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview" }
+    ],
+    "tags": ["managed-identity", "security", "rbac"]
+  },
+  {
+    "id": "o2-sec-006",
+    "domain": "operations",
+    "objective": "Implement secure Azure solutions",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "A secret must be rotated every 60 days with no downtime for running apps. Which combination achieves this?",
+    "options": [
+      { "id": "A", "text": "Apps read the versionless secret URI, and a rotation policy raises an Event Grid event that a Function handles to write a new version" },
+      { "id": "B", "text": "Apps pin the secret version and are redeployed after each rotation" },
+      { "id": "C", "text": "Apps read the secret on every request so they always have the newest value" },
+      { "id": "D", "text": "Purge protection is enabled so old versions remain available" }
+    ],
+    "correct": ["A"],
+    "explanation": "The versionless URI means callers always resolve the current version, so writing a new one is transparent. The rotation policy plus a `SecretNearExpiry` event gives you the automation trigger without a scheduled job of your own.",
+    "whyWrong": {
+      "B": "Pinning the version guarantees a redeploy is needed for every rotation, which is the downtime being avoided.",
+      "C": "Per-request reads get throttled and are the documented anti-pattern; cache with periodic refresh instead.",
+      "D": "Purge protection governs deletion, not rotation."
+    },
+    "docs": [
+      { "title": "Key Vault event notifications", "url": "https://learn.microsoft.com/azure/key-vault/general/event-grid-overview" }
+    ],
+    "tags": ["key-vault", "rotation", "event-grid", "security"]
+  },
+  {
+    "id": "o2-sec-007",
+    "domain": "operations",
+    "objective": "Implement secure Azure solutions",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Which Key Vault role allows an application to read secret values but not create, update or delete them?",
+    "options": [
+      { "id": "A", "text": "Key Vault Secrets User" },
+      { "id": "B", "text": "Key Vault Reader" },
+      { "id": "C", "text": "Key Vault Secrets Officer" },
+      { "id": "D", "text": "Key Vault Crypto User" }
+    ],
+    "correct": ["A"],
+    "explanation": "Secrets User grants get and list on secret values — the minimum an application needs.",
+    "whyWrong": {
+      "B": "Key Vault Reader can see vault and secret metadata but cannot read secret values.",
+      "C": "Secrets Officer can also write and delete, exceeding read-only.",
+      "D": "Crypto User covers key operations such as sign and unwrap, not secrets."
+    },
+    "docs": [
+      { "title": "Key Vault RBAC guide", "url": "https://learn.microsoft.com/azure/key-vault/general/rbac-guide" }
+    ],
+    "tags": ["key-vault", "rbac", "least-privilege"]
+  },
+  {
+    "id": "o2-sec-008",
+    "domain": "operations",
+    "objective": "Implement secure Azure solutions",
+    "kind": "blanks",
+    "difficulty": 3,
+    "stem": "For each requirement, choose where the value belongs.",
+    "blanks": [
+      {
+        "id": "b1",
+        "label": "An Azure OpenAI API key",
+        "choices": [
+          { "id": "a", "text": "Key Vault" },
+          { "id": "b", "text": "App Configuration" },
+          { "id": "c", "text": "An app setting in plain text" }
+        ],
+        "correct": "a"
+      },
+      {
+        "id": "b2",
+        "label": "The retrieval top-K, tuned per environment",
+        "choices": [
+          { "id": "a", "text": "Key Vault" },
+          { "id": "b", "text": "App Configuration" },
+          { "id": "c", "text": "Hard-coded in the image" }
+        ],
+        "correct": "b"
+      },
+      {
+        "id": "b3",
+        "label": "A percentage rollout of a new ranking model",
+        "choices": [
+          { "id": "a", "text": "Key Vault" },
+          { "id": "b", "text": "App Configuration feature flag" },
+          { "id": "c", "text": "A deployment slot setting" }
+        ],
+        "correct": "b"
+      }
+    ],
+    "explanation": "Key Vault is for secrets, where auditing, rotation and tight RBAC matter and per-transaction cost is acceptable. App Configuration is for everything else — non-secret settings, separated per environment by labels, plus feature flags for gradual rollout. Using a managed identity, App Configuration can also hold Key Vault references so the application reads one source.",
+    "docs": [
+      { "title": "Use Key Vault references in App Configuration", "url": "https://learn.microsoft.com/azure/azure-app-configuration/use-key-vault-references-dotnet-core" }
+    ],
+    "tags": ["key-vault", "app-configuration", "feature-flags", "security"]
+  },
+  {
+    "id": "o2-sec-009",
+    "domain": "operations",
+    "objective": "Implement secure Azure solutions",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Which approach removes credentials from a GitHub Actions workflow that deploys to Azure?",
+    "options": [
+      { "id": "A", "text": "OpenID Connect federation, exchanging the workflow's token for an Azure token" },
+      { "id": "B", "text": "Storing a service principal secret as a repository secret" },
+      { "id": "C", "text": "Storing the publish profile as a repository secret" },
+      { "id": "D", "text": "Using a personal access token with Contributor rights" }
+    ],
+    "correct": ["A"],
+    "explanation": "With a federated credential on the app registration trusting the workflow's OIDC issuer, subject and audience, the runner exchanges its short-lived token for an Azure access token. Nothing long-lived is stored in the repository.",
+    "whyWrong": {
+      "B": "A client secret is exactly the stored credential being eliminated, and it expires.",
+      "C": "A publish profile embeds credentials.",
+      "D": "A PAT is a long-lived credential with broad rights."
+    },
+    "docs": [
+      { "title": "Workload identity federation", "url": "https://learn.microsoft.com/entra/workload-id/workload-identity-federation" }
+    ],
+    "tags": ["security", "cicd", "workload-identity"]
+  },
+  {
+    "id": "o2-sec-010",
+    "domain": "operations",
+    "objective": "Implement secure Azure solutions",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "An app authenticates locally with the Azure CLI and in Azure with a user-assigned managed identity, but fails in Azure with an error about multiple identities. What is wrong?",
+    "options": [
+      { "id": "A", "text": "Several identities are attached and the client id was not supplied to the credential" },
+      { "id": "B", "text": "`DefaultAzureCredential` cannot be used with user-assigned identities" },
+      { "id": "C", "text": "The Azure CLI credential takes priority in Azure" },
+      { "id": "D", "text": "The identity is missing the Reader role" }
+    ],
+    "correct": ["A"],
+    "explanation": "With more than one user-assigned identity attached, the request is ambiguous and the token provider cannot choose. Passing the client id — through the credential options or the `AZURE_CLIENT_ID` setting — resolves it. A system-assigned identity needs no such hint.",
+    "whyWrong": {
+      "B": "It supports them; it just needs to be told which one.",
+      "C": "The CLI credential sits late in the chain and is not available on a deployed host anyway.",
+      "D": "A missing role produces an authorisation failure, not an ambiguous-identity error."
+    },
+    "docs": [
+      { "title": "DefaultAzureCredential", "url": "https://learn.microsoft.com/dotnet/azure/sdk/authentication/credential-chains" }
+    ],
+    "tags": ["managed-identity", "authentication", "troubleshooting", "sdk"]
+  },
+  {
+    "id": "o2-sec-011",
+    "domain": "operations",
+    "objective": "Implement secure Azure solutions",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Which practice most reduces the impact of a leaked application credential?",
+    "options": [
+      { "id": "A", "text": "Replacing it with a managed identity so there is no credential to leak" },
+      { "id": "B", "text": "Rotating it every 12 months" },
+      { "id": "C", "text": "Storing it in an environment variable rather than a config file" },
+      { "id": "D", "text": "Encoding it as base64 before storing it" }
+    ],
+    "correct": ["A"],
+    "explanation": "The strongest control is eliminating the credential. A managed identity has no secret to store, copy or leak, and its tokens are short-lived and issued by the platform.",
+    "whyWrong": {
+      "B": "Annual rotation leaves a very long window of exposure.",
+      "C": "Environment variables are still readable by anything running in the process context.",
+      "D": "Base64 is encoding, not encryption, and offers no protection at all."
+    },
+    "docs": [
+      { "title": "Managed identities overview", "url": "https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview" }
+    ],
+    "tags": ["security", "managed-identity", "secrets"]
+  },
+  {
+    "id": "o2-mon-001",
+    "domain": "operations",
+    "objective": "Monitor and troubleshoot Azure solutions",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "You need to know how long the embedding call takes as a share of total request time, per request. Which instrumentation gives you that?",
+    "options": [
+      { "id": "A", "text": "A custom span around the embedding call, nested inside the request's trace" },
+      { "id": "B", "text": "A counter metric incremented per embedding call" },
+      { "id": "C", "text": "A log entry written before and after the call" },
+      { "id": "D", "text": "A histogram of total request duration" }
+    ],
+    "correct": ["A"],
+    "explanation": "A child span carries its own start and end within the parent trace, so the end-to-end view shows exactly how much of each request the embedding call accounted for. Metrics aggregate across requests and cannot answer a per-request question.",
+    "whyWrong": {
+      "B": "A counter tells you how many calls happened, not how long they took.",
+      "C": "Paired log lines can be correlated by hand but produce no structured duration in the transaction view.",
+      "D": "Total duration does not attribute time to the embedding step."
+    },
+    "docs": [
+      { "title": "Add custom telemetry", "url": "https://learn.microsoft.com/azure/azure-monitor/app/opentelemetry-add-modify" }
+    ],
+    "tags": ["opentelemetry", "tracing", "instrumentation"]
+  },
+  {
+    "id": "o2-mon-002",
+    "domain": "operations",
+    "objective": "Monitor and troubleshoot Azure solutions",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Which KQL operator combines rows from two tables into one result set without correlating them?",
+    "options": [
+      { "id": "A", "text": "`union`" },
+      { "id": "B", "text": "`join`" },
+      { "id": "C", "text": "`lookup`" },
+      { "id": "D", "text": "`mv-expand`" }
+    ],
+    "correct": ["A"],
+    "explanation": "`union` stacks rows from several tables, which is how you scan requests, dependencies and exceptions together before filtering on a shared field such as `operation_Id`.",
+    "whyWrong": {
+      "B": "`join` matches rows on a key and produces combined rows.",
+      "C": "`lookup` enriches from a dimension table, a specialised join.",
+      "D": "`mv-expand` flattens an array within a single row."
+    },
+    "docs": [
+      { "title": "KQL union operator", "url": "https://learn.microsoft.com/kusto/query/union-operator" }
+    ],
+    "tags": ["kql", "operators"]
+  },
+  {
+    "id": "o2-mon-003",
+    "domain": "operations",
+    "objective": "Monitor and troubleshoot Azure solutions",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "Ingestion costs are dominated by verbose dependency telemetry from a chatty internal service, but you must keep full fidelity for checkout requests. What do you configure?",
+    "options": [
+      { "id": "A", "text": "Sampling that keeps all traces matching the checkout operation and samples the rest" },
+      { "id": "B", "text": "A daily cap on the workspace" },
+      { "id": "C", "text": "A shorter retention period" },
+      { "id": "D", "text": "Disabling dependency collection entirely" }
+    ],
+    "correct": ["A"],
+    "explanation": "Sampling with a rule that always keeps the important operation gives you cost control without losing the traces that matter. Because sampling decisions apply to whole traces, the retained checkout traces stay complete.",
+    "whyWrong": {
+      "B": "A cap stops ingestion once reached, leaving you blind for the rest of the day — including for checkout.",
+      "C": "Retention affects storage cost rather than ingestion volume.",
+      "D": "Dropping all dependencies removes exactly the spans that make a trace diagnosable."
+    },
+    "docs": [
+      { "title": "Sampling in Application Insights", "url": "https://learn.microsoft.com/azure/azure-monitor/app/sampling" }
+    ],
+    "tags": ["opentelemetry", "sampling", "cost"]
+  },
+  {
+    "id": "o2-mon-004",
+    "domain": "operations",
+    "objective": "Monitor and troubleshoot Azure solutions",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Which signal type should record the number of tokens consumed per model call, for dashboards and alerting over time?",
+    "options": [
+      { "id": "A", "text": "A metric, which is pre-aggregated and cheap to query over long ranges" },
+      { "id": "B", "text": "A log entry per call" },
+      { "id": "C", "text": "A span attribute only" },
+      { "id": "D", "text": "A custom event per call" }
+    ],
+    "correct": ["A"],
+    "explanation": "Metrics are aggregated at collection time, so they stay cheap to store and fast to query across long windows — the right choice for a value you want to chart and alert on. Recording it as a span attribute too is useful for per-request debugging.",
+    "whyWrong": {
+      "B": "Per-call logs are expensive at volume and slow to aggregate over months.",
+      "C": "Span attributes are excellent for one request but are subject to sampling and are not pre-aggregated.",
+      "D": "Custom events have the same volume and cost profile as logs."
+    },
+    "docs": [
+      { "title": "OpenTelemetry overview", "url": "https://learn.microsoft.com/azure/azure-monitor/app/opentelemetry-overview" }
+    ],
+    "tags": ["opentelemetry", "metrics", "cost"]
+  },
+  {
+    "id": "o2-mon-005",
+    "domain": "operations",
+    "objective": "Monitor and troubleshoot Azure solutions",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Which KQL clause makes a text search fastest over a large log table?",
+    "options": [
+      { "id": "A", "text": "`where Message has \"timeout\"`" },
+      { "id": "B", "text": "`where Message contains \"timeout\"`" },
+      { "id": "C", "text": "`search \"timeout\"`" },
+      { "id": "D", "text": "`where Message matches regex \"timeout\"`" }
+    ],
+    "correct": ["A"],
+    "explanation": "`has` matches whole terms using the term index, so it can skip data without scanning. `contains` performs a substring scan and regex is slower still, while a bare `search` scans every column of every table.",
+    "whyWrong": {
+      "B": "Substring matching cannot use the term index.",
+      "C": "`search` without a table is the most expensive form of all.",
+      "D": "Regular expressions are evaluated per row with no index support."
+    },
+    "docs": [
+      { "title": "KQL best practices", "url": "https://learn.microsoft.com/kusto/query/best-practices" }
+    ],
+    "tags": ["kql", "performance"]
+  },
+  {
+    "id": "o2-mon-006",
+    "domain": "operations",
+    "objective": "Monitor and troubleshoot Azure solutions",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "An alert must fire only if failures exceed a threshold in three consecutive evaluations, to avoid paging on a single blip. Which alert setting provides this?",
+    "options": [
+      { "id": "A", "text": "The number of violations required within an evaluation window" },
+      { "id": "B", "text": "A longer query time range" },
+      { "id": "C", "text": "A higher severity level" },
+      { "id": "D", "text": "An action group with a delay" }
+    ],
+    "correct": ["A"],
+    "explanation": "Log search alert rules let you require several violations before firing, so a transient spike is ignored while a sustained problem still pages. It is the standard control for alert noise.",
+    "whyWrong": {
+      "B": "A longer window smooths the data but still fires on the first evaluation that crosses the threshold.",
+      "C": "Severity changes routing and urgency, not the firing condition.",
+      "D": "Action groups decide who is notified, not whether the rule fires."
+    },
+    "docs": [
+      { "title": "Log search alert rules", "url": "https://learn.microsoft.com/azure/azure-monitor/alerts/alerts-types" }
+    ],
+    "tags": ["monitoring", "alerts", "kql"]
+  },
+  {
+    "id": "o2-mon-007",
+    "domain": "operations",
+    "objective": "Monitor and troubleshoot Azure solutions",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Requests to a downstream service intermittently fail and Application Insights shows them as dependency failures with result code 429. What is the appropriate first response in the calling code?",
+    "options": [
+      { "id": "A", "text": "Retry with exponential backoff and jitter, honouring any retry-after hint" },
+      { "id": "B", "text": "Retry immediately in a tight loop until it succeeds" },
+      { "id": "C", "text": "Treat it as fatal and fail the user's request" },
+      { "id": "D", "text": "Increase the client timeout" }
+    ],
+    "correct": ["A"],
+    "explanation": "429 means the service is asking you to slow down. Backoff with jitter spreads retries so clients do not resynchronise into a thundering herd, and honouring retry-after respects the service's own guidance.",
+    "whyWrong": {
+      "B": "Immediate retries add load to an already-throttled service and make recovery slower.",
+      "C": "429 is explicitly transient and retryable.",
+      "D": "The call is being rejected quickly, not running slowly."
+    },
+    "docs": [
+      { "title": "Retry guidance for Azure services", "url": "https://learn.microsoft.com/azure/architecture/best-practices/retry-service-specific" }
+    ],
+    "tags": ["monitoring", "resiliency", "throttling"]
+  },
+  {
+    "id": "o2-mon-008",
+    "domain": "operations",
+    "objective": "Monitor and troubleshoot Azure solutions",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "A distributed trace shows a 3-second gap between the API span ending and the worker span starting. What does this most likely represent?",
+    "options": [
+      { "id": "A", "text": "Time the message spent queued before a worker picked it up" },
+      { "id": "B", "text": "Clock skew between the two hosts" },
+      { "id": "C", "text": "A failed retry that was not recorded" },
+      { "id": "D", "text": "Sampling dropping the intermediate spans" }
+    ],
+    "correct": ["A"],
+    "explanation": "In an asynchronous hand-off the gap is queue latency — the message waited for a consumer. Seeing it explicitly is one of the main reasons to propagate trace context through the queue, since it distinguishes a slow worker from a backed-up queue.",
+    "whyWrong": {
+      "B": "Skew is possible but usually small, and would shift spans rather than produce a consistent gap.",
+      "C": "A failed retry would normally appear as its own failed span.",
+      "D": "Sampling keeps or drops whole traces, so it would not remove only the middle."
+    },
+    "docs": [
+      { "title": "Telemetry correlation", "url": "https://learn.microsoft.com/azure/azure-monitor/app/distributed-trace-data" }
+    ],
+    "tags": ["opentelemetry", "tracing", "troubleshooting", "messaging"]
+  },
+  {
+    "id": "o2-mon-009",
+    "domain": "operations",
+    "objective": "Monitor and troubleshoot Azure solutions",
+    "kind": "blanks",
+    "difficulty": 2,
+    "stem": "Choose the table that answers each question.",
+    "blanks": [
+      {
+        "id": "b1",
+        "label": "Which incoming HTTP requests failed in the last hour?",
+        "choices": [
+          { "id": "a", "text": "requests" },
+          { "id": "b", "text": "dependencies" },
+          { "id": "c", "text": "traces" }
+        ],
+        "correct": "a"
+      },
+      {
+        "id": "b2",
+        "label": "Which outbound calls to Cosmos DB were slow?",
+        "choices": [
+          { "id": "a", "text": "requests" },
+          { "id": "b", "text": "dependencies" },
+          { "id": "c", "text": "exceptions" }
+        ],
+        "correct": "b"
+      },
+      {
+        "id": "b3",
+        "label": "What did the application log while handling a request?",
+        "choices": [
+          { "id": "a", "text": "traces" },
+          { "id": "b", "text": "customMetrics" },
+          { "id": "c", "text": "requests" }
+        ],
+        "correct": "a"
+      }
+    ],
+    "explanation": "requests covers work coming in, dependencies covers calls going out, traces holds `ILogger` output and exceptions holds thrown errors. All four share `operation_Id`, which is what lets you union them and reconstruct a single operation end to end.",
+    "docs": [
+      { "title": "Application Insights data model", "url": "https://learn.microsoft.com/azure/azure-monitor/app/data-model-complete" }
+    ],
+    "tags": ["kql", "application-insights", "correlation"]
+  },
+  {
+    "id": "o2-mon-010",
+    "domain": "operations",
+    "objective": "Monitor and troubleshoot Azure solutions",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Which resource attribute should differ between replicas of the same service so you can tell instances apart?",
+    "options": [
+      { "id": "A", "text": "`service.instance.id`" },
+      { "id": "B", "text": "`service.name`" },
+      { "id": "C", "text": "`service.version`" },
+      { "id": "D", "text": "`deployment.environment`" }
+    ],
+    "correct": ["A"],
+    "explanation": "`service.name` identifies the logical service and should be identical across replicas, becoming `cloud_RoleName`. `service.instance.id` distinguishes the individual replica and becomes `cloud_RoleInstance`, which is what lets you spot one bad instance.",
+    "whyWrong": {
+      "B": "Varying it per replica would fragment the application map into many false services.",
+      "C": "Version identifies the release, which is normally the same across replicas.",
+      "D": "Environment is the same for every replica in that environment."
+    },
+    "docs": [
+      { "title": "Application map", "url": "https://learn.microsoft.com/azure/azure-monitor/app/app-map" }
+    ],
+    "tags": ["opentelemetry", "resource-attributes", "application-insights"]
+  },
+  {
+    "id": "o2-mon-011",
+    "domain": "operations",
+    "objective": "Monitor and troubleshoot Azure solutions",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "After enabling the Azure Monitor OpenTelemetry distro, traces appear but the application's `ILogger` output does not. What is the most likely cause?",
+    "options": [
+      { "id": "A", "text": "The logging provider is not wired to the distro, or the minimum level filters the entries out" },
+      { "id": "B", "text": "Logs are not supported by the distro" },
+      { "id": "C", "text": "The connection string is invalid" },
+      { "id": "D", "text": "Sampling removes all log records" }
+    ],
+    "correct": ["A"],
+    "explanation": "The distro covers traces, metrics and logs, but log records still pass through the normal logging pipeline — so a minimum level set above the entries being written, or a provider that was never registered, produces exactly this asymmetry.",
+    "whyWrong": {
+      "B": "Logs are one of the three signals the distro handles.",
+      "C": "An invalid connection string would stop traces arriving as well.",
+      "D": "Sampling reduces volume proportionally rather than eliminating a signal."
+    },
+    "docs": [
+      { "title": "Enable Azure Monitor OpenTelemetry", "url": "https://learn.microsoft.com/azure/azure-monitor/app/opentelemetry-enable" }
+    ],
+    "tags": ["opentelemetry", "logging", "troubleshooting"]
+  },
+  {
+    "id": "o2-mon-012",
+    "domain": "operations",
+    "objective": "Monitor and troubleshoot Azure solutions",
+    "kind": "ordering",
+    "difficulty": 3,
+    "stem": "Put the steps of diagnosing a user-reported slow request in the order that gets to the cause fastest.",
+    "options": [
+      { "id": "1", "text": "Find the request in `requests` and note its `operation_Id`" },
+      { "id": "2", "text": "Union `requests`, `dependencies` and `exceptions` filtered on that `operation_Id`" },
+      { "id": "3", "text": "Identify which dependency span accounts for most of the duration" },
+      { "id": "4", "text": "Query that dependency's own telemetry to see whether it is slow for everyone or just this call" }
+    ],
+    "correct": ["1", "2", "3", "4"],
+    "explanation": "Start from the specific complaint and widen only as needed. The correlation id reconstructs the whole operation, the span durations point at the culprit, and only then is it worth asking whether the problem is systemic — which decides whether you are fixing one caller or a shared dependency.",
+    "docs": [
+      { "title": "Telemetry correlation", "url": "https://learn.microsoft.com/azure/azure-monitor/app/distributed-trace-data" }
+    ],
+    "tags": ["kql", "troubleshooting", "correlation"]
+  }
+]

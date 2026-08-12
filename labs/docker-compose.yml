@@ -1,0 +1,30 @@
+# Postgres with pgvector already compiled in, for the lab in README.md.
+#
+#   docker compose up -d
+#   docker compose exec db psql -U postgres -d lab
+#
+# Tear down completely (including the data volume):
+#   docker compose down -v
+
+services:
+  db:
+    image: pgvector/pgvector:pg17
+    container_name: ai200-pgvector
+    environment:
+      POSTGRES_PASSWORD: labpassword
+      POSTGRES_DB: lab
+    ports:
+      - "5433:5432"          # 5433 on the host, to avoid clashing with a local Postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    # Vector index builds are memory-hungry; give the container room to keep them in RAM.
+    shm_size: 1gb
+    command:
+      - postgres
+      - -c
+      - maintenance_work_mem=512MB
+      - -c
+      - max_parallel_maintenance_workers=2
+
+volumes:
+  pgdata:

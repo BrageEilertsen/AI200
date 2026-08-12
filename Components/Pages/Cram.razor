@@ -1,4 +1,6 @@
 @page "/cram"
+@rendermode InteractiveServer
+@inject IJSRuntime Js
 
 <PageTitle>Cram sheet — AI-200 Trainer</PageTitle>
 
@@ -9,9 +11,13 @@
         Defaults, limits and distinctions the exam leans on. Read this the morning of, then sit
         one mock. Everything here maps to a bullet in the published skills outline.
     </p>
+    <div class="row no-print" style="margin-top:18px">
+        <button class="btn tinted" @onclick="Print">Print or save as PDF</button>
+        <span class="xs faint">Prints without the app chrome, in a light palette, with doc links spelled out</span>
+    </div>
 </div>
 
-<div class="card section">
+<div class="card section no-print">
     @* Two things are needed to make these jump links work.
        1. The href must carry the page path: with <base href="/"> in App.razor a bare
           "#containers" resolves against the base URL, so it lands on /#containers —
@@ -211,3 +217,7 @@
         <li><b>Strong consistency doubles your read RUs</b> — if a question asks how to cut cost without changing the partition key, look at the consistency level and the indexing policy.</li>
     </ul>
 </section>
+
+@code {
+    private async Task Print() => await Js.InvokeVoidAsync("window.print");
+}

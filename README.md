@@ -138,6 +138,14 @@ can also set `caseStudyId` to hang off a shared scenario in `case-studies.json`.
 }
 ```
 
+## Hands-on lab
+
+[`labs/`](labs/README.md) is a runnable pgvector lab covering the heaviest part of the exam
+(25–30%). It spins up Postgres with pgvector in Docker and walks through the index behaviour the
+exam tests: IVFFlat built on an empty table, the `probes` recall dial, HNSW, operator-class
+mismatches falling back to `Seq Scan`, and filtered ANN search under-returning until you add a
+partial index. Every number quoted in it was measured, not estimated.
+
 ## Progress
 
 Stored in **the visitor's own browser** (`localStorage`, key `ai200-progress`), never on the

@@ -124,6 +124,12 @@ else if (!_session.Finished)
             </span>
         </div>
         <div class="row">
+            @if (_session.PaceDelta is { } delta)
+            {
+                <span class="pace @PaceClass(delta)" title="Questions ahead of or behind an even pace">
+                    @PaceLabel(delta)
+                </span>
+            }
             <span class="timer @(low ? "low" : "")">
                 @($"{(int)remaining.TotalMinutes:00}:{remaining.Seconds:00}")
             </span>
@@ -285,6 +291,22 @@ else
         _session?.Current.Toggle(optionId);
         _shouldFocus = true;
     }
+
+    // A question either side of the even pace is noise, not a signal worth reacting to.
+    private static string PaceLabel(double delta) => delta switch
+    {
+        > 1 => $"{Math.Round(delta)} ahead",
+        < -1 => $"{Math.Abs(Math.Round(delta))} behind",
+        _ => "on pace"
+    };
+
+    private static string PaceClass(double delta) => delta switch
+    {
+        > 1 => "ahead",
+        < -3 => "behind",
+        < -1 => "slipping",
+        _ => ""
+    };
 
     private void SetBlank(BlankChoice choice)
     {

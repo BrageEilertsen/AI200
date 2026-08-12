@@ -1,0 +1,592 @@
+[
+  {
+    "id": "c2-app-001",
+    "domain": "containers",
+    "objective": "Implement container application hosting",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "A custom Linux container on App Service must write temporary files that survive a container restart but not a scale-out. Where should it write?",
+    "options": [
+      { "id": "A", "text": "`/home`, which is backed by persistent shared storage" },
+      { "id": "B", "text": "`/tmp`, which is local to the container instance" },
+      { "id": "C", "text": "The image layer, by writing into the working directory" },
+      { "id": "D", "text": "An environment variable" }
+    ],
+    "correct": ["A"],
+    "explanation": "On App Service, `/home` is mapped to Azure Files and is shared by every instance, so its contents survive restarts and redeploys. For custom containers this requires `WEBSITES_ENABLE_APP_SERVICE_STORAGE` to be set to true.",
+    "whyWrong": {
+      "B": "`/tmp` is instance-local scratch space and is lost when the container is replaced.",
+      "C": "The image's file system is ephemeral; writes to it disappear with the container.",
+      "D": "Environment variables hold configuration, not files."
+    },
+    "docs": [
+      { "title": "Configure a custom container for App Service", "url": "https://learn.microsoft.com/azure/app-service/configure-custom-container" }
+    ],
+    "tags": ["app-service", "containers", "storage"]
+  },
+  {
+    "id": "c2-app-002",
+    "domain": "containers",
+    "objective": "Implement container application hosting",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "A container-based App Service takes 90 seconds to become healthy after a restart, and requests fail during that window. Which setting stops traffic reaching an instance too early?",
+    "options": [
+      { "id": "A", "text": "A health check path, so App Service only routes to instances that report healthy" },
+      { "id": "B", "text": "Always On" },
+      { "id": "C", "text": "`WEBSITES_PORT`" },
+      { "id": "D", "text": "ARR affinity" }
+    ],
+    "correct": ["A"],
+    "explanation": "Configuring a health check path makes App Service poll each instance and exclude unhealthy ones from load balancing, which is exactly the readiness behaviour a slow-starting container needs.",
+    "whyWrong": {
+      "B": "Always On keeps the app from unloading when idle; it does not gate traffic during startup.",
+      "C": "That tells the platform which port to forward to, not when the app is ready.",
+      "D": "ARR affinity pins a client to an instance and would make the problem stickier, not better."
+    },
+    "docs": [
+      { "title": "Monitor App Service instances using health check", "url": "https://learn.microsoft.com/azure/app-service/monitor-instances-health-check" }
+    ],
+    "tags": ["app-service", "health-check", "containers"]
+  },
+  {
+    "id": "c2-app-003",
+    "domain": "containers",
+    "objective": "Implement container application hosting",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "You want zero-downtime deployment of a new container image to App Service, with the ability to roll back instantly. What do you use?",
+    "options": [
+      { "id": "A", "text": "Deploy to a staging slot, warm it up, then swap" },
+      { "id": "B", "text": "Update the image tag on production directly" },
+      { "id": "C", "text": "Scale out to more instances before updating" },
+      { "id": "D", "text": "Enable continuous deployment from the registry" }
+    ],
+    "correct": ["A"],
+    "explanation": "A slot swap exchanges the warmed staging instances with production, so users never hit a cold instance, and swapping back restores the previous version immediately.",
+    "whyWrong": {
+      "B": "An in-place update restarts instances and has no rollback other than redeploying the old image.",
+      "C": "More instances does not prevent them all restarting on a new image.",
+      "D": "Continuous deployment automates the trigger but still updates in place unless it targets a slot."
+    },
+    "docs": [
+      { "title": "Set up staging environments", "url": "https://learn.microsoft.com/azure/app-service/deploy-staging-slots" }
+    ],
+    "tags": ["app-service", "slots", "deployment"]
+  },
+  {
+    "id": "c2-app-004",
+    "domain": "containers",
+    "objective": "Implement container application hosting",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Which App Service setting makes the platform pull the container image using the app's managed identity rather than a stored registry password?",
+    "options": [
+      { "id": "A", "text": "`acrUseManagedIdentityCreds`, with the identity granted `AcrPull`" },
+      { "id": "B", "text": "`DOCKER_REGISTRY_SERVER_PASSWORD` set to the identity's client id" },
+      { "id": "C", "text": "`WEBSITES_ENABLE_APP_SERVICE_STORAGE`" },
+      { "id": "D", "text": "`DOCKER_ENABLE_CI`" }
+    ],
+    "correct": ["A"],
+    "explanation": "Enabling managed identity credentials for the registry lets App Service authenticate the pull with the app's identity, which needs the `AcrPull` role. No registry username or password is stored.",
+    "whyWrong": {
+      "B": "That setting expects an actual password; a client id is not a credential.",
+      "C": "That controls persistent storage mounting.",
+      "D": "That enables the continuous-deployment webhook."
+    },
+    "docs": [
+      { "title": "Configure a custom container for App Service", "url": "https://learn.microsoft.com/azure/app-service/configure-custom-container" }
+    ],
+    "tags": ["app-service", "acr", "managed-identity", "security"]
+  },
+  {
+    "id": "c2-app-005",
+    "domain": "containers",
+    "objective": "Implement container application hosting",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "A multi-container App Service app must run an inference container alongside a sidecar that ships logs. How is this defined?",
+    "options": [
+      { "id": "A", "text": "A Docker Compose file listing both containers, deployed to the app" },
+      { "id": "B", "text": "Two separate App Service apps in the same plan" },
+      { "id": "C", "text": "A Kubernetes manifest uploaded to App Service" },
+      { "id": "D", "text": "Two images in the same `WEBSITES_PORT` setting" }
+    ],
+    "correct": ["A"],
+    "explanation": "App Service supports multi-container apps defined with a Docker Compose file, where one container is the ingress target and the others run alongside it, sharing the app's network namespace.",
+    "whyWrong": {
+      "B": "Separate apps do not share a network namespace or a lifecycle, which is what a sidecar needs.",
+      "C": "App Service does not accept Kubernetes manifests.",
+      "D": "`WEBSITES_PORT` holds a port number and cannot describe a second container."
+    },
+    "docs": [
+      { "title": "Multi-container apps in App Service", "url": "https://learn.microsoft.com/azure/app-service/configure-custom-container" }
+    ],
+    "tags": ["app-service", "containers", "sidecar"]
+  },
+  {
+    "id": "c2-acr-001",
+    "domain": "containers",
+    "objective": "Implement container application hosting",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "You need to remove old image versions from a registry automatically while keeping the most recent ones. What supports this?",
+    "options": [
+      { "id": "A", "text": "A retention policy for untagged manifests, combined with a tagging strategy that untags superseded versions" },
+      { "id": "B", "text": "Content trust" },
+      { "id": "C", "text": "Geo-replication" },
+      { "id": "D", "text": "A private endpoint" }
+    ],
+    "correct": ["A"],
+    "explanation": "ACR expires untagged manifests on a retention policy. Pushing a new build to the same tag leaves the previous manifest untagged, so the policy reclaims it after the configured number of days.",
+    "whyWrong": {
+      "B": "Content trust signs images so consumers can verify publisher and integrity.",
+      "C": "Geo-replication copies content to more regions, increasing storage rather than reducing it.",
+      "D": "Private endpoints control network access."
+    },
+    "docs": [
+      { "title": "Retention policy for untagged manifests", "url": "https://learn.microsoft.com/azure/container-registry/container-registry-retention-policy" }
+    ],
+    "tags": ["acr", "retention", "cost"]
+  },
+  {
+    "id": "c2-acr-002",
+    "domain": "containers",
+    "objective": "Implement container application hosting",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "A multi-step ACR task must build an image, run its tests, and push only if the tests pass. Which mechanism supports this?",
+    "options": [
+      { "id": "A", "text": "A multi-step task defined in a YAML file with `build`, `cmd` and `push` steps" },
+      { "id": "B", "text": "Three separate quick tasks chained by a pipeline" },
+      { "id": "C", "text": "A base image update trigger" },
+      { "id": "D", "text": "An ACR webhook per step" }
+    ],
+    "correct": ["A"],
+    "explanation": "Multi-step tasks describe a sequence in YAML, with the push step depending on the earlier steps succeeding. A failing test command stops the task before anything is published.",
+    "whyWrong": {
+      "B": "That works but moves the orchestration outside ACR, which the multi-step format exists to avoid.",
+      "C": "Base image triggers decide when a task runs, not what steps it performs.",
+      "D": "Webhooks notify external systems after events; they do not sequence a build."
+    },
+    "docs": [
+      { "title": "Multi-step tasks in ACR", "url": "https://learn.microsoft.com/azure/container-registry/container-registry-tasks-multi-step" }
+    ],
+    "tags": ["acr", "acr-tasks", "cicd"]
+  },
+  {
+    "id": "c2-acr-003",
+    "domain": "containers",
+    "objective": "Implement container application hosting",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Which authentication method allows a container instance to pull from ACR with no credential stored anywhere, and is scoped to that workload?",
+    "options": [
+      { "id": "A", "text": "A user-assigned managed identity granted `AcrPull`" },
+      { "id": "B", "text": "The registry admin account" },
+      { "id": "C", "text": "A service principal secret in an environment variable" },
+      { "id": "D", "text": "Anonymous pull access" }
+    ],
+    "correct": ["A"],
+    "explanation": "A managed identity has no secret to store or rotate, and granting it `AcrPull` limits it to reading images. A user-assigned identity can additionally be reused across resources and survives their recreation.",
+    "whyWrong": {
+      "B": "The admin account is a shared credential with full access and is disabled by default.",
+      "C": "That stores a secret, which the requirement excludes.",
+      "D": "Anonymous pull removes authentication entirely and exposes the images publicly."
+    },
+    "docs": [
+      { "title": "Authenticate with ACR", "url": "https://learn.microsoft.com/azure/container-registry/container-registry-authentication" }
+    ],
+    "tags": ["acr", "managed-identity", "security"]
+  },
+  {
+    "id": "c2-acr-004",
+    "domain": "containers",
+    "objective": "Implement container application hosting",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "An image tagged `latest` is deployed but instances are running an older build. What practice avoids this class of problem?",
+    "options": [
+      { "id": "A", "text": "Deploy immutable, uniquely versioned tags such as a build number or digest" },
+      { "id": "B", "text": "Set the image pull policy to never" },
+      { "id": "C", "text": "Enable geo-replication so all regions have the same image" },
+      { "id": "D", "text": "Push `latest` twice to force a refresh" }
+    ],
+    "correct": ["A"],
+    "explanation": "A mutable tag makes what is running ambiguous — a cached layer or a not-yet-restarted instance can serve an old build. Unique tags, or pinning to a digest, make the deployed version explicit and reproducible.",
+    "whyWrong": {
+      "B": "That guarantees the stale local image is used forever.",
+      "C": "Replication distributes whatever the tag points at, including the ambiguity.",
+      "D": "Pushing again does not invalidate what is already running."
+    },
+    "docs": [
+      { "title": "Recommendations for tagging and versioning", "url": "https://learn.microsoft.com/azure/container-registry/container-registry-image-tag-version" }
+    ],
+    "tags": ["acr", "tagging", "deployment"]
+  },
+  {
+    "id": "c2-aca-001",
+    "domain": "containers",
+    "objective": "Implement container-orchestrated solutions",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "A Container App must call an Azure OpenAI endpoint that only accepts traffic from a specific virtual network. What must be true of the environment?",
+    "options": [
+      { "id": "A", "text": "It must be created with VNet integration into a subnet that can reach the endpoint" },
+      { "id": "B", "text": "The app must use external ingress" },
+      { "id": "C", "text": "The app must run at least two replicas" },
+      { "id": "D", "text": "The environment must be in the same resource group as the endpoint" }
+    ],
+    "correct": ["A"],
+    "explanation": "Networking is a property of the Container Apps environment, and the VNet is chosen when the environment is created — it cannot be added later. Egress then originates from that subnet and can reach private endpoints.",
+    "whyWrong": {
+      "B": "Ingress governs inbound traffic; this is an outbound requirement.",
+      "C": "Replica count has no bearing on network reachability.",
+      "D": "Resource group is an organisational boundary, not a network one."
+    },
+    "docs": [
+      { "title": "Networking in Azure Container Apps", "url": "https://learn.microsoft.com/azure/container-apps/networking" }
+    ],
+    "tags": ["container-apps", "networking", "vnet"]
+  },
+  {
+    "id": "c2-aca-002",
+    "domain": "containers",
+    "objective": "Implement container-orchestrated solutions",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "A Container App scales between 0 and 30 replicas on queue length, but during a burst the downstream database is overwhelmed. What is the appropriate control?",
+    "options": [
+      { "id": "A", "text": "Lower `maxReplicas` so concurrency against the database is bounded" },
+      { "id": "B", "text": "Raise `minReplicas` so replicas are always warm" },
+      { "id": "C", "text": "Remove the scale rule so the app never scales" },
+      { "id": "D", "text": "Switch to a cron scale rule" }
+    ],
+    "correct": ["A"],
+    "explanation": "The maximum replica count is the back-pressure valve. Capping it bounds how much concurrency reaches the database while still letting the queue absorb the burst — work is delayed rather than dropped.",
+    "whyWrong": {
+      "B": "Warm replicas address cold start, not peak concurrency.",
+      "C": "Never scaling turns a burst into a permanent backlog.",
+      "D": "A schedule does not correspond to when the burst arrives."
+    },
+    "docs": [
+      { "title": "Set scaling rules in Container Apps", "url": "https://learn.microsoft.com/azure/container-apps/scale-app" }
+    ],
+    "tags": ["container-apps", "scaling", "back-pressure"]
+  },
+  {
+    "id": "c2-aca-003",
+    "domain": "containers",
+    "objective": "Implement container-orchestrated solutions",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Which Container Apps job trigger type suits work that must run once per message on a Service Bus queue?",
+    "options": [
+      { "id": "A", "text": "An event trigger with a KEDA scaler on the queue" },
+      { "id": "B", "text": "A schedule trigger running every minute" },
+      { "id": "C", "text": "A manual trigger invoked by the producer" },
+      { "id": "D", "text": "A schedule trigger with a cron expression of every second" }
+    ],
+    "correct": ["A"],
+    "explanation": "Event-driven jobs start an execution in response to a KEDA scaler, so each unit of queued work gets its own run that exits when finished — no idle replica between messages.",
+    "whyWrong": {
+      "B": "Polling adds up to a minute of latency and starts runs when there is nothing to do.",
+      "C": "That couples the producer to the job's lifecycle and loses the queue's durability.",
+      "D": "A one-second schedule is wasteful and still not event-driven."
+    },
+    "docs": [
+      { "title": "Jobs in Azure Container Apps", "url": "https://learn.microsoft.com/azure/container-apps/jobs" }
+    ],
+    "tags": ["container-apps", "jobs", "keda", "service-bus"]
+  },
+  {
+    "id": "c2-aca-004",
+    "domain": "containers",
+    "objective": "Implement container-orchestrated solutions",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "You deploy a new revision and want 5% of traffic on it for an hour before committing. Which pair of settings is required?",
+    "options": [
+      { "id": "A", "text": "Multiple revision mode, with traffic weights of 95 and 5 across the two revisions" },
+      { "id": "B", "text": "Single revision mode, with a 5% scale rule on the new revision" },
+      { "id": "C", "text": "Multiple revision mode, with the new revision deactivated" },
+      { "id": "D", "text": "Two container apps behind a load balancer" }
+    ],
+    "correct": ["A"],
+    "explanation": "Weighted traffic between revisions requires multiple revision mode; in single revision mode all traffic goes to the latest and any weights are ignored. Both revisions must also be active to receive traffic.",
+    "whyWrong": {
+      "B": "Scale rules control replica count, not the share of requests a revision receives.",
+      "C": "A deactivated revision receives no traffic at all.",
+      "D": "That reimplements a built-in feature with more moving parts."
+    },
+    "docs": [
+      { "title": "Container Apps revisions", "url": "https://learn.microsoft.com/azure/container-apps/revisions" }
+    ],
+    "tags": ["container-apps", "revisions", "traffic-splitting", "deployment"]
+  },
+  {
+    "id": "c2-aca-005",
+    "domain": "containers",
+    "objective": "Implement container-orchestrated solutions",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Where do you look to find out why a Container Apps revision shows as failed with no application output?",
+    "options": [
+      { "id": "A", "text": "System logs, which record image pull failures and probe results" },
+      { "id": "B", "text": "Console logs, which record the application's stdout" },
+      { "id": "C", "text": "Application Insights request telemetry" },
+      { "id": "D", "text": "The subscription activity log" }
+    ],
+    "correct": ["A"],
+    "explanation": "No application output is itself the clue: the container never got far enough to print anything. System logs are the platform's account of provisioning the revision, including registry authentication failures and failed probes.",
+    "whyWrong": {
+      "B": "Console logs carry stdout and stderr, which is exactly what is missing.",
+      "C": "Application Insights only receives data once the instrumented app runs.",
+      "D": "The activity log records the deployment request, not the container's fate."
+    },
+    "docs": [
+      { "title": "Log monitoring in Container Apps", "url": "https://learn.microsoft.com/azure/container-apps/log-monitoring" }
+    ],
+    "tags": ["container-apps", "troubleshooting", "logs"]
+  },
+  {
+    "id": "c2-aks-001",
+    "domain": "containers",
+    "objective": "Implement container-orchestrated solutions",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "A deployment manifest sets a memory request of 2Gi and a limit of 2Gi. What does this guarantee?",
+    "options": [
+      { "id": "A", "text": "The pod is scheduled only where 2Gi is available and is killed if it exceeds 2Gi" },
+      { "id": "B", "text": "The pod can burst above 2Gi when the node has spare memory" },
+      { "id": "C", "text": "The pod is never evicted under node memory pressure" },
+      { "id": "D", "text": "Kubernetes reserves 2Gi of swap for the pod" }
+    ],
+    "correct": ["A"],
+    "explanation": "The request drives scheduling and the limit is enforced at runtime. Setting them equal gives the pod the Guaranteed quality-of-service class, which makes it the last to be evicted — but exceeding the limit still means an OOM kill.",
+    "whyWrong": {
+      "B": "Bursting is possible only when the limit exceeds the request.",
+      "C": "Guaranteed pods are evicted last, not never.",
+      "D": "Kubernetes disables swap by default and does not reserve it."
+    },
+    "docs": [
+      { "title": "Resource management for pods", "url": "https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/" }
+    ],
+    "tags": ["aks", "resources", "scheduling"]
+  },
+  {
+    "id": "c2-aks-002",
+    "domain": "containers",
+    "objective": "Implement container-orchestrated solutions",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "An inference pod loads a 4 GB model and takes two minutes to start. A liveness probe with a 30-second threshold is configured. What happens, and what fixes it?",
+    "options": [
+      { "id": "A", "text": "The pod is killed and restarts forever; add a startup probe so liveness only begins after startup completes" },
+      { "id": "B", "text": "The pod starts normally; liveness probes do not apply during startup" },
+      { "id": "C", "text": "The pod is marked unready but keeps running; add a readiness probe" },
+      { "id": "D", "text": "The pod is evicted for exceeding its memory limit; raise the limit" }
+    ],
+    "correct": ["A"],
+    "explanation": "A liveness probe that fails during a slow start produces an endless restart loop — the container never gets the two minutes it needs. A startup probe suspends the liveness check until the app reports started, which is exactly what this pattern is for.",
+    "whyWrong": {
+      "B": "Liveness probes do apply from the container's start unless a startup probe defers them.",
+      "C": "Readiness controls traffic; it does not stop liveness restarting the container.",
+      "D": "The symptom described is a probe timeout, not an OOM kill."
+    },
+    "docs": [
+      { "title": "Configure liveness, readiness and startup probes", "url": "https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/" }
+    ],
+    "tags": ["aks", "probes", "troubleshooting"]
+  },
+  {
+    "id": "c2-aks-003",
+    "domain": "containers",
+    "objective": "Implement container-orchestrated solutions",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Which manifest object holds non-secret configuration that several pods read as environment variables?",
+    "options": [
+      { "id": "A", "text": "A ConfigMap" },
+      { "id": "B", "text": "A Secret" },
+      { "id": "C", "text": "A PersistentVolumeClaim" },
+      { "id": "D", "text": "A ServiceAccount" }
+    ],
+    "correct": ["A"],
+    "explanation": "ConfigMaps hold non-confidential key-value configuration, consumed as environment variables via `configMapKeyRef` or mounted as files. Secrets are the equivalent for confidential values.",
+    "whyWrong": {
+      "B": "Secrets are for confidential data; using them for plain settings adds no benefit and obscures intent.",
+      "C": "A claim requests storage.",
+      "D": "A service account provides an identity for the pod."
+    },
+    "docs": [
+      { "title": "Configure a pod to use a ConfigMap", "url": "https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/" }
+    ],
+    "tags": ["aks", "manifests", "configuration"]
+  },
+  {
+    "id": "c2-aks-004",
+    "domain": "containers",
+    "objective": "Implement container-orchestrated solutions",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "Pods are Pending and cluster autoscaler logs show it will not add nodes. The pods request a GPU the node pool does not offer. What is the fix?",
+    "options": [
+      { "id": "A", "text": "Add a node pool with the required GPU SKU and matching labels or taints" },
+      { "id": "B", "text": "Increase the autoscaler's maximum node count on the existing pool" },
+      { "id": "C", "text": "Remove the resource requests from the pods" },
+      { "id": "D", "text": "Restart the autoscaler" }
+    ],
+    "correct": ["A"],
+    "explanation": "The autoscaler only adds nodes of the types already defined in a node pool. If no pool can ever satisfy the request, adding more of the same nodes cannot help — you need a pool with the right hardware.",
+    "whyWrong": {
+      "B": "More nodes of a SKU without GPUs still cannot host the pods.",
+      "C": "Dropping the request would schedule the pod onto hardware that cannot run it.",
+      "D": "The autoscaler is behaving correctly; there is nothing to restart."
+    },
+    "docs": [
+      { "title": "Cluster autoscaler in AKS", "url": "https://learn.microsoft.com/azure/aks/cluster-autoscaler" }
+    ],
+    "tags": ["aks", "autoscaler", "node-pools", "troubleshooting"]
+  },
+  {
+    "id": "c2-aks-005",
+    "domain": "containers",
+    "objective": "Implement container-orchestrated solutions",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Which AKS add-on lets a Deployment scale on the length of a Service Bus queue?",
+    "options": [
+      { "id": "A", "text": "KEDA" },
+      { "id": "B", "text": "The cluster autoscaler" },
+      { "id": "C", "text": "The vertical pod autoscaler" },
+      { "id": "D", "text": "Container insights" }
+    ],
+    "correct": ["A"],
+    "explanation": "KEDA supplies external metrics to the horizontal autoscaler, so a Deployment can scale on queue depth — and down to zero — rather than on CPU.",
+    "whyWrong": {
+      "B": "The cluster autoscaler adds nodes when pods cannot be scheduled; it does not decide replica counts.",
+      "C": "VPA adjusts a pod's resource requests rather than the number of pods.",
+      "D": "Container insights collects telemetry and does not scale anything."
+    },
+    "docs": [
+      { "title": "KEDA add-on for AKS", "url": "https://learn.microsoft.com/azure/aks/keda-about" }
+    ],
+    "tags": ["aks", "keda", "scaling"]
+  },
+  {
+    "id": "c2-aks-006",
+    "domain": "containers",
+    "objective": "Implement container-orchestrated solutions",
+    "kind": "blanks",
+    "difficulty": 3,
+    "stem": "Match each pod symptom to its usual cause.",
+    "blanks": [
+      {
+        "id": "b1",
+        "label": "`ImagePullBackOff`",
+        "choices": [
+          { "id": "a", "text": "Registry authentication or a wrong tag" },
+          { "id": "b", "text": "The container exits shortly after starting" },
+          { "id": "c", "text": "No node can satisfy the resource request" }
+        ],
+        "correct": "a"
+      },
+      {
+        "id": "b2",
+        "label": "`CrashLoopBackOff`",
+        "choices": [
+          { "id": "a", "text": "Registry authentication or a wrong tag" },
+          { "id": "b", "text": "The container exits shortly after starting" },
+          { "id": "c", "text": "No node can satisfy the resource request" }
+        ],
+        "correct": "b"
+      },
+      {
+        "id": "b3",
+        "label": "Pending with a FailedScheduling event",
+        "choices": [
+          { "id": "a", "text": "Registry authentication or a wrong tag" },
+          { "id": "b", "text": "The container exits shortly after starting" },
+          { "id": "c", "text": "No node can satisfy the resource request" }
+        ],
+        "correct": "c"
+      }
+    ],
+    "explanation": "These three cover most pod failures and they are distinguished by how far the pod got. Pending means the scheduler never placed it. `ImagePullBackOff` means it was placed but the image could not be fetched. `CrashLoopBackOff` means the image ran and the process exited — the only one where application logs will tell you anything.",
+    "docs": [
+      { "title": "Troubleshoot common AKS issues", "url": "https://learn.microsoft.com/troubleshoot/azure/azure-kubernetes/welcome-azure-kubernetes" }
+    ],
+    "tags": ["aks", "troubleshooting"]
+  },
+  {
+    "id": "c2-aks-007",
+    "domain": "containers",
+    "objective": "Implement container-orchestrated solutions",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "A pod using workload identity fails to acquire a token. Which element is most commonly missing?",
+    "options": [
+      { "id": "A", "text": "The federated credential linking the Kubernetes service account to the managed identity" },
+      { "id": "B", "text": "A Kubernetes Secret holding the identity's client secret" },
+      { "id": "C", "text": "A LoadBalancer service for the pod" },
+      { "id": "D", "text": "A PersistentVolumeClaim for the token cache" }
+    ],
+    "correct": ["A"],
+    "explanation": "Workload identity works by federating the service account's projected token with Entra ID. The federated credential — naming the cluster's OIDC issuer, the namespace and the service account — is what establishes that trust, and its absence is the usual cause of token failures.",
+    "whyWrong": {
+      "B": "The entire point is that no secret exists.",
+      "C": "Services expose pods to traffic and are unrelated to identity.",
+      "D": "Tokens are projected into the pod automatically; no volume claim is needed."
+    },
+    "docs": [
+      { "title": "Microsoft Entra Workload ID with AKS", "url": "https://learn.microsoft.com/azure/aks/workload-identity-overview" }
+    ],
+    "tags": ["aks", "workload-identity", "security", "troubleshooting"]
+  },
+  {
+    "id": "c2-aks-008",
+    "domain": "containers",
+    "objective": "Implement container-orchestrated solutions",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "Which command shows recent cluster events ordered so the newest appear last, useful for diagnosing a failing rollout?",
+    "options": [
+      { "id": "A", "text": "`kubectl get events --sort-by=.lastTimestamp`" },
+      { "id": "B", "text": "`kubectl logs --all-containers`" },
+      { "id": "C", "text": "`kubectl top pod`" },
+      { "id": "D", "text": "`kubectl describe node`" }
+    ],
+    "correct": ["A"],
+    "explanation": "Events are returned unsorted by default, which makes them hard to read during an incident. Sorting by last timestamp gives a chronological view of scheduling decisions, image pulls, probe failures and evictions.",
+    "whyWrong": {
+      "B": "Logs show application output, not cluster decisions.",
+      "C": "top reports resource usage.",
+      "D": "describe node covers one node's capacity and conditions rather than cluster-wide events."
+    },
+    "docs": [
+      { "title": "Troubleshoot common AKS issues", "url": "https://learn.microsoft.com/troubleshoot/azure/azure-kubernetes/welcome-azure-kubernetes" }
+    ],
+    "tags": ["aks", "kubectl", "troubleshooting"]
+  },
+  {
+    "id": "c2-aks-009",
+    "domain": "containers",
+    "objective": "Implement container-orchestrated solutions",
+    "kind": "ordering",
+    "difficulty": 2,
+    "stem": "Put the phases of a Kubernetes rolling update in order for a Deployment with `maxSurge: 1` and `maxUnavailable: 0`.",
+    "options": [
+      { "id": "1", "text": "A new pod is created with the updated image" },
+      { "id": "2", "text": "The new pod passes its readiness probe and joins the Service endpoints" },
+      { "id": "3", "text": "An old pod is removed from the endpoints and sent SIGTERM" },
+      { "id": "4", "text": "The old pod terminates and the cycle repeats for the next replica" }
+    ],
+    "correct": ["1", "2", "3", "4"],
+    "explanation": "With `maxUnavailable: 0` capacity may never drop, so a replacement must be ready before an old pod is taken away — surge first, then retire. That ordering is what makes the update zero-downtime, provided readiness genuinely reflects the app's ability to serve.",
+    "docs": [
+      { "title": "Deployments", "url": "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/" }
+    ],
+    "tags": ["aks", "deployments", "rolling-update"]
+  }
+]

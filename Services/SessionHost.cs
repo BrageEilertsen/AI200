@@ -12,13 +12,18 @@ public sealed class SessionHost(QuestionBank bank, ProgressStore progress)
 
     public bool HasActiveRun => Current is { Finished: false };
 
-    public StudySession StartPractice(IReadOnlyCollection<string> domains, int count, bool focusWeak)
+    public StudySession StartPractice(
+        IReadOnlyCollection<string> domains,
+        int count,
+        bool focusWeak,
+        bool retryMissed = false)
     {
         var questions = bank.Draw(domains, count, focusWeak, progress.Stats);
         Current = new StudySession
         {
             Mode = SessionMode.Practice,
-            Items = [.. questions.Select(q => new SessionItem { Question = q })]
+            Items = [.. questions.Select(q => new SessionItem { Question = q })],
+            RetryMissed = retryMissed
         };
         return Current;
     }
@@ -45,6 +50,10 @@ public sealed class SessionHost(QuestionBank bank, ProgressStore progress)
 
         item.Submitted = true;
         progress.RecordAnswer(item.Question.Id, item.IsCorrect);
+
+        // Getting it wrong once is exactly when a second look is worth most, so put the
+        // question back at the end of the set rather than only in the review list.
+        if (!item.IsCorrect) session.QueueRetry(item);
     }
 
     /// <summary>Ends the run, grading anything still open and writing the session record.</summary>

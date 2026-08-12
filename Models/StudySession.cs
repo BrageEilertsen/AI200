@@ -13,6 +13,9 @@ public sealed class SessionItem
 {
     public required Question Question { get; init; }
 
+    /// <summary>True when this is a second attempt, queued after the first was missed.</summary>
+    public bool IsRetry { get; init; }
+
     public List<string> Selected { get; } = [];
 
     /// <summary>True once the answer has been locked in and graded.</summary>
@@ -108,6 +111,30 @@ public sealed class StudySession
         TimeLimit is { } limit ? limit - Elapsed : null;
 
     public bool TimeExpired => Remaining is { } r && r <= TimeSpan.Zero;
+
+    /// <summary>Seconds available per question if the time is spent evenly. Null when untimed.</summary>
+    public double? SecondsPerQuestion =>
+        TimeLimit is { } limit && Total > 0 ? limit.TotalSeconds / Total : null;
+
+    /// <summary>
+    /// How many questions ahead of (positive) or behind (negative) the even pace you are.
+    /// Compares questions answered against how many the elapsed time allows for.
+    /// </summary>
+    public double? PaceDelta =>
+        TimeLimit is { } limit && limit > TimeSpan.Zero && Total > 0
+            ? AnsweredCount - Elapsed / limit * Total
+            : null;
+
+    /// <summary>Set when a missed practice question should be asked again later in the same set.</summary>
+    public bool RetryMissed { get; init; }
+
+    /// <summary>Queues a second attempt at a missed question, once only.</summary>
+    public void QueueRetry(SessionItem item)
+    {
+        if (!RetryMissed || item.IsRetry) return;
+
+        Items.Add(new SessionItem { Question = item.Question, IsRetry = true });
+    }
 
     public bool CanGoNext => Index < Total - 1;
     public bool CanGoPrevious => Index > 0;
