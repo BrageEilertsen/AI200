@@ -43,7 +43,8 @@
       "git",
       "branching",
       "trunk-based"
-    ]
+    ],
+    "path": "enterprise-devops"
   },
   {
     "id": "s-branch-002",
@@ -89,7 +90,8 @@
       "azure-repos",
       "branch-policies",
       "pull-requests"
-    ]
+    ],
+    "path": "enterprise-devops"
   },
   {
     "id": "s-branch-003",
@@ -136,7 +138,8 @@
       "branch-policies",
       "code-owners"
     ],
-    "hint": "The trigger is a file path, and the outcome is a person having to approve. Which branch policy takes a path filter as input?"
+    "hint": "The trigger is a file path, and the outcome is a person having to approve. Which branch policy takes a path filter as input?",
+    "path": "enterprise-devops"
   },
   {
     "id": "s-repo-001",
@@ -182,7 +185,8 @@
       "git",
       "git-lfs",
       "repository-health"
-    ]
+    ],
+    "path": "enterprise-devops"
   },
   {
     "id": "s-repo-002",
@@ -229,7 +233,8 @@
       "monorepo",
       "package-management"
     ],
-    "hint": "Each team needs to upgrade on its own schedule and see exactly what version it depends on. What form does shared code take when that is the requirement?"
+    "hint": "Each team needs to upgrade on its own schedule and see exactly what version it depends on. What form does shared code take when that is the requirement?",
+    "path": "dependency-management"
   },
   {
     "id": "s-repo-003",
@@ -276,7 +281,8 @@
       "secrets",
       "incident-response"
     ],
-    "hint": "Ask what is already true the moment you notice: who else might have cloned the repository, and does rewriting your copy of history reach them?"
+    "hint": "Ask what is already true the moment you notice: who else might have cloned the repository, and does rewriting your copy of history reach them?",
+    "path": "enterprise-devops"
   },
   {
     "id": "s-pr-001",
@@ -322,7 +328,8 @@
       "git",
       "pull-requests",
       "merge-strategy"
-    ]
+    ],
+    "path": "enterprise-devops"
   },
   {
     "id": "s-pr-002",
@@ -371,7 +378,8 @@
       "git",
       "pull-requests",
       "workflow"
-    ]
+    ],
+    "path": "enterprise-devops"
   },
   {
     "id": "s-gh-001",
@@ -417,6 +425,7 @@
       "github",
       "code-owners",
       "governance"
-    ]
+    ],
+    "path": "enterprise-devops"
   }
 ]

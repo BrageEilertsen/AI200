@@ -53,5 +53,74 @@
       "maxWeight": 10,
       "accent": "var(--d-5)"
     }
+  ],
+  "syllabusUrl": "https://learn.microsoft.com/credentials/certifications/devops-engineer/",
+  "syllabusLevel": "Advanced",
+  "syllabusRole": "Administrator",
+  "learningPaths": [
+    {
+      "key": "enterprise-devops",
+      "title": "AZ-400: Development for Enterprise DevOps",
+      "url": "https://learn.microsoft.com/training/paths/az-400-work-git-for-enterprise-devops/",
+      "modules": 8,
+      "product": "Azure Repos and Azure Boards",
+      "domain": "source-control"
+    },
+    {
+      "key": "implement-ci",
+      "title": "AZ-400: Implement CI with Azure Pipelines and GitHub Actions",
+      "url": "https://learn.microsoft.com/training/paths/az-400-implement-ci-azure-pipelines-github-actions/",
+      "modules": 8,
+      "product": "Azure Pipelines and GitHub Actions",
+      "domain": "pipelines"
+    },
+    {
+      "key": "release-strategy",
+      "title": "AZ-400: Design and implement a release strategy",
+      "url": "https://learn.microsoft.com/training/paths/az-400-design-implement-release-strategy/",
+      "modules": 5,
+      "product": "Azure Pipelines",
+      "domain": "pipelines"
+    },
+    {
+      "key": "secure-deployment",
+      "title": "AZ-400: Implement a secure continuous deployment using Azure Pipelines",
+      "url": "https://learn.microsoft.com/training/paths/az-400-implement-secure-continuous-deployment/",
+      "modules": 6,
+      "product": "Azure Key Vault and Microsoft Entra ID",
+      "domain": "pipelines"
+    },
+    {
+      "key": "infrastructure-as-code",
+      "title": "AZ-400: Manage infrastructure as code using Azure and DSC",
+      "url": "https://learn.microsoft.com/training/paths/az-400-manage-infrastructure-as-code-using-azure/",
+      "modules": 6,
+      "product": "Bicep, ARM and Azure Automation",
+      "domain": "pipelines"
+    },
+    {
+      "key": "dependency-management",
+      "title": "AZ-400: Design and implement a dependency management strategy",
+      "url": "https://learn.microsoft.com/training/paths/az-400-design-implement-dependency-management-strategy/",
+      "modules": 5,
+      "product": "Azure Artifacts",
+      "domain": "pipelines"
+    },
+    {
+      "key": "continuous-feedback",
+      "title": "AZ-400: Implement continuous feedback",
+      "url": "https://learn.microsoft.com/training/paths/az-400-implement-continuous-feedback/",
+      "modules": 5,
+      "product": "Azure Monitor and Application Insights",
+      "domain": "instrumentation"
+    },
+    {
+      "key": "security-compliance",
+      "title": "AZ-400: Implement security and validate code bases for compliance",
+      "url": "https://learn.microsoft.com/training/paths/az-400-implement-security-validate-code-bases-compliance/",
+      "modules": 4,
+      "product": "GitHub Advanced Security and Defender for Cloud",
+      "domain": "security"
+    }
   ]
 }

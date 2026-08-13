@@ -7,10 +7,10 @@ getting wrong, sit a full mock against the clock, and read a cram sheet on the l
 
 Two exams ship with it:
 
-| Exam | Certification | Questions | Weighting |
-| --- | --- | --- | --- |
-| **AI-200** — Developing AI Cloud Solutions on Azure | Azure AI Cloud Developer Associate | 254 | 4 skill areas |
-| **AZ-400** — Designing and Implementing Microsoft DevOps Solutions | DevOps Engineer Expert | 82 | 5 skill areas |
+| Exam | Certification | Questions | Skill areas | Learning paths |
+| --- | --- | --- | --- | --- |
+| **AI-200** — Developing AI Cloud Solutions on Azure | Azure AI Cloud Developer Associate | 254 | 4 | 9 |
+| **AZ-400** — Designing and Implementing Microsoft DevOps Solutions | DevOps Engineer Expert | 82 | 5 | 8 |
 
 Switch between them from the control at the top of the sidebar. Each exam keeps its own
 progress, weak-topic list, mock history and exam date — studying two certifications at once

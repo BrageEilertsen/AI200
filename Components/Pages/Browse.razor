@@ -22,19 +22,33 @@
        working through the material, the learning path you are on is the useful filter. Skill
        areas still drive the mock weightings and the progress breakdown. *@
     <div class="card section">
-        <div class="row between" style="margin-bottom:4px">
-            <h3 style="margin:0">Course syllabus</h3>
+        <div class="syllabus-head">
+            <div>
+                <h3>Course syllabus</h3>
+                <p class="syllabus-meta">
+                    @Exams.Exam.LearningPaths.Count learning paths
+                    <span class="q-sep">·</span>
+                    @Exams.Exam.LearningPaths.Sum(p => p.Modules) modules
+                    @if (Exams.Exam.SyllabusLevel is { Length: > 0 } level)
+                    {
+                        <span class="q-sep">·</span>
+                        @level
+                    }
+                    @if (Exams.Exam.SyllabusRole is { Length: > 0 } role)
+                    {
+                        <span class="q-sep">·</span>
+                        @role
+                    }
+                </p>
+            </div>
             @if (Exams.Exam.SyllabusUrl is { Length: > 0 } syllabus)
             {
-                <a class="xs" href="@syllabus" target="_blank" rel="noopener">
-                    On Microsoft Learn @Icons.External
+                <a class="btn ghost sm syllabus-link" href="@syllabus" target="_blank" rel="noopener">
+                    @Icons.External
+                    <span>Microsoft Learn</span>
                 </a>
             }
         </div>
-        <p class="small muted" style="margin-bottom:16px">
-            @Exams.Exam.LearningPaths.Count learning paths ·
-            @Exams.Exam.LearningPaths.Sum(p => p.Modules) modules · Intermediate · Developer
-        </p>
 
         <div class="paths">
             @foreach (var path in Exams.Exam.LearningPaths)

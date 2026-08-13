@@ -47,6 +47,8 @@
     }
   ],
   "syllabusUrl": "https://learn.microsoft.com/credentials/certifications/azure-ai-cloud-developer-associate/",
+  "syllabusLevel": "Intermediate",
+  "syllabusRole": "Developer",
   "learningPaths": [
     {
       "key": "container-hosting",

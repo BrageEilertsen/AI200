@@ -839,6 +839,43 @@ pre.code {
 
 /* ═══════════════ course syllabus ═══════════════ */
 
+.syllabus-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.syllabus-head h3 { margin: 0 0 3px; }
+
+.syllabus-meta {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 450;
+    color: var(--text-3);
+    letter-spacing: -.006em;
+}
+
+/* Spacing comes from the separator rather than markup whitespace: Razor collapses the
+   newlines around a conditional block, so the text ran straight into the dot. */
+.syllabus-meta .q-sep { margin: 0 7px; }
+
+.syllabus-link {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+}
+
+.syllabus-link svg { width: 13px; height: 13px; }
+.syllabus-link:hover { text-decoration: none; }
+
+@media (max-width: 560px) {
+    .syllabus-head { flex-direction: column; gap: 12px; }
+}
+
 .paths { display: flex; flex-direction: column; gap: 2px; }
 
 .path {

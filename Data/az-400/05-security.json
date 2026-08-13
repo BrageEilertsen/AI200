@@ -45,7 +45,8 @@
       "workload-identity",
       "service-connections"
     ],
-    "hint": "The requirement rules out anything stored. Ask what could authenticate the pipeline without a value sitting in the service connection at all."
+    "hint": "The requirement rules out anything stored. Ask what could authenticate the pipeline without a value sitting in the service connection at all.",
+    "path": "secure-deployment"
   },
   {
     "id": "sec-auth-002",
@@ -91,7 +92,8 @@
       "security",
       "managed-identity",
       "key-vault"
-    ]
+    ],
+    "path": "secure-deployment"
   },
   {
     "id": "sec-sec-001",
@@ -138,7 +140,8 @@
       "key-vault",
       "secrets",
       "variable-groups"
-    ]
+    ],
+    "path": "secure-deployment"
   },
   {
     "id": "sec-sec-002",
@@ -185,7 +188,8 @@
       "secret-scanning",
       "ghas"
     ],
-    "hint": "Only one of these acts before the commit exists. The rest tell you afterwards, and by then rotation is mandatory."
+    "hint": "Only one of these acts before the commit exists. The rest tell you afterwards, and by then rotation is mandatory.",
+    "path": "security-compliance"
   },
   {
     "id": "sec-scan-001",
@@ -232,7 +236,8 @@
       "sca",
       "dependencies",
       "ghas"
-    ]
+    ],
+    "path": "security-compliance"
   },
   {
     "id": "sec-scan-002",
@@ -280,7 +285,8 @@
       "codeql",
       "ghas"
     ],
-    "hint": "The flaw is in code the team wrote, not in a package they consumed. That rules out the dependency and credential scanners immediately."
+    "hint": "The flaw is in code the team wrote, not in a package they consumed. That rules out the dependency and credential scanners immediately.",
+    "path": "security-compliance"
   },
   {
     "id": "sec-gov-001",
@@ -327,7 +333,8 @@
       "azure-policy",
       "governance",
       "compliance"
-    ]
+    ],
+    "path": "security-compliance"
   },
   {
     "id": "sec-perm-001",
@@ -374,7 +381,8 @@
       "service-connections",
       "least-privilege"
     ],
-    "hint": "Service connections keep a list of which pipelines may use them. The default for that list is the problem here."
+    "hint": "Service connections keep a list of which pipelines may use them. The default for that list is the problem here.",
+    "path": "secure-deployment"
   },
   {
     "id": "sec-perm-002",
@@ -426,6 +434,7 @@
       "least-privilege",
       "blast-radius"
     ],
-    "hint": "Blast radius has two dimensions: how much a stolen credential can reach, and how long it stays useful. Pick one option for each."
+    "hint": "Blast radius has two dimensions: how much a stolen credential can reach, and how long it stays useful. Pick one option for each.",
+    "path": "secure-deployment"
   }
 ]

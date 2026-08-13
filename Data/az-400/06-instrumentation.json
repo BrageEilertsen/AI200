@@ -43,7 +43,8 @@
       "monitoring",
       "azure-monitor",
       "log-analytics"
-    ]
+    ],
+    "path": "continuous-feedback"
   },
   {
     "id": "i-mon-002",
@@ -90,7 +91,8 @@
       "alerts",
       "metrics"
     ],
-    "hint": "Azure Monitor keeps numbers and text in different stores. One is pre-aggregated and evaluated continuously; the other runs a query on a schedule."
+    "hint": "Azure Monitor keeps numbers and text in different stores. One is pre-aggregated and evaluated continuously; the other runs a query on a schedule.",
+    "path": "continuous-feedback"
   },
   {
     "id": "i-mon-003",
@@ -137,7 +139,8 @@
       "application-insights",
       "distributed-tracing"
     ],
-    "hint": "Four services means four sets of telemetry. Something has to tie them together — ask what is propagated between the services to make that possible."
+    "hint": "Four services means four sets of telemetry. Something has to tie them together — ask what is propagated between the services to make that possible.",
+    "path": "continuous-feedback"
   },
   {
     "id": "i-mon-004",
@@ -185,7 +188,8 @@
       "sampling",
       "cost"
     ],
-    "hint": "The cost is in how much telemetry arrives, not how long it is kept. You need to send less while keeping the totals honest."
+    "hint": "The cost is in how much telemetry arrives, not how long it is kept. You need to send less while keeping the totals honest.",
+    "path": "continuous-feedback"
   },
   {
     "id": "i-mon-005",
@@ -247,7 +251,8 @@
       "kql",
       "application-insights"
     ],
-    "hint": "One operator groups rows and computes an aggregate; another sorts the result. Both are the plainest KQL verbs for those jobs."
+    "hint": "One operator groups rows and computes an aggregate; another sorts the result. Both are the plainest KQL verbs for those jobs.",
+    "path": "continuous-feedback"
   },
   {
     "id": "i-mon-006",
@@ -293,6 +298,7 @@
       "sre",
       "slo",
       "error-budget"
-    ]
+    ],
+    "path": "continuous-feedback"
   }
 ]

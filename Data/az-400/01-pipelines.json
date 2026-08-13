@@ -44,7 +44,8 @@
       "environments",
       "approvals",
       "yaml"
-    ]
+    ],
+    "path": "release-strategy"
   },
   {
     "id": "p-yaml-002",
@@ -91,7 +92,8 @@
       "yaml",
       "templates",
       "reuse"
-    ]
+    ],
+    "path": "implement-ci"
   },
   {
     "id": "p-yaml-003",
@@ -139,7 +141,8 @@
       "governance",
       "security"
     ],
-    "hint": "Anything written in the pipeline file can be edited by whoever owns the pipeline. Where does a control have to live for that not to be true?"
+    "hint": "Anything written in the pipeline file can be edited by whoever owns the pipeline. Where does a control have to live for that not to be true?",
+    "path": "implement-ci"
   },
   {
     "id": "p-yaml-004",
@@ -200,7 +203,8 @@
       "azure-pipelines",
       "yaml",
       "triggers"
-    ]
+    ],
+    "path": "implement-ci"
   },
   {
     "id": "p-dep-001",
@@ -246,7 +250,8 @@
       "deployment-strategy",
       "canary",
       "progressive-exposure"
-    ]
+    ],
+    "path": "release-strategy"
   },
   {
     "id": "p-dep-002",
@@ -293,7 +298,8 @@
       "app-configuration",
       "deployment-strategy"
     ],
-    "hint": "The code is already in production. What has to change for the feature to appear, and does that thing live in the deployment or in the running app?"
+    "hint": "The code is already in production. What has to change for the feature to appear, and does that thing live in the deployment or in the running app?",
+    "path": "secure-deployment"
   },
   {
     "id": "p-dep-003",
@@ -341,7 +347,8 @@
       "expand-contract",
       "rollback"
     ],
-    "hint": "Think about the moment between the two steps. Whatever order you pick, the old code and the new code each have to work against whatever the schema looks like right then."
+    "hint": "Think about the moment between the two steps. Whatever order you pick, the old code and the new code each have to work against whatever the schema looks like right then.",
+    "path": "secure-deployment"
   },
   {
     "id": "p-dep-004",
@@ -386,7 +393,8 @@
       "blue-green",
       "app-service",
       "slots"
-    ]
+    ],
+    "path": "secure-deployment"
   },
   {
     "id": "p-iac-001",
@@ -432,7 +440,8 @@
       "iac",
       "bicep",
       "arm"
-    ]
+    ],
+    "path": "infrastructure-as-code"
   },
   {
     "id": "p-iac-002",
@@ -479,7 +488,8 @@
       "bicep",
       "what-if"
     ],
-    "hint": "You want a diff against what is actually deployed, not a check that the file is well formed. Only one of these compares the template to live state."
+    "hint": "You want a diff against what is actually deployed, not a check that the file is well formed. Only one of these compares the template to live state.",
+    "path": "infrastructure-as-code"
   },
   {
     "id": "p-iac-003",
@@ -525,7 +535,8 @@
       "iac",
       "configuration-management",
       "machine-configuration"
-    ]
+    ],
+    "path": "infrastructure-as-code"
   },
   {
     "id": "p-pkg-001",
@@ -571,7 +582,8 @@
       "azure-artifacts",
       "package-management",
       "upstream"
-    ]
+    ],
+    "path": "dependency-management"
   },
   {
     "id": "p-pkg-002",
@@ -617,7 +629,8 @@
       "package-management",
       "semver",
       "versioning"
-    ]
+    ],
+    "path": "dependency-management"
   },
   {
     "id": "p-test-001",
@@ -665,7 +678,8 @@
       "branch-policies",
       "quality-gates"
     ],
-    "hint": "Publishing a number and blocking a merge are different jobs. Which part of Azure DevOps has the power to stop a pull request completing?"
+    "hint": "Publishing a number and blocking a merge are different jobs. Which part of Azure DevOps has the power to stop a pull request completing?",
+    "path": "implement-ci"
   },
   {
     "id": "p-test-002",
@@ -712,7 +726,8 @@
       "flaky-tests",
       "pipeline-health"
     ],
-    "hint": "Different tests each time, passing on re-run — that is not the product failing. Consider what an unreliable gate does to the team's willingness to believe it."
+    "hint": "Different tests each time, passing on re-run — that is not the product failing. Consider what an unreliable gate does to the team's willingness to believe it.",
+    "path": "implement-ci"
   },
   {
     "id": "p-agent-001",
@@ -758,7 +773,8 @@
       "azure-pipelines",
       "agents",
       "networking"
-    ]
+    ],
+    "path": "implement-ci"
   },
   {
     "id": "p-agent-002",
@@ -805,7 +821,8 @@
       "caching",
       "performance"
     ],
-    "hint": "The step is slow because it does the same work every run even when nothing changed. What would let it skip that work, and what should decide when it cannot?"
+    "hint": "The step is slow because it does the same work every run even when nothing changed. What would let it skip that work, and what should decide when it cannot?",
+    "path": "implement-ci"
   },
   {
     "id": "p-gha-001",
@@ -851,7 +868,8 @@
       "github-actions",
       "workflow",
       "yaml"
-    ]
+    ],
+    "path": "implement-ci"
   },
   {
     "id": "p-gha-002",
@@ -898,7 +916,8 @@
       "environments",
       "approvals"
     ],
-    "hint": "GitHub has a resource that deployments target and that carries protection rules of its own. The rule wants to live there, not in the workflow file."
+    "hint": "GitHub has a resource that deployments target and that carries protection rules of its own. The rule wants to live there, not in the workflow file.",
+    "path": "release-strategy"
   },
   {
     "id": "p-var-001",
@@ -944,7 +963,8 @@
       "azure-pipelines",
       "variables",
       "configuration"
-    ]
+    ],
+    "path": "release-strategy"
   },
   {
     "id": "p-var-002",
@@ -991,7 +1011,8 @@
       "secrets",
       "logging"
     ],
-    "hint": "The agent knows the literal value it marked as secret, so it can look for it. Ask what happens if the script encodes or splits that value first."
+    "hint": "The agent knows the literal value it marked as secret, so it can look for it. Ask what happens if the script encodes or splits that value first.",
+    "path": "secure-deployment"
   },
   {
     "id": "p-art-001",
@@ -1037,7 +1058,8 @@
       "azure-pipelines",
       "artifacts",
       "multi-stage"
-    ]
+    ],
+    "path": "implement-ci"
   },
   {
     "id": "p-mig-001",
@@ -1083,7 +1105,8 @@
       "azure-pipelines",
       "yaml",
       "migration"
-    ]
+    ],
+    "path": "implement-ci"
   },
   {
     "id": "p-mon-001",
@@ -1134,7 +1157,8 @@
       "pipeline-health",
       "metrics"
     ],
-    "hint": "Pipeline health is about whether a red build still means something. Which of these change that, and which just describe a project getting bigger?"
+    "hint": "Pipeline health is about whether a red build still means something. Which of these change that, and which just describe a project getting bigger?",
+    "path": "implement-ci"
   },
   {
     "id": "p-dep-005",
@@ -1180,7 +1204,8 @@
       "deployment",
       "hotfix",
       "branching"
-    ]
+    ],
+    "path": "release-strategy"
   },
   {
     "id": "p-test-003",
@@ -1259,6 +1284,7 @@
       "testing",
       "test-pyramid",
       "pipeline-design"
-    ]
+    ],
+    "path": "implement-ci"
   }
 ]

@@ -44,7 +44,8 @@
       "rings",
       "progressive-exposure"
     ],
-    "hint": "Named audiences, in sequence, with a wait between each. Ask whether the answer is describing cohorts of users or a comparison between two versions."
+    "hint": "Named audiences, in sequence, with a wait between each. Ask whether the answer is describing cohorts of users or a comparison between two versions.",
+    "path": "release-strategy"
   },
   {
     "id": "p-dep-007",
@@ -90,7 +91,8 @@
       "deployment-strategy",
       "ab-testing",
       "experimentation"
-    ]
+    ],
+    "path": "release-strategy"
   },
   {
     "id": "p-pkg-004",
@@ -136,7 +138,8 @@
       "package-management",
       "calver",
       "versioning"
-    ]
+    ],
+    "path": "dependency-management"
   },
   {
     "id": "p-yaml-005",
@@ -184,7 +187,8 @@
       "resources",
       "triggers"
     ],
-    "hint": "The trigger comes from something outside this pipeline finishing. Look for the YAML block that declares things a pipeline consumes."
+    "hint": "The trigger comes from something outside this pipeline finishing. Look for the YAML block that declares things a pipeline consumes.",
+    "path": "implement-ci"
   },
   {
     "id": "p-yaml-006",
@@ -231,7 +235,8 @@
       "yaml",
       "matrix",
       "parallelism"
-    ]
+    ],
+    "path": "implement-ci"
   },
   {
     "id": "p-mon-004",
@@ -277,7 +282,8 @@
       "pipeline-health",
       "retention",
       "cost"
-    ]
+    ],
+    "path": "implement-ci"
   },
   {
     "id": "p-iac-006",
@@ -324,7 +330,8 @@
       "deployment-environments",
       "self-service"
     ],
-    "hint": "Two constraints: developers get no standing subscription access, and the templates are pre-approved. That points at a service built for self-service, not a governance control."
+    "hint": "Two constraints: developers get no standing subscription access, and the templates are pre-approved. That points at a service built for self-service, not a governance control.",
+    "path": "infrastructure-as-code"
   },
   {
     "id": "s-branch-004",
@@ -370,7 +377,8 @@
       "git",
       "branching",
       "github-flow"
-    ]
+    ],
+    "path": "enterprise-devops"
   },
   {
     "id": "s-repo-004",
@@ -417,7 +425,8 @@
       "scalar",
       "repository-health"
     ],
-    "hint": "Separate two problems: a few enormous files, versus an enormous number of files and a deep history. Only one tool targets the second."
+    "hint": "Separate two problems: a few enormous files, versus an enormous number of files and a deep history. Only one tool targets the second.",
+    "path": "enterprise-devops"
   },
   {
     "id": "pr-comm-003",
@@ -464,7 +473,8 @@
       "wiki",
       "mermaid",
       "documentation"
-    ]
+    ],
+    "path": "continuous-feedback"
   },
   {
     "id": "pr-comm-004",
@@ -510,7 +520,8 @@
       "collaboration",
       "release-notes",
       "automation"
-    ]
+    ],
+    "path": "release-strategy"
   },
   {
     "id": "sec-auth-003",
@@ -558,7 +569,8 @@
       "github-token",
       "least-privilege"
     ],
-    "hint": "The workflow already has a credential it did not have to create, scoped to this repository and gone when the job ends. What limits what it can do?"
+    "hint": "The workflow already has a credential it did not have to create, scoped to this repository and gone when the job ends. What limits what it can do?",
+    "path": "secure-deployment"
   },
   {
     "id": "sec-sec-003",
@@ -605,7 +617,8 @@
       "secure-files",
       "secrets"
     ],
-    "hint": "This is a binary file, not a string, and it must not reach the repository. Azure Pipelines has a library feature for exactly that kind of asset."
+    "hint": "This is a binary file, not a string, and it must not reach the repository. Azure Pipelines has a library feature for exactly that kind of asset.",
+    "path": "secure-deployment"
   },
   {
     "id": "sec-scan-003",
@@ -653,7 +666,8 @@
       "ghas",
       "posture"
     ],
-    "hint": "Several organisations, plus the Azure resources they deploy to, in one view. Ask which product sits above both rather than inside one repository."
+    "hint": "Several organisations, plus the Azure resources they deploy to, in one view. Ask which product sits above both rather than inside one repository.",
+    "path": "security-compliance"
   },
   {
     "id": "i-mon-007",
@@ -733,6 +747,7 @@
       "container-insights",
       "vm-insights",
       "application-insights"
-    ]
+    ],
+    "path": "continuous-feedback"
   }
 ]

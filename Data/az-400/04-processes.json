@@ -43,7 +43,8 @@
       "azure-boards",
       "traceability",
       "work-items"
-    ]
+    ],
+    "path": "enterprise-devops"
   },
   {
     "id": "pr-trace-002",
@@ -89,7 +90,8 @@
       "azure-boards",
       "branch-policies",
       "traceability"
-    ]
+    ],
+    "path": "enterprise-devops"
   },
   {
     "id": "pr-metric-001",
@@ -136,7 +138,8 @@
       "dora",
       "flow"
     ],
-    "hint": "Two of the four measure speed, two measure stability. Of the speed pair, one counts events and the other measures elapsed time for one change."
+    "hint": "Two of the four measure speed, two measure stability. Of the speed pair, one counts events and the other measures elapsed time for one change.",
+    "path": "continuous-feedback"
   },
   {
     "id": "pr-metric-002",
@@ -184,7 +187,8 @@
       "flow",
       "wip"
     ],
-    "hint": "A band gets wider when things enter it faster than they leave. Which state is that band, and what does the team have too much of?"
+    "hint": "A band gets wider when things enter it faster than they leave. Which state is that band, and what does the team have too much of?",
+    "path": "continuous-feedback"
   },
   {
     "id": "pr-metric-003",
@@ -231,7 +235,8 @@
       "analytics",
       "power-bi",
       "reporting"
-    ]
+    ],
+    "path": "continuous-feedback"
   },
   {
     "id": "pr-comm-001",
@@ -277,7 +282,8 @@
       "collaboration",
       "teams",
       "service-hooks"
-    ]
+    ],
+    "path": "continuous-feedback"
   },
   {
     "id": "pr-comm-002",
@@ -323,7 +329,8 @@
       "collaboration",
       "documentation",
       "wiki"
-    ]
+    ],
+    "path": "continuous-feedback"
   },
   {
     "id": "pr-flow-001",
@@ -370,7 +377,8 @@
       "postmortem",
       "incident-response"
     ],
-    "hint": "The word blameless is the whole clue. If the answer names a person or a commit, it is describing what the review is trying to avoid."
+    "hint": "The word blameless is the whole clue. If the answer names a person or a commit, it is describing what the review is trying to avoid.",
+    "path": "continuous-feedback"
   },
   {
     "id": "pr-flow-002",
@@ -449,6 +457,7 @@
       "metrics",
       "dora"
     ],
-    "hint": "Sort each statement by what it is counting: a proportion of deployments, a duration of recovery, or a frequency of shipping."
+    "hint": "Sort each statement by what it is counting: a proportion of deployments, a duration of recovery, or a frequency of shipping.",
+    "path": "continuous-feedback"
   }
 ]

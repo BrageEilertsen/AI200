@@ -96,6 +96,12 @@ public sealed class ExamDefinition
     /// <summary>Link to the certification page carrying the course syllabus.</summary>
     public string? SyllabusUrl { get; set; }
 
+    /// <summary>Difficulty as the syllabus labels it, e.g. "Intermediate" or "Advanced".</summary>
+    public string? SyllabusLevel { get; set; }
+
+    /// <summary>Audience as the syllabus labels it, e.g. "Developer" or "Administrator".</summary>
+    public string? SyllabusRole { get; set; }
+
     /// <summary>
     /// The published course syllabus, in the order Microsoft lists it. Optional: an exam with
     /// none falls back to grouping the bank by skill area.

@@ -44,7 +44,8 @@
       "arm",
       "deployment-modes"
     ],
-    "hint": "One of these modes reconciles the group against the template in both directions. Ask which, and what that does to resources the template never mentions."
+    "hint": "One of these modes reconciles the group against the template in both directions. Ask which, and what that does to resources the template never mentions.",
+    "path": "infrastructure-as-code"
   },
   {
     "id": "p-iac-005",
@@ -90,7 +91,8 @@
       "iac",
       "terraform",
       "state"
-    ]
+    ],
+    "path": "infrastructure-as-code"
   },
   {
     "id": "p-cont-001",
@@ -136,7 +138,8 @@
       "containers",
       "tagging",
       "traceability"
-    ]
+    ],
+    "path": "implement-ci"
   },
   {
     "id": "p-cont-002",
@@ -184,7 +187,8 @@
       "rollback",
       "deployment-strategy"
     ],
-    "hint": "Kubernetes will not take an old pod out of service until a new one reports ready. Which strategy relies on that, and which ones remove the old version first?"
+    "hint": "Kubernetes will not take an old pod out of service until a new one reports ready. Which strategy relies on that, and which ones remove the old version first?",
+    "path": "secure-deployment"
   },
   {
     "id": "p-mon-002",
@@ -230,7 +234,8 @@
       "pipeline-health",
       "agents",
       "troubleshooting"
-    ]
+    ],
+    "path": "implement-ci"
   },
   {
     "id": "p-mon-003",
@@ -276,7 +281,8 @@
       "pipeline-health",
       "agent-pools",
       "troubleshooting"
-    ]
+    ],
+    "path": "implement-ci"
   },
   {
     "id": "p-pkg-003",
@@ -323,7 +329,8 @@
       "package-management",
       "promotion"
     ],
-    "hint": "The package itself does not change when it is signed off — only who can see it. Which feature filters what a consumer of the feed is shown?"
+    "hint": "The package itself does not change when it is signed off — only who can see it. Which feature filters what a consumer of the feed is shown?",
+    "path": "dependency-management"
   },
   {
     "id": "p-test-004",
@@ -375,6 +382,7 @@
       "feedback-loop",
       "parallelism"
     ],
-    "hint": "Feedback speed has two levers: catching things earlier, and taking less wall-clock time to catch them. Two options pull those levers; the rest push work later."
+    "hint": "Feedback speed has two levers: catching things earlier, and taking less wall-clock time to catch them. Two options pull those levers; the rest push work later.",
+    "path": "implement-ci"
   }
 ]
