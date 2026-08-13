@@ -44,7 +44,8 @@
       "rbac",
       "storage",
       "managed-identity"
-    ]
+    ],
+    "path": "secrets-config"
   },
   {
     "id": "o2-sec-002",
@@ -92,7 +93,8 @@
       "storage",
       "least-privilege"
     ],
-    "hint": "The partner has no Entra identity, so it needs a token in the URL - but you still want it signed by a real identity and short-lived."
+    "hint": "The partner has no Entra identity, so it needs a token in the URL - but you still want it signed by a real identity and short-lived.",
+    "path": "secrets-config"
   },
   {
     "id": "o2-sec-003",
@@ -138,7 +140,8 @@
       "app-configuration",
       "feature-flags",
       "deployment"
-    ]
+    ],
+    "path": "secrets-config"
   },
   {
     "id": "o2-sec-004",
@@ -185,7 +188,8 @@
       "refresh",
       "sentinel-key"
     ],
-    "hint": "Reading at startup only means nothing is watching for changes. Ask what registration makes the client poll, and what it should watch."
+    "hint": "Reading at startup only means nothing is watching for changes. Ask what registration makes the client poll, and what it should watch.",
+    "path": "secrets-config"
   },
   {
     "id": "o2-sec-005",
@@ -231,7 +235,8 @@
       "managed-identity",
       "security",
       "rbac"
-    ]
+    ],
+    "path": "secrets-config"
   },
   {
     "id": "o2-sec-006",
@@ -279,7 +284,8 @@
       "event-grid",
       "security"
     ],
-    "hint": "Apps must not have to learn the new version. Ask what URI form avoids pinning a version, and what raises the event that triggers rotation."
+    "hint": "Apps must not have to learn the new version. Ask what URI form avoids pinning a version, and what raises the event that triggers rotation.",
+    "path": "secrets-config"
   },
   {
     "id": "o2-sec-007",
@@ -325,7 +331,8 @@
       "key-vault",
       "rbac",
       "least-privilege"
-    ]
+    ],
+    "path": "secrets-config"
   },
   {
     "id": "o2-sec-008",
@@ -406,7 +413,8 @@
       "feature-flags",
       "security"
     ],
-    "hint": "Sort by what the value is: a credential, a tuneable setting, or something toggled per audience."
+    "hint": "Sort by what the value is: a credential, a tuneable setting, or something toggled per audience.",
+    "path": "secrets-config"
   },
   {
     "id": "o2-sec-009",
@@ -452,7 +460,8 @@
       "security",
       "cicd",
       "workload-identity"
-    ]
+    ],
+    "path": "secrets-config"
   },
   {
     "id": "o2-sec-010",
@@ -500,7 +509,8 @@
       "troubleshooting",
       "sdk"
     ],
-    "hint": "The credential chain found more than one candidate and cannot choose. Ask what you must tell it."
+    "hint": "The credential chain found more than one candidate and cannot choose. Ask what you must tell it.",
+    "path": "secrets-config"
   },
   {
     "id": "o2-sec-011",
@@ -546,7 +556,8 @@
       "security",
       "managed-identity",
       "secrets"
-    ]
+    ],
+    "path": "secrets-config"
   },
   {
     "id": "o2-mon-001",
@@ -593,7 +604,8 @@
       "tracing",
       "instrumentation"
     ],
-    "hint": "You want the embedding call measured as its own segment inside the request, so the two durations can be compared on one timeline."
+    "hint": "You want the embedding call measured as its own segment inside the request, so the two durations can be compared on one timeline.",
+    "path": "observability"
   },
   {
     "id": "o2-mon-002",
@@ -638,7 +650,8 @@
     "tags": [
       "kql",
       "operators"
-    ]
+    ],
+    "path": "observability"
   },
   {
     "id": "o2-mon-003",
@@ -685,7 +698,8 @@
       "sampling",
       "cost"
     ],
-    "hint": "You need less data overall but full fidelity for one operation. That rules out a flat percentage applied to everything."
+    "hint": "You need less data overall but full fidelity for one operation. That rules out a flat percentage applied to everything.",
+    "path": "observability"
   },
   {
     "id": "o2-mon-004",
@@ -731,7 +745,8 @@
       "opentelemetry",
       "metrics",
       "cost"
-    ]
+    ],
+    "path": "observability"
   },
   {
     "id": "o2-mon-005",
@@ -776,7 +791,8 @@
     "tags": [
       "kql",
       "performance"
-    ]
+    ],
+    "path": "observability"
   },
   {
     "id": "o2-mon-006",
@@ -823,7 +839,8 @@
       "alerts",
       "kql"
     ],
-    "hint": "You want repeated breaches, not a single spike. Ask which alert setting counts violations before firing."
+    "hint": "You want repeated breaches, not a single spike. Ask which alert setting counts violations before firing.",
+    "path": "observability"
   },
   {
     "id": "o2-mon-007",
@@ -869,7 +886,8 @@
       "monitoring",
       "resiliency",
       "throttling"
-    ]
+    ],
+    "path": "observability"
   },
   {
     "id": "o2-mon-008",
@@ -917,7 +935,8 @@
       "troubleshooting",
       "messaging"
     ],
-    "hint": "Neither service was busy during the gap. Ask what sat between them and what the work was doing during that time."
+    "hint": "Neither service was busy during the gap. Ask what sat between them and what the work was doing during that time.",
+    "path": "observability"
   },
   {
     "id": "o2-mon-009",
@@ -996,7 +1015,8 @@
       "kql",
       "application-insights",
       "correlation"
-    ]
+    ],
+    "path": "observability"
   },
   {
     "id": "o2-mon-010",
@@ -1042,7 +1062,8 @@
       "opentelemetry",
       "resource-attributes",
       "application-insights"
-    ]
+    ],
+    "path": "observability"
   },
   {
     "id": "o2-mon-011",
@@ -1089,7 +1110,8 @@
       "logging",
       "troubleshooting"
     ],
-    "hint": "Traces arrive, so the exporter and connection string are fine. That narrows it to how logs specifically are collected and filtered."
+    "hint": "Traces arrive, so the exporter and connection string are fine. That narrows it to how logs specifically are collected and filtered.",
+    "path": "observability"
   },
   {
     "id": "o2-mon-012",
@@ -1134,6 +1156,7 @@
       "troubleshooting",
       "correlation"
     ],
-    "hint": "Start from the one request the user complained about, get its correlation id, then widen to everything sharing that id before drawing conclusions."
+    "hint": "Start from the one request the user complained about, get its correlation id, then widen to everything sharing that id before drawing conclusions.",
+    "path": "observability"
   }
 ]

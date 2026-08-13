@@ -43,7 +43,8 @@
       "functions",
       "networking",
       "vnet"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i2-fn-002",
@@ -91,7 +92,8 @@
       "event-grid",
       "reliability"
     ],
-    "hint": "A polling trigger scans; it can miss files during a burst. The alternative is to be told about each blob as it lands."
+    "hint": "A polling trigger scans; it can miss files during a burst. The alternative is to be told about each blob as it lands.",
+    "path": "backend-services"
   },
   {
     "id": "i2-fn-003",
@@ -137,7 +139,8 @@
       "functions",
       "configuration",
       "storage"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i2-fn-004",
@@ -189,7 +192,8 @@
       "dotnet",
       "isolated-worker"
     ],
-    "hint": "The isolated model is about where your code runs relative to the host. Think about what that separation buys you in control and in dependencies."
+    "hint": "The isolated model is about where your code runs relative to the host. Think about what that separation buys you in control and in dependencies.",
+    "path": "backend-services"
   },
   {
     "id": "i2-fn-005",
@@ -236,7 +240,8 @@
       "durable-functions",
       "resiliency"
     ],
-    "hint": "500 calls, some failing transiently. You want each one retried on its own rather than restarting the whole fan-out."
+    "hint": "500 calls, some failing transiently. You want each one retried on its own rather than restarting the whole fan-out.",
+    "path": "backend-services"
   },
   {
     "id": "i2-fn-006",
@@ -283,7 +288,8 @@
       "cosmos-db",
       "change-feed",
       "bindings"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i2-fn-007",
@@ -329,7 +335,8 @@
       "functions",
       "timer-trigger",
       "concurrency"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i2-fn-008",
@@ -377,7 +384,8 @@
       "durable-functions",
       "patterns"
     ],
-    "hint": "Four minutes will always beat a 30-second client timeout. Stop trying to finish inside the request and hand back a way to check progress."
+    "hint": "Four minutes will always beat a 30-second client timeout. Stop trying to finish inside the request and hand back a way to check progress.",
+    "path": "backend-services"
   },
   {
     "id": "i2-fn-009",
@@ -424,7 +432,8 @@
       "event-hubs",
       "configuration",
       "performance"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i2-fn-010",
@@ -470,7 +479,8 @@
       "functions",
       "hosting",
       "flex-consumption"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i2-fn-011",
@@ -518,7 +528,8 @@
       "cosmos-db",
       "reliability"
     ],
-    "hint": "At-least-once delivery makes a redelivery normal. If the write can happen twice without creating a second document, the duplicate stops mattering - what makes that true?"
+    "hint": "At-least-once delivery makes a redelivery normal. If the write can happen twice without creating a second document, the duplicate stops mattering - what makes that true?",
+    "path": "backend-services"
   },
   {
     "id": "i2-fn-012",
@@ -579,7 +590,8 @@
       "managed-identity",
       "security",
       "configuration"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i2-sb-001",
@@ -625,7 +637,8 @@
       "service-bus",
       "topics",
       "filters"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i2-sb-002",
@@ -673,7 +686,8 @@
       "ordering",
       "concurrency"
     ],
-    "hint": "Ordering is required per customer, not globally. Ask which Service Bus feature groups related messages so one slow group does not stall the others."
+    "hint": "Ordering is required per customer, not globally. Ask which Service Bus feature groups related messages so one slow group does not stall the others.",
+    "path": "backend-services"
   },
   {
     "id": "i2-sb-003",
@@ -719,7 +733,8 @@
       "service-bus",
       "deferral",
       "ordering"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i2-sb-004",
@@ -765,7 +780,8 @@
       "service-bus",
       "tiers",
       "limits"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i2-sb-005",
@@ -813,7 +829,8 @@
       "troubleshooting",
       "idempotency"
     ],
-    "hint": "Six minutes of processing against a lock that renews or expires. Ask what the broker assumes when it stops hearing from you."
+    "hint": "Six minutes of processing against a lock that renews or expires. Ask what the broker assumes when it stops hearing from you.",
+    "path": "backend-services"
   },
   {
     "id": "i2-eg-001",
@@ -859,7 +876,8 @@
       "event-grid",
       "domains",
       "multi-tenant"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i2-eg-002",
@@ -905,7 +923,8 @@
       "event-grid",
       "delivery",
       "networking"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i2-eg-003",
@@ -953,7 +972,8 @@
       "troubleshooting",
       "cloudevents"
     ],
-    "hint": "The filter itself is valid, so it is being evaluated against a payload shape it does not match. Compare where the field sits in the event schema being used."
+    "hint": "The filter itself is valid, so it is being evaluated against a payload shape it does not match. Compare where the field sits in the event schema being used.",
+    "path": "backend-services"
   },
   {
     "id": "i2-eg-004",
@@ -1000,7 +1020,8 @@
       "event-hubs",
       "service-bus",
       "architecture"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i2-eh-001",
@@ -1047,7 +1068,8 @@
       "partitions",
       "scaling"
     ],
-    "hint": "A partition can have only one active reader per consumer group. Work out what that leaves for the extra instances."
+    "hint": "A partition can have only one active reader per consumer group. Work out what that leaves for the extra instances.",
+    "path": "backend-services"
   },
   {
     "id": "i2-eh-002",
@@ -1093,7 +1115,8 @@
       "event-hubs",
       "checkpointing",
       "reliability"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i2-int-001",
@@ -1138,7 +1161,8 @@
       "claim-check",
       "patterns"
     ],
-    "hint": "The broker has a message size limit the document cannot meet, so the payload has to travel by another route and the message carries only a reference to it."
+    "hint": "The broker has a message size limit the document cannot meet, so the payload has to travel by another route and the message carries only a reference to it.",
+    "path": "backend-services"
   },
   {
     "id": "i2-int-002",
@@ -1206,7 +1230,8 @@
       "event-grid",
       "architecture"
     ],
-    "hint": "Sort each requirement by whether it needs durable work that survives an outage and can be ordered, or a fan-out notification to independent subscribers."
+    "hint": "Sort each requirement by whether it needs durable work that survives an outage and can be ordered, or a fan-out notification to independent subscribers.",
+    "path": "backend-services"
   },
   {
     "id": "i2-int-003",
@@ -1253,7 +1278,8 @@
       "performance",
       "scaling",
       "keda"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i2-int-004",
@@ -1299,7 +1325,8 @@
       "storage-queues",
       "service-bus",
       "architecture"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i2-int-005",
@@ -1347,6 +1374,7 @@
       "idempotency",
       "peek-lock"
     ],
-    "hint": "Three parts: do not delete the message until the work is done, and make sure repeating the work is harmless if you crash after it."
+    "hint": "Three parts: do not delete the message until the work is done, and make sure repeating the work is harmless if you crash after it.",
+    "path": "backend-services"
   }
 ]

@@ -42,7 +42,8 @@
     "tags": [
       "acr",
       "acr-tasks"
-    ]
+    ],
+    "path": "container-hosting"
   },
   {
     "id": "c-acr-002",
@@ -88,7 +89,8 @@
       "acr",
       "geo-replication",
       "sku"
-    ]
+    ],
+    "path": "container-hosting"
   },
   {
     "id": "c-acr-003",
@@ -138,7 +140,8 @@
     "tags": [
       "acr",
       "sku"
-    ]
+    ],
+    "path": "container-hosting"
   },
   {
     "id": "c-acr-004",
@@ -185,7 +188,8 @@
       "acr-tasks",
       "base-image"
     ],
-    "hint": "Nothing in your repository changed - the trigger is upstream. Which build mechanism knows what your image was built FROM?"
+    "hint": "Nothing in your repository changed - the trigger is upstream. Which build mechanism knows what your image was built FROM?",
+    "path": "container-hosting"
   },
   {
     "id": "c-acr-005",
@@ -231,7 +235,8 @@
     "tags": [
       "acr",
       "import"
-    ]
+    ],
+    "path": "container-hosting"
   },
   {
     "id": "c-acr-006",
@@ -278,7 +283,8 @@
       "aks",
       "managed-identity",
       "authentication"
-    ]
+    ],
+    "path": "aks"
   },
   {
     "id": "c-acr-007",
@@ -325,7 +331,8 @@
       "authentication",
       "least-privilege"
     ],
-    "hint": "The constraint is one repository, not the whole registry. Which credential type can be scoped that narrowly?"
+    "hint": "The constraint is one repository, not the whole registry. Which credential type can be scoped that narrowly?",
+    "path": "container-hosting"
   },
   {
     "id": "c-app-001",
@@ -371,7 +378,8 @@
       "app-service",
       "containers",
       "troubleshooting"
-    ]
+    ],
+    "path": "container-hosting"
   },
   {
     "id": "c-app-002",
@@ -416,7 +424,8 @@
     "tags": [
       "app-service",
       "configuration"
-    ]
+    ],
+    "path": "container-hosting"
   },
   {
     "id": "c-app-003",
@@ -463,7 +472,8 @@
       "slots",
       "configuration"
     ],
-    "hint": "By default a setting travels with the code when slots swap. You need one that stays behind with the slot instead."
+    "hint": "By default a setting travels with the code when slots swap. You need one that stays behind with the slot instead.",
+    "path": "container-hosting"
   },
   {
     "id": "c-app-004",
@@ -509,7 +519,8 @@
       "app-service",
       "key-vault",
       "secrets"
-    ]
+    ],
+    "path": "container-hosting"
   },
   {
     "id": "c-aca-001",
@@ -555,7 +566,8 @@
       "container-apps",
       "revisions",
       "traffic-splitting"
-    ]
+    ],
+    "path": "container-apps"
   },
   {
     "id": "c-aca-002",
@@ -606,7 +618,8 @@
       "container-apps",
       "revisions"
     ],
-    "hint": "Revisions are immutable snapshots of the container. Sort each change by whether it describes the container itself or the app around it."
+    "hint": "Revisions are immutable snapshots of the container. Sort each change by whether it describes the container itself or the app around it.",
+    "path": "container-apps"
   },
   {
     "id": "c-aca-003",
@@ -653,7 +666,8 @@
       "keda",
       "scaling",
       "service-bus"
-    ]
+    ],
+    "path": "container-apps"
   },
   {
     "id": "c-aca-004",
@@ -699,7 +713,8 @@
     "tags": [
       "container-apps",
       "secrets"
-    ]
+    ],
+    "path": "container-apps"
   },
   {
     "id": "c-aca-005",
@@ -746,7 +761,8 @@
       "troubleshooting",
       "logs"
     ],
-    "hint": "An empty console stream means your process never got far enough to print anything. Something else recorded why it did not start."
+    "hint": "An empty console stream means your process never got far enough to print anything. Something else recorded why it did not start.",
+    "path": "container-apps"
   },
   {
     "id": "c-aca-006",
@@ -792,7 +808,8 @@
       "container-apps",
       "networking",
       "ingress"
-    ]
+    ],
+    "path": "container-apps"
   },
   {
     "id": "c-aca-007",
@@ -840,7 +857,8 @@
       "secrets",
       "scaling"
     ],
-    "hint": "Never inline a connection string in a scale rule. KEDA rules reference a credential indirectly - ask what block does the mapping."
+    "hint": "Never inline a connection string in a scale rule. KEDA rules reference a credential indirectly - ask what block does the mapping.",
+    "path": "container-apps"
   },
   {
     "id": "c-aca-008",
@@ -886,7 +904,8 @@
       "container-apps",
       "jobs",
       "scheduling"
-    ]
+    ],
+    "path": "aks"
   },
   {
     "id": "c-aks-001",
@@ -932,7 +951,8 @@
       "aks",
       "troubleshooting",
       "kubectl"
-    ]
+    ],
+    "path": "aks"
   },
   {
     "id": "c-aks-002",
@@ -978,7 +998,8 @@
       "aks",
       "troubleshooting",
       "resources"
-    ]
+    ],
+    "path": "aks"
   },
   {
     "id": "c-aks-003",
@@ -1025,7 +1046,8 @@
       "probes",
       "troubleshooting"
     ],
-    "hint": "All replicas ready, but traffic fails during rollout - so a pod is being marked usable before it truly is. Which probe controls Service membership?"
+    "hint": "All replicas ready, but traffic fails during rollout - so a pod is being marked usable before it truly is. Which probe controls Service membership?",
+    "path": "aks"
   },
   {
     "id": "c-aks-004",
@@ -1071,7 +1093,8 @@
       "aks",
       "troubleshooting",
       "scheduling"
-    ]
+    ],
+    "path": "aks"
   },
   {
     "id": "c-aks-005",
@@ -1119,7 +1142,8 @@
       "security",
       "workload-identity"
     ],
-    "hint": "Pod-managed identity is the old answer. The current one federates a Kubernetes identity with an Entra one - what does the pod already have that can be federated?"
+    "hint": "Pod-managed identity is the old answer. The current one federates a Kubernetes identity with an Entra one - what does the pod already have that can be federated?",
+    "path": "aks"
   },
   {
     "id": "c-aks-006",
@@ -1165,7 +1189,8 @@
       "aks",
       "troubleshooting",
       "networking"
-    ]
+    ],
+    "path": "aks"
   },
   {
     "id": "c-aks-007",
@@ -1212,7 +1237,8 @@
       "aks",
       "manifests",
       "configuration"
-    ]
+    ],
+    "path": "aks"
   },
   {
     "id": "c-aks-008",
@@ -1259,7 +1285,8 @@
       "keda",
       "scaling",
       "service-bus"
-    ]
+    ],
+    "path": "aks"
   },
   {
     "id": "c-aks-009",
@@ -1305,7 +1332,8 @@
       "aks",
       "networking",
       "manifests"
-    ]
+    ],
+    "path": "aks"
   },
   {
     "id": "c-aks-010",
@@ -1352,7 +1380,8 @@
       "deployments",
       "troubleshooting"
     ],
-    "hint": "Two things happen at once when a pod goes away, and the app needs a moment before the second one matters. Consider what can delay the shutdown and what the app itself must handle."
+    "hint": "Two things happen at once when a pod goes away, and the app needs a moment before the second one matters. Consider what can delay the shutdown and what the app itself must handle.",
+    "path": "aks"
   },
   {
     "id": "c-aks-011",
@@ -1398,7 +1427,8 @@
       "aks",
       "kubectl",
       "manifests"
-    ]
+    ],
+    "path": "aks"
   },
   {
     "id": "c-aca-009",
@@ -1445,7 +1475,8 @@
       "secrets",
       "revisions",
       "troubleshooting"
-    ]
+    ],
+    "path": "container-apps"
   },
   {
     "id": "c-acr-008",
@@ -1491,7 +1522,8 @@
       "acr",
       "retention",
       "cost"
-    ]
+    ],
+    "path": "container-hosting"
   },
   {
     "id": "c-app-005",
@@ -1537,6 +1569,7 @@
       "app-service",
       "acr",
       "deployment"
-    ]
+    ],
+    "path": "container-hosting"
   }
 ]

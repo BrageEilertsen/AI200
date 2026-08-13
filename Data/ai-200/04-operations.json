@@ -43,7 +43,8 @@
       "key-vault",
       "rbac",
       "least-privilege"
-    ]
+    ],
+    "path": "secrets-config"
   },
   {
     "id": "o-kv-002",
@@ -91,7 +92,8 @@
       "caching",
       "performance"
     ],
-    "hint": "Key Vault is a management-plane service with request limits; it was never meant to be on the hot path. What should sit between it and each request?"
+    "hint": "Key Vault is a management-plane service with request limits; it was never meant to be on the hot path. What should sit between it and each request?",
+    "path": "secrets-config"
   },
   {
     "id": "o-kv-003",
@@ -142,7 +144,8 @@
       "key-vault",
       "soft-delete",
       "purge-protection"
-    ]
+    ],
+    "path": "secrets-config"
   },
   {
     "id": "o-kv-004",
@@ -188,7 +191,8 @@
       "key-vault",
       "rotation",
       "secrets"
-    ]
+    ],
+    "path": "secrets-config"
   },
   {
     "id": "o-kv-005",
@@ -235,7 +239,8 @@
       "rotation",
       "event-grid"
     ],
-    "hint": "Key Vault can tell you a credential is nearing expiry, and that notice has to travel somewhere an automation can subscribe to."
+    "hint": "Key Vault can tell you a credential is nearing expiry, and that notice has to travel somewhere an automation can subscribe to.",
+    "path": "secrets-config"
   },
   {
     "id": "o-kv-006",
@@ -281,7 +286,8 @@
       "managed-identity",
       "authentication",
       "sdk"
-    ]
+    ],
+    "path": "secrets-config"
   },
   {
     "id": "o-ac-001",
@@ -327,7 +333,8 @@
       "app-configuration",
       "labels",
       "configuration"
-    ]
+    ],
+    "path": "secrets-config"
   },
   {
     "id": "o-ac-002",
@@ -374,7 +381,8 @@
       "refresh",
       "sentinel-key"
     ],
-    "hint": "The problem is a partial read while several keys are mid-update. You need one key whose change signals that the whole set is now consistent."
+    "hint": "The problem is a partial read while several keys are mid-update. You need one key whose change signals that the whole set is now consistent.",
+    "path": "secrets-config"
   },
   {
     "id": "o-ac-003",
@@ -419,7 +427,8 @@
     "tags": [
       "app-configuration",
       "feature-flags"
-    ]
+    ],
+    "path": "secrets-config"
   },
   {
     "id": "o-ac-004",
@@ -465,7 +474,8 @@
       "app-configuration",
       "key-vault",
       "secrets"
-    ]
+    ],
+    "path": "secrets-config"
   },
   {
     "id": "o-sec-001",
@@ -510,7 +520,8 @@
     "tags": [
       "managed-identity",
       "security"
-    ]
+    ],
+    "path": "secrets-config"
   },
   {
     "id": "o-sec-002",
@@ -557,7 +568,8 @@
       "rbac",
       "service-bus",
       "least-privilege"
-    ]
+    ],
+    "path": "secrets-config"
   },
   {
     "id": "o-sec-003",
@@ -604,7 +616,8 @@
       "workload-identity",
       "cicd"
     ],
-    "hint": "The workflow can prove who it is with a signed token from GitHub. Something on the Entra side has to be configured to trust that token."
+    "hint": "The workflow can prove who it is with a signed token from GitHub. Something on the Entra side has to be configured to trust that token.",
+    "path": "secrets-config"
   },
   {
     "id": "o-otel-001",
@@ -650,7 +663,8 @@
       "opentelemetry",
       "application-insights",
       "instrumentation"
-    ]
+    ],
+    "path": "observability"
   },
   {
     "id": "o-otel-002",
@@ -697,7 +711,8 @@
       "correlation",
       "troubleshooting"
     ],
-    "hint": "Two unrelated traces means the correlation identifier did not survive the hop. Ask what carries it, and whether a queue message preserves it."
+    "hint": "Two unrelated traces means the correlation identifier did not survive the hop. Ask what carries it, and whether a queue message preserves it.",
+    "path": "observability"
   },
   {
     "id": "o-otel-003",
@@ -742,7 +757,8 @@
     "tags": [
       "opentelemetry",
       "concepts"
-    ]
+    ],
+    "path": "observability"
   },
   {
     "id": "o-otel-004",
@@ -788,7 +804,8 @@
       "opentelemetry",
       "instrumentation",
       "dotnet"
-    ]
+    ],
+    "path": "observability"
   },
   {
     "id": "o-otel-005",
@@ -834,7 +851,8 @@
       "opentelemetry",
       "sampling",
       "cost"
-    ]
+    ],
+    "path": "observability"
   },
   {
     "id": "o-otel-006",
@@ -880,7 +898,8 @@
       "opentelemetry",
       "application-insights",
       "cloud-role"
-    ]
+    ],
+    "path": "observability"
   },
   {
     "id": "o-kql-002",
@@ -926,7 +945,8 @@
       "kql",
       "correlation",
       "troubleshooting"
-    ]
+    ],
+    "path": "observability"
   },
   {
     "id": "o-kql-003",
@@ -972,7 +992,8 @@
       "kql",
       "performance"
     ],
-    "hint": "KQL evaluates the pipeline in order, so every later operator works on whatever the earlier ones left. Which filter discards the most rows soonest?"
+    "hint": "KQL evaluates the pipeline in order, so every later operator works on whatever the earlier ones left. Which filter discards the most rows soonest?",
+    "path": "observability"
   },
   {
     "id": "o-kql-004",
@@ -1017,7 +1038,8 @@
     "tags": [
       "kql",
       "custom-dimensions"
-    ]
+    ],
+    "path": "observability"
   },
   {
     "id": "o-kql-005",
@@ -1063,7 +1085,8 @@
       "kql",
       "performance",
       "dependencies"
-    ]
+    ],
+    "path": "observability"
   },
   {
     "id": "o-kql-006",
@@ -1109,7 +1132,8 @@
       "kql",
       "container-apps",
       "logs"
-    ]
+    ],
+    "path": "observability"
   },
   {
     "id": "o-kql-007",
@@ -1156,7 +1180,8 @@
       "aggregation",
       "performance"
     ],
-    "hint": "You want one number per operation, so the aggregation needs a `by` clause. Ask which operator computes an aggregate over groups."
+    "hint": "You want one number per operation, so the aggregation needs a `by` clause. Ask which operator computes an aggregate over groups.",
+    "path": "observability"
   },
   {
     "id": "o-kql-008",
@@ -1202,7 +1227,8 @@
       "kql",
       "aks",
       "troubleshooting"
-    ]
+    ],
+    "path": "observability"
   },
   {
     "id": "o-kql-009",
@@ -1248,7 +1274,8 @@
       "kql",
       "join",
       "correlation"
-    ]
+    ],
+    "path": "observability"
   },
   {
     "id": "o-kql-010",
@@ -1294,7 +1321,8 @@
       "kql",
       "alerts",
       "monitoring"
-    ]
+    ],
+    "path": "observability"
   },
   {
     "id": "o-otel-007",
@@ -1340,7 +1368,8 @@
       "opentelemetry",
       "application-insights",
       "configuration"
-    ]
+    ],
+    "path": "observability"
   },
   {
     "id": "o-sec-004",
@@ -1386,6 +1415,7 @@
       "security",
       "privacy",
       "logging"
-    ]
+    ],
+    "path": "observability"
   }
 ]

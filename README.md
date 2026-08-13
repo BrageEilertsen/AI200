@@ -29,7 +29,7 @@ never blends their numbers.
 | **Dashboard** | Bank size, how much you have covered, lifetime accuracy, last mock score, and a per-area breakdown against the published weightings |
 | **Practice** | Choose skill areas and set size. Immediate feedback and a full explanation after every question. *Focus weak areas* favours what you have never seen or recently missed |
 | **Exam simulation** | Questions drawn in the real weightings, a clock, flags and a question navigator. Nothing is graded until you submit |
-| **Question bank** | Full-text search across stems, options, explanations and tags — good for reading one objective end to end |
+| **Question bank** | Grouped by the certification's published **course syllabus**, so you can work through one learning path at a time and jump to it on Microsoft Learn. Plus full-text search across stems, options, explanations and tags |
 | **Cram sheet** | The defaults, limits and distinctions each exam leans on. The highest yield per minute on the last day |
 | **Progress** | Accuracy per objective and per topic tag, mock-score trend, and a ranked list of what to fix |
 
@@ -145,12 +145,16 @@ Data/
 ```
 
 `exam.json` declares the skill areas and their published weightings; mocks are allocated
-proportionally across them. Question files are plain arrays:
+proportionally across them. It can also carry `learningPaths`, the certification's published
+course syllabus — when present, the question bank groups by learning path instead of by skill
+area, and every question must then declare which path it belongs to. Question files are plain
+arrays:
 
 ```jsonc
 {
   "id": "p-yaml-001",             // unique within the exam
   "domain": "pipelines",          // must match a domain key in exam.json
+  "path": "container-hosting",    // learning path key; required once exam.json has a syllabus
   "objective": "Design and implement pipelines",   // sub-heading from the skills outline
   "kind": "single",               // single | multi | ordering | blanks
   "difficulty": 2,                // 1 recall, 2 applied, 3 hard

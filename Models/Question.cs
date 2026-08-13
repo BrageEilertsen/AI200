@@ -71,6 +71,12 @@ public sealed class Question
     /// <summary>The sub-heading from the official skills outline, e.g. "Implement container application hosting".</summary>
     public string Objective { get; set; } = "";
 
+    /// <summary>
+    /// Key of the learning path in the course syllabus this question belongs to. Optional —
+    /// exams without a syllabus in their manifest simply group by skill area instead.
+    /// </summary>
+    public string? Path { get; set; }
+
     public QuestionKind Kind { get; set; } = QuestionKind.Single;
 
     /// <summary>1 = recall, 2 = applied, 3 = tricky / multi-step reasoning.</summary>
@@ -170,6 +176,7 @@ public sealed class Question
             Id = Id,
             Domain = Domain,
             Objective = Objective,
+            Path = Path,
             Kind = Kind,
             Difficulty = Difficulty,
             Stem = Stem,

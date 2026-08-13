@@ -36,6 +36,27 @@ public sealed class ExamDomain
 /// has four evenly weighted areas, AZ-400 has five of which one is over half the paper.
 /// </para>
 /// </summary>
+/// <summary>
+/// One learning path from the certification's published course syllabus. Skill areas say how
+/// the exam is weighted; learning paths say how Microsoft teaches it, which is the more useful
+/// grouping while you are still working through the material.
+/// </summary>
+public sealed class LearningPath
+{
+    public string Key { get; set; } = "";
+    public string Title { get; set; } = "";
+    public string Url { get; set; } = "";
+
+    /// <summary>Module count as the syllabus lists it.</summary>
+    public int Modules { get; set; }
+
+    /// <summary>The Azure service the path is built around, e.g. "Azure Container Registry".</summary>
+    public string Product { get; set; } = "";
+
+    /// <summary>Key of the skill area this path sits under, used for its accent colour.</summary>
+    public string Domain { get; set; } = "";
+}
+
 public sealed class ExamDefinition
 {
     /// <summary>Folder name and URL segment, e.g. <c>ai-200</c>.</summary>
@@ -71,6 +92,20 @@ public sealed class ExamDefinition
 
     /// <summary>Link to the published skills outline.</summary>
     public string? StudyGuideUrl { get; set; }
+
+    /// <summary>Link to the certification page carrying the course syllabus.</summary>
+    public string? SyllabusUrl { get; set; }
+
+    /// <summary>
+    /// The published course syllabus, in the order Microsoft lists it. Optional: an exam with
+    /// none falls back to grouping the bank by skill area.
+    /// </summary>
+    public List<LearningPath> LearningPaths { get; set; } = [];
+
+    public bool HasSyllabus => LearningPaths.Count > 0;
+
+    public LearningPath? Path(string? key) =>
+        key is null ? null : LearningPaths.FirstOrDefault(p => p.Key == key);
 
     public int DefaultMockSize => MockSizes.Count > 1 ? MockSizes[1] : MockSizes.FirstOrDefault(50);
 

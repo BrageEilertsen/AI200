@@ -47,7 +47,8 @@
     "tags": [
       "service-bus",
       "dead-letter"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i-sb-002",
@@ -93,7 +94,8 @@
       "service-bus",
       "peek-lock",
       "troubleshooting"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i-sb-003",
@@ -139,7 +141,8 @@
       "service-bus",
       "sessions",
       "ordering"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i-sb-004",
@@ -186,7 +189,8 @@
       "duplicate-detection",
       "troubleshooting"
     ],
-    "hint": "Duplicate detection has to compare something. Ask what field the broker hashes, and whether your sender is setting it."
+    "hint": "Duplicate detection has to compare something. Ask what field the broker hashes, and whether your sender is setting it.",
+    "path": "backend-services"
   },
   {
     "id": "i-sb-005",
@@ -232,7 +236,8 @@
       "service-bus",
       "topics",
       "filters"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i-sb-006",
@@ -278,7 +283,8 @@
       "service-bus",
       "claim-check",
       "limits"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i-sb-007",
@@ -323,7 +329,8 @@
     "tags": [
       "service-bus",
       "dead-letter"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i-sb-008",
@@ -369,7 +376,8 @@
       "service-bus",
       "performance",
       "sdk"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i-eg-001",
@@ -415,7 +423,8 @@
       "event-grid",
       "dead-letter",
       "retry"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i-eg-002",
@@ -461,7 +470,8 @@
       "event-grid",
       "webhooks",
       "validation"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i-eg-003",
@@ -508,7 +518,8 @@
       "idempotency",
       "delivery"
     ],
-    "hint": "Redelivery is part of the contract this service offers, not a defect in it. Given that, ask what the handler has to be able to survive."
+    "hint": "Redelivery is part of the contract this service offers, not a defect in it. Given that, ask what the handler has to be able to survive.",
+    "path": "backend-services"
   },
   {
     "id": "i-eg-004",
@@ -555,7 +566,8 @@
       "filters",
       "functions",
       "cost"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i-eg-005",
@@ -603,7 +615,8 @@
       "service-bus",
       "architecture"
     ],
-    "hint": "Millions per hour plus replay for a later job. That combination points at a streaming service with a retention window, not a queue or a notification router."
+    "hint": "Millions per hour plus replay for a later job. That combination points at a streaming service with a retention window, not a queue or a notification router.",
+    "path": "backend-services"
   },
   {
     "id": "i-eg-006",
@@ -648,7 +661,8 @@
     "tags": [
       "event-grid",
       "filters"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i-eg-007",
@@ -695,7 +709,8 @@
       "service-bus",
       "architecture",
       "resiliency"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i-fn-001",
@@ -741,7 +756,8 @@
       "functions",
       "hosting",
       "timeout"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i-fn-002",
@@ -787,7 +803,8 @@
       "functions",
       "timer-trigger",
       "ncrontab"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i-fn-003",
@@ -835,7 +852,8 @@
       "service-bus",
       "security"
     ],
-    "hint": "For identity-based bindings the connection name becomes a prefix, and you supply the resource's address rather than a key. Note the double underscore."
+    "hint": "For identity-based bindings the connection name becomes a prefix, and you supply the resource's address rather than a key. Note the double underscore.",
+    "path": "backend-services"
   },
   {
     "id": "i-fn-004",
@@ -885,7 +903,8 @@
     "tags": [
       "functions",
       "bindings"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i-fn-005",
@@ -932,7 +951,8 @@
       "durable-functions",
       "determinism"
     ],
-    "hint": "An orchestrator re-executes its own code from the top on every replay. Anything reading the real clock will therefore change - you need the value the framework replays."
+    "hint": "An orchestrator re-executes its own code from the top on every replay. Anything reading the real clock will therefore change - you need the value the framework replays.",
+    "path": "backend-services"
   },
   {
     "id": "i-fn-006",
@@ -978,7 +998,8 @@
       "functions",
       "durable-functions",
       "patterns"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i-fn-007",
@@ -1024,7 +1045,8 @@
       "functions",
       "http-trigger",
       "security"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i-fn-008",
@@ -1070,7 +1092,8 @@
       "functions",
       "configuration",
       "local-dev"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i-fn-009",
@@ -1118,7 +1141,8 @@
       "networking",
       "cold-start"
     ],
-    "hint": "Two requirements at once: private networking and no cold start. Only one hosting plan gives you both."
+    "hint": "Two requirements at once: private networking and no cold start. Only one hosting plan gives you both.",
+    "path": "backend-services"
   },
   {
     "id": "i-fn-010",
@@ -1163,7 +1187,8 @@
     "tags": [
       "functions",
       "deployment"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i-fn-011",
@@ -1210,7 +1235,8 @@
       "service-bus",
       "dead-letter",
       "resiliency"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i-fn-012",
@@ -1257,7 +1283,8 @@
       "service-bus",
       "configuration",
       "performance"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i-fn-013",
@@ -1303,7 +1330,8 @@
       "functions",
       "bindings",
       "cosmos-db"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "i-fn-014",
@@ -1351,7 +1379,8 @@
       "patterns",
       "http-trigger"
     ],
-    "hint": "The client cannot wait, so the first response must carry a way to check back later. Durable Functions has a named pattern for exactly that shape."
+    "hint": "The client cannot wait, so the first response must carry a way to check back later. Durable Functions has a named pattern for exactly that shape.",
+    "path": "backend-services"
   },
   {
     "id": "i-sb-009",
@@ -1396,6 +1425,7 @@
     "tags": [
       "service-bus",
       "scheduling"
-    ]
+    ],
+    "path": "backend-services"
   }
 ]

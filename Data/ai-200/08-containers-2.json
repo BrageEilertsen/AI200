@@ -43,7 +43,8 @@
       "app-service",
       "containers",
       "storage"
-    ]
+    ],
+    "path": "container-hosting"
   },
   {
     "id": "c2-app-002",
@@ -90,7 +91,8 @@
       "health-check",
       "containers"
     ],
-    "hint": "The platform needs a way to know an instance is not ready yet. Which App Service setting makes it ask?"
+    "hint": "The platform needs a way to know an instance is not ready yet. Which App Service setting makes it ask?",
+    "path": "container-hosting"
   },
   {
     "id": "c2-app-003",
@@ -136,7 +138,8 @@
       "app-service",
       "slots",
       "deployment"
-    ]
+    ],
+    "path": "container-hosting"
   },
   {
     "id": "c2-app-004",
@@ -183,7 +186,8 @@
       "acr",
       "managed-identity",
       "security"
-    ]
+    ],
+    "path": "container-hosting"
   },
   {
     "id": "c2-app-005",
@@ -230,7 +234,8 @@
       "containers",
       "sidecar"
     ],
-    "hint": "Two containers, one app. App Service takes a familiar multi-container format to describe that."
+    "hint": "Two containers, one app. App Service takes a familiar multi-container format to describe that.",
+    "path": "container-hosting"
   },
   {
     "id": "c2-acr-001",
@@ -276,7 +281,8 @@
       "acr",
       "retention",
       "cost"
-    ]
+    ],
+    "path": "container-hosting"
   },
   {
     "id": "c2-acr-002",
@@ -323,7 +329,8 @@
       "acr-tasks",
       "cicd"
     ],
-    "hint": "This is more than one operation with a condition between them, so it cannot be a single quick build. ACR describes those in a file."
+    "hint": "This is more than one operation with a condition between them, so it cannot be a single quick build. ACR describes those in a file.",
+    "path": "container-hosting"
   },
   {
     "id": "c2-acr-003",
@@ -369,7 +376,8 @@
       "acr",
       "managed-identity",
       "security"
-    ]
+    ],
+    "path": "container-hosting"
   },
   {
     "id": "c2-acr-004",
@@ -415,7 +423,8 @@
       "acr",
       "tagging",
       "deployment"
-    ]
+    ],
+    "path": "container-hosting"
   },
   {
     "id": "c2-aca-001",
@@ -461,7 +470,8 @@
       "container-apps",
       "networking",
       "vnet"
-    ]
+    ],
+    "path": "container-apps"
   },
   {
     "id": "c2-aca-002",
@@ -508,7 +518,8 @@
       "scaling",
       "back-pressure"
     ],
-    "hint": "The queue is not the constraint - the database is. Ask which knob bounds how much concurrency ever reaches it."
+    "hint": "The queue is not the constraint - the database is. Ask which knob bounds how much concurrency ever reaches it.",
+    "path": "container-apps"
   },
   {
     "id": "c2-aca-003",
@@ -555,7 +566,8 @@
       "jobs",
       "keda",
       "service-bus"
-    ]
+    ],
+    "path": "container-apps"
   },
   {
     "id": "c2-aca-004",
@@ -603,7 +615,8 @@
       "traffic-splitting",
       "deployment"
     ],
-    "hint": "Splitting traffic requires more than one revision to be addressable at once. Check what mode that needs, and that weights must total 100."
+    "hint": "Splitting traffic requires more than one revision to be addressable at once. Check what mode that needs, and that weights must total 100.",
+    "path": "container-apps"
   },
   {
     "id": "c2-aca-005",
@@ -649,7 +662,8 @@
       "container-apps",
       "troubleshooting",
       "logs"
-    ]
+    ],
+    "path": "container-apps"
   },
   {
     "id": "c2-aks-001",
@@ -695,7 +709,8 @@
       "aks",
       "resources",
       "scheduling"
-    ]
+    ],
+    "path": "aks"
   },
   {
     "id": "c2-aks-002",
@@ -742,7 +757,8 @@
       "probes",
       "troubleshooting"
     ],
-    "hint": "Liveness is asking whether it is alive, but the container is still starting. Ask which probe exists precisely to cover slow starts."
+    "hint": "Liveness is asking whether it is alive, but the container is still starting. Ask which probe exists precisely to cover slow starts.",
+    "path": "aks"
   },
   {
     "id": "c2-aks-003",
@@ -788,7 +804,8 @@
       "aks",
       "manifests",
       "configuration"
-    ]
+    ],
+    "path": "aks"
   },
   {
     "id": "c2-aks-004",
@@ -836,7 +853,8 @@
       "node-pools",
       "troubleshooting"
     ],
-    "hint": "The autoscaler only adds nodes it believes would let the pod schedule. If no pool can ever satisfy the request, it will not try."
+    "hint": "The autoscaler only adds nodes it believes would let the pod schedule. If no pool can ever satisfy the request, it will not try.",
+    "path": "aks"
   },
   {
     "id": "c2-aks-005",
@@ -882,7 +900,8 @@
       "aks",
       "keda",
       "scaling"
-    ]
+    ],
+    "path": "aks"
   },
   {
     "id": "c2-aks-006",
@@ -961,7 +980,8 @@
       "aks",
       "troubleshooting"
     ],
-    "hint": "Decode each by when it fails: before the image is available, after the container starts, or before the scheduler places it at all."
+    "hint": "Decode each by when it fails: before the image is available, after the container starts, or before the scheduler places it at all.",
+    "path": "aks"
   },
   {
     "id": "c2-aks-007",
@@ -1009,7 +1029,8 @@
       "security",
       "troubleshooting"
     ],
-    "hint": "Workload identity is a trust relationship between two identities. Ask which object declares that the Kubernetes side is allowed to act as the Azure one."
+    "hint": "Workload identity is a trust relationship between two identities. Ask which object declares that the Kubernetes side is allowed to act as the Azure one.",
+    "path": "aks"
   },
   {
     "id": "c2-aks-008",
@@ -1055,7 +1076,8 @@
       "aks",
       "kubectl",
       "troubleshooting"
-    ]
+    ],
+    "path": "aks"
   },
   {
     "id": "c2-aks-009",
@@ -1099,6 +1121,7 @@
       "aks",
       "deployments",
       "rolling-update"
-    ]
+    ],
+    "path": "aks"
   }
 ]

@@ -43,7 +43,8 @@
       "redis",
       "vector-search",
       "redisearch"
-    ]
+    ],
+    "path": "redis"
   },
   {
     "id": "d2-red-002",
@@ -90,7 +91,8 @@
       "vector-search",
       "indexing"
     ],
-    "hint": "FLAT does no approximation at all. Work out what that buys you, and what it must therefore cost."
+    "hint": "FLAT does no approximation at all. Work out what that buys you, and what it must therefore cost.",
+    "path": "redis"
   },
   {
     "id": "d2-red-003",
@@ -136,7 +138,8 @@
       "redis",
       "eviction",
       "memory"
-    ]
+    ],
+    "path": "redis"
   },
   {
     "id": "d2-red-004",
@@ -184,7 +187,8 @@
       "vector-search",
       "rag"
     ],
-    "hint": "A nearest-neighbour search always returns a nearest neighbour, even a poor one. Something has to decide the match was not good enough."
+    "hint": "A nearest-neighbour search always returns a nearest neighbour, even a poor one. Something has to decide the match was not good enough.",
+    "path": "redis"
   },
   {
     "id": "d2-red-005",
@@ -230,7 +234,8 @@
       "redis",
       "ttl",
       "sessions"
-    ]
+    ],
+    "path": "redis"
   },
   {
     "id": "d2-red-006",
@@ -282,7 +287,8 @@
       "security",
       "sizing"
     ],
-    "hint": "Compare on things a managed service can do that you cannot easily bolt on yourself: how callers authenticate, and how the service is sized."
+    "hint": "Compare on things a managed service can do that you cannot easily bolt on yourself: how callers authenticate, and how the service is sized.",
+    "path": "redis"
   },
   {
     "id": "d2-red-007",
@@ -329,7 +335,8 @@
       "performance",
       "troubleshooting",
       "sdk"
-    ]
+    ],
+    "path": "redis"
   },
   {
     "id": "d2-red-008",
@@ -375,7 +382,8 @@
       "redis",
       "caching",
       "azure-openai"
-    ]
+    ],
+    "path": "redis"
   },
   {
     "id": "d2-red-009",
@@ -422,7 +430,8 @@
       "caching",
       "resiliency"
     ],
-    "hint": "The problem is that every caller reacts to the same miss simultaneously. The fix is to let one of them do the work."
+    "hint": "The problem is that every caller reacts to the same miss simultaneously. The fix is to let one of them do the work.",
+    "path": "redis"
   },
   {
     "id": "d2-red-010",
@@ -468,7 +477,8 @@
       "redis",
       "persistence",
       "durability"
-    ]
+    ],
+    "path": "redis"
   },
   {
     "id": "d2-pg-001",
@@ -515,7 +525,8 @@
       "pgvector",
       "query-plan",
       "troubleshooting"
-    ]
+    ],
+    "path": "postgresql"
   },
   {
     "id": "d2-pg-002",
@@ -562,7 +573,8 @@
       "pgvector",
       "query-plan"
     ],
-    "hint": "The planner is not always wrong. At this row count, ask whether the index would actually save any work."
+    "hint": "The planner is not always wrong. At this row count, ask whether the index would actually save any work.",
+    "path": "postgresql"
   },
   {
     "id": "d2-pg-003",
@@ -609,7 +621,8 @@
       "pgvector",
       "tuning",
       "ivfflat"
-    ]
+    ],
+    "path": "postgresql"
   },
   {
     "id": "d2-pg-004",
@@ -655,7 +668,8 @@
       "postgresql",
       "connections",
       "performance"
-    ]
+    ],
+    "path": "postgresql"
   },
   {
     "id": "d2-pg-005",
@@ -703,7 +717,8 @@
       "indexing",
       "rag"
     ],
-    "hint": "The slow part is the filter, not the ranking. Ask what index type serves lookups inside a JSONB document."
+    "hint": "The slow part is the filter, not the ranking. Ask what index type serves lookups inside a JSONB document.",
+    "path": "postgresql"
   },
   {
     "id": "d2-pg-006",
@@ -750,7 +765,8 @@
       "pgvector",
       "sizing",
       "performance"
-    ]
+    ],
+    "path": "postgresql"
   },
   {
     "id": "d2-pg-007",
@@ -796,7 +812,8 @@
       "postgresql",
       "pgvector",
       "memory"
-    ]
+    ],
+    "path": "postgresql"
   },
   {
     "id": "d2-pg-008",
@@ -845,7 +862,8 @@
       "filtering",
       "indexing"
     ],
-    "hint": "Few tenants, stable, and the filter is always equality on one column. That combination allows an index that already excludes everything else."
+    "hint": "Few tenants, stable, and the filter is always equality on one column. That combination allows an index that already excludes everything else.",
+    "path": "postgresql"
   },
   {
     "id": "d2-cos-001",
@@ -891,7 +909,8 @@
       "cosmos-db",
       "partitioning",
       "modelling"
-    ]
+    ],
+    "path": "cosmos-db"
   },
   {
     "id": "d2-cos-002",
@@ -939,7 +958,8 @@
       "modelling",
       "cost"
     ],
-    "hint": "The embedding is read every time and filtered on never. Ask whether it needs to live in the same item at all."
+    "hint": "The embedding is read every time and filtered on never. Ask whether it needs to live in the same item at all.",
+    "path": "cosmos-db"
   },
   {
     "id": "d2-cos-003",
@@ -985,7 +1005,8 @@
       "cosmos-db",
       "vector-search",
       "embeddings"
-    ]
+    ],
+    "path": "cosmos-db"
   },
   {
     "id": "d2-cos-004",
@@ -1031,7 +1052,8 @@
       "cosmos-db",
       "change-feed",
       "troubleshooting"
-    ]
+    ],
+    "path": "cosmos-db"
   },
   {
     "id": "d2-cos-005",
@@ -1078,7 +1100,8 @@
       "concurrency",
       "etag"
     ],
-    "hint": "Both writers read, then wrote. Something has to make the second write fail because the document changed underneath it."
+    "hint": "Both writers read, then wrote. Something has to make the second write fail because the document changed underneath it.",
+    "path": "cosmos-db"
   },
   {
     "id": "d2-cos-006",
@@ -1125,7 +1148,8 @@
       "ru",
       "sdk",
       "performance"
-    ]
+    ],
+    "path": "cosmos-db"
   },
   {
     "id": "d2-cos-007",
@@ -1178,7 +1202,8 @@
       "ru",
       "cost"
     ],
-    "hint": "RU cost on writes comes from indexing every path and from what comes back in the response. Reduce both."
+    "hint": "RU cost on writes comes from indexing every path and from what comes back in the response. Reduce both.",
+    "path": "cosmos-db"
   },
   {
     "id": "d2-cos-008",
@@ -1225,6 +1250,7 @@
       "vector-search",
       "hybrid-search",
       "rag"
-    ]
+    ],
+    "path": "cosmos-db"
   }
 ]

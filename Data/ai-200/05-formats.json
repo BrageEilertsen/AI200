@@ -42,7 +42,8 @@
       "container-apps",
       "managed-identity",
       "deployment"
-    ]
+    ],
+    "path": "container-apps"
   },
   {
     "id": "f-ord-002",
@@ -87,7 +88,8 @@
       "troubleshooting",
       "kubectl"
     ],
-    "hint": "Order by cost, not by cleverness: the commands that tell you the most for the least effort come first, and anything that opens a connection into the pod comes last."
+    "hint": "Order by cost, not by cleverness: the commands that tell you the most for the least effort come first, and anything that opens a connection into the pod comes last.",
+    "path": "aks"
   },
   {
     "id": "f-ord-003",
@@ -133,7 +135,8 @@
       "indexing",
       "ivfflat"
     ],
-    "hint": "Each step unlocks the next. Two of them are prerequisites that fail loudly if skipped, and one is worth deferring until there is data to work with."
+    "hint": "Each step unlocks the next. Two of them are prerequisites that fail loudly if skipped, and one is worth deferring until there is data to work with.",
+    "path": "postgresql"
   },
   {
     "id": "f-ord-004",
@@ -178,7 +181,8 @@
       "app-service",
       "managed-identity",
       "secrets"
-    ]
+    ],
+    "path": "secrets-config"
   },
   {
     "id": "f-ord-005",
@@ -222,7 +226,8 @@
       "service-bus",
       "peek-lock",
       "dead-letter"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "f-blk-001",
@@ -291,7 +296,8 @@
       "cosmos-db",
       "vector-search",
       "query"
-    ]
+    ],
+    "path": "cosmos-db"
   },
   {
     "id": "f-blk-002",
@@ -362,7 +368,8 @@
       "indexing",
       "hnsw"
     ],
-    "hint": "The method name is the graph-based one, and the operator class has to name the distance function so the index and the query agree."
+    "hint": "The method name is the graph-based one, and the operator class has to name the distance function so the index and the query agree.",
+    "path": "postgresql"
   },
   {
     "id": "f-blk-003",
@@ -432,7 +439,8 @@
       "timer-trigger",
       "ncrontab",
       "hosting"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "f-blk-004",
@@ -524,7 +532,8 @@
       "kql",
       "aggregation",
       "monitoring"
-    ]
+    ],
+    "path": "observability"
   },
   {
     "id": "f-yn-001",
@@ -606,7 +615,8 @@
       "cosmos-db",
       "change-feed"
     ],
-    "hint": "Default change feed mode shows you the current state of changed items. Judge each statement against that: deletes, intermediate versions, and what a second reader sees."
+    "hint": "Default change feed mode shows you the current state of changed items. Judge each statement against that: deletes, intermediate versions, and what a second reader sees.",
+    "path": "cosmos-db"
   },
   {
     "id": "f-yn-002",
@@ -689,7 +699,8 @@
       "revisions",
       "secrets"
     ],
-    "hint": "Split the changes into revision-scope and app-scope. One kind snapshots into a new revision; the other applies to what is already running."
+    "hint": "Split the changes into revision-scope and app-scope. One kind snapshots into a new revision; the other applies to what is already running.",
+    "path": "container-apps"
   },
   {
     "id": "f-yn-003",
@@ -771,7 +782,8 @@
       "key-vault",
       "soft-delete",
       "caching"
-    ]
+    ],
+    "path": "secrets-config"
   },
   {
     "id": "f-cs-001",
@@ -820,7 +832,8 @@
       "architecture",
       "resiliency"
     ],
-    "hint": "A multi-hour outage means the event must wait somewhere durable. Ask which service holds a message until a consumer is ready, and which only retries for a while."
+    "hint": "A multi-hour outage means the event must wait somewhere durable. Ask which service holds a message until a consumer is ready, and which only retries for a while.",
+    "path": "backend-services"
   },
   {
     "id": "f-cs-002",
@@ -869,7 +882,8 @@
       "rag",
       "filtering"
     ],
-    "hint": "Retrieval and filtering happen in a particular order, and the small tenants are being hurt by it. Which one runs first?"
+    "hint": "Retrieval and filtering happen in a particular order, and the small tenants are being hurt by it. Which one runs first?",
+    "path": "postgresql"
   },
   {
     "id": "f-cs-003",
@@ -917,7 +931,8 @@
       "keda",
       "scaling",
       "cost"
-    ]
+    ],
+    "path": "container-apps"
   },
   {
     "id": "f-cs-004",
@@ -965,7 +980,8 @@
       "correlation",
       "troubleshooting"
     ],
-    "hint": "The two halves are joined by an identifier that must travel in the message. Ask what standard header carries it."
+    "hint": "The two halves are joined by an identifier that must travel in the message. Ask what standard header carries it.",
+    "path": "observability"
   },
   {
     "id": "f-cs-005",
@@ -1013,7 +1029,8 @@
       "container-apps",
       "jobs",
       "hosting"
-    ]
+    ],
+    "path": "backend-services"
   },
   {
     "id": "f-cs-006",
@@ -1066,7 +1083,8 @@
       "change-feed",
       "ttl"
     ],
-    "hint": "The account and partition key are fixed, so the fix is either in how the feed is read or in making the deletion look like a change the feed can see."
+    "hint": "The account and partition key are fixed, so the fix is either in how the feed is read or in making the deletion look like a change the feed can see.",
+    "path": "cosmos-db"
   },
   {
     "id": "f-cs-007",
@@ -1114,7 +1132,8 @@
       "partitioning",
       "throttling"
     ],
-    "hint": "Throughput is divided across partitions rather than pooled. Ask what that means when one key attracts most of the writes."
+    "hint": "Throughput is divided across partitions rather than pooled. Ask what that means when one key attracts most of the writes.",
+    "path": "cosmos-db"
   },
   {
     "id": "f-ord-006",
@@ -1163,6 +1182,7 @@
       "kql",
       "performance",
       "aggregation"
-    ]
+    ],
+    "path": "observability"
   }
 ]

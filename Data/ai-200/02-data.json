@@ -44,7 +44,8 @@
       "consistency",
       "ru",
       "cost"
-    ]
+    ],
+    "path": "cosmos-db"
   },
   {
     "id": "d-cos-002",
@@ -89,7 +90,8 @@
     "tags": [
       "cosmos-db",
       "consistency"
-    ]
+    ],
+    "path": "cosmos-db"
   },
   {
     "id": "d-cos-003",
@@ -137,7 +139,8 @@
       "security",
       "managed-identity"
     ],
-    "hint": "Cosmos DB separates permission over the account from permission over the documents inside it. One of those was granted; the other was not."
+    "hint": "Cosmos DB separates permission over the account from permission over the documents inside it. One of those was granted; the other was not.",
+    "path": "cosmos-db"
   },
   {
     "id": "d-cos-004",
@@ -183,7 +186,8 @@
       "cosmos-db",
       "vector-search",
       "indexing"
-    ]
+    ],
+    "path": "cosmos-db"
   },
   {
     "id": "d-cos-006",
@@ -229,7 +233,8 @@
       "cosmos-db",
       "change-feed"
     ],
-    "hint": "The processor sees the current state of items that changed. Ask whether a deleted item still has a current state to emit."
+    "hint": "The processor sees the current state of items that changed. Ask whether a deleted item still has a current state to emit.",
+    "path": "cosmos-db"
   },
   {
     "id": "d-cos-007",
@@ -275,7 +280,8 @@
       "cosmos-db",
       "change-feed",
       "sdk"
-    ]
+    ],
+    "path": "cosmos-db"
   },
   {
     "id": "d-cos-008",
@@ -322,7 +328,8 @@
       "indexing",
       "ru",
       "cost"
-    ]
+    ],
+    "path": "cosmos-db"
   },
   {
     "id": "d-cos-009",
@@ -368,7 +375,8 @@
       "cosmos-db",
       "indexing",
       "query"
-    ]
+    ],
+    "path": "cosmos-db"
   },
   {
     "id": "d-cos-010",
@@ -415,7 +423,8 @@
       "partitioning",
       "throttling",
       "troubleshooting"
-    ]
+    ],
+    "path": "cosmos-db"
   },
   {
     "id": "d-cos-011",
@@ -461,7 +470,8 @@
       "cosmos-db",
       "sdk",
       "performance"
-    ]
+    ],
+    "path": "cosmos-db"
   },
   {
     "id": "d-cos-012",
@@ -507,7 +517,8 @@
       "cosmos-db",
       "ru",
       "sdk"
-    ]
+    ],
+    "path": "cosmos-db"
   },
   {
     "id": "d-cos-013",
@@ -555,7 +566,8 @@
       "bulk",
       "performance"
     ],
-    "hint": "Two million small writes issued one at a time will throttle no matter the RU budget. The SDK has a mode that groups them."
+    "hint": "Two million small writes issued one at a time will throttle no matter the RU budget. The SDK has a mode that groups them.",
+    "path": "cosmos-db"
   },
   {
     "id": "d-cos-014",
@@ -602,7 +614,8 @@
       "query",
       "partitioning",
       "ru"
-    ]
+    ],
+    "path": "cosmos-db"
   },
   {
     "id": "d-cos-015",
@@ -653,7 +666,8 @@
       "cosmos-db",
       "vector-search",
       "indexing"
-    ]
+    ],
+    "path": "cosmos-db"
   },
   {
     "id": "d-cos-016",
@@ -699,7 +713,8 @@
       "cosmos-db",
       "ttl",
       "retention"
-    ]
+    ],
+    "path": "cosmos-db"
   },
   {
     "id": "d-pg-001",
@@ -745,7 +760,8 @@
       "postgresql",
       "pgvector",
       "extensions"
-    ]
+    ],
+    "path": "postgresql"
   },
   {
     "id": "d-pg-002",
@@ -791,7 +807,8 @@
       "postgresql",
       "pgvector",
       "query"
-    ]
+    ],
+    "path": "postgresql"
   },
   {
     "id": "d-pg-003",
@@ -839,7 +856,8 @@
       "indexing",
       "troubleshooting"
     ],
-    "hint": "IVFFlat groups vectors into lists. Ask what it needs to see in order to decide where those groups should be, and when it looks."
+    "hint": "IVFFlat groups vectors into lists. Ask what it needs to see in order to decide where those groups should be, and when it looks.",
+    "path": "postgresql"
   },
   {
     "id": "d-pg-004",
@@ -891,7 +909,8 @@
       "pgvector",
       "indexing"
     ],
-    "hint": "Compare HNSW with IVFFlat on two axes: whether the index needs data present at build time, and what you pay for better recall."
+    "hint": "Compare HNSW with IVFFlat on two axes: whether the index needs data present at build time, and what you pay for better recall.",
+    "path": "postgresql"
   },
   {
     "id": "d-pg-005",
@@ -938,7 +957,8 @@
       "pgvector",
       "tuning",
       "recall"
-    ]
+    ],
+    "path": "postgresql"
   },
   {
     "id": "d-pg-006",
@@ -988,7 +1008,8 @@
       "filtering",
       "troubleshooting"
     ],
-    "hint": "Consider whether the index can see your WHERE clause at all, and what that means for how many rows survive to the end."
+    "hint": "Consider whether the index can see your WHERE clause at all, and what that means for how many rows survive to the end.",
+    "path": "postgresql"
   },
   {
     "id": "d-pg-007",
@@ -1035,7 +1056,8 @@
       "connections",
       "pgbouncer",
       "scaling"
-    ]
+    ],
+    "path": "postgresql"
   },
   {
     "id": "d-pg-008",
@@ -1082,7 +1104,8 @@
       "pgvector",
       "troubleshooting",
       "query-plan"
-    ]
+    ],
+    "path": "postgresql"
   },
   {
     "id": "d-pg-009",
@@ -1128,7 +1151,8 @@
       "postgresql",
       "pgvector",
       "schema"
-    ]
+    ],
+    "path": "postgresql"
   },
   {
     "id": "d-pg-010",
@@ -1176,7 +1200,8 @@
       "indexing",
       "tuning"
     ],
-    "hint": "Index builds get slow when they spill to disk. Which server parameters govern the memory a maintenance operation may use, and how many workers help?"
+    "hint": "Index builds get slow when they spill to disk. Which server parameters govern the memory a maintenance operation may use, and how many workers help?",
+    "path": "postgresql"
   },
   {
     "id": "d-pg-011",
@@ -1223,7 +1248,8 @@
       "pgvector",
       "sizing",
       "performance"
-    ]
+    ],
+    "path": "postgresql"
   },
   {
     "id": "d-pg-012",
@@ -1270,7 +1296,8 @@
       "pgvector",
       "memory",
       "tuning"
-    ]
+    ],
+    "path": "postgresql"
   },
   {
     "id": "d-pg-013",
@@ -1317,7 +1344,8 @@
       "pgvector",
       "rag",
       "indexing"
-    ]
+    ],
+    "path": "postgresql"
   },
   {
     "id": "d-pg-014",
@@ -1363,7 +1391,8 @@
       "postgresql",
       "security",
       "managed-identity"
-    ]
+    ],
+    "path": "postgresql"
   },
   {
     "id": "d-pg-015",
@@ -1410,7 +1439,8 @@
       "azure-ai-extension",
       "embeddings"
     ],
-    "hint": "Azure ships a PostgreSQL extension whose whole purpose is calling Azure AI services from SQL. The name is short."
+    "hint": "Azure ships a PostgreSQL extension whose whole purpose is calling Azure AI services from SQL. The name is short.",
+    "path": "postgresql"
   },
   {
     "id": "d-red-001",
@@ -1456,7 +1486,8 @@
       "redis",
       "caching",
       "ttl"
-    ]
+    ],
+    "path": "redis"
   },
   {
     "id": "d-red-002",
@@ -1502,7 +1533,8 @@
       "redis",
       "caching",
       "invalidation"
-    ]
+    ],
+    "path": "redis"
   },
   {
     "id": "d-red-003",
@@ -1550,7 +1582,8 @@
       "memory",
       "troubleshooting"
     ],
-    "hint": "Items vanishing early plus high memory usage is not a TTL problem. Redis is making room - ask what it does when it runs out."
+    "hint": "Items vanishing early plus high memory usage is not a TTL problem. Redis is making room - ask what it does when it runs out.",
+    "path": "redis"
   },
   {
     "id": "d-red-004",
@@ -1597,7 +1630,8 @@
       "vector-search",
       "redisearch"
     ],
-    "hint": "Redis vector search is part of the search module, so the command is one of the FT family, and the schema has to declare the dimension and metric."
+    "hint": "Redis vector search is part of the search module, so the command is one of the FT family, and the schema has to declare the dimension and metric.",
+    "path": "redis"
   },
   {
     "id": "d-red-005",
@@ -1643,7 +1677,8 @@
       "redis",
       "vector-search",
       "query"
-    ]
+    ],
+    "path": "redis"
   },
   {
     "id": "d-red-006",
@@ -1689,7 +1724,8 @@
       "redis",
       "performance",
       "troubleshooting"
-    ]
+    ],
+    "path": "redis"
   },
   {
     "id": "d-red-007",
@@ -1736,7 +1772,8 @@
       "sdk",
       "performance",
       "troubleshooting"
-    ]
+    ],
+    "path": "redis"
   },
   {
     "id": "d-red-008",
@@ -1782,7 +1819,8 @@
       "redis",
       "vector-search",
       "sizing"
-    ]
+    ],
+    "path": "redis"
   },
   {
     "id": "d-red-009",
@@ -1829,7 +1867,8 @@
       "semantic-cache",
       "vector-search",
       "rag"
-    ]
+    ],
+    "path": "redis"
   },
   {
     "id": "d-cos-017",
@@ -1875,7 +1914,8 @@
       "cosmos-db",
       "throughput",
       "cost"
-    ]
+    ],
+    "path": "cosmos-db"
   },
   {
     "id": "d-cos-018",
@@ -1922,6 +1962,7 @@
       "throttling",
       "sdk",
       "resiliency"
-    ]
+    ],
+    "path": "cosmos-db"
   }
 ]

@@ -45,5 +45,80 @@
       "maxWeight": 25,
       "accent": "var(--d-4)"
     }
+  ],
+  "syllabusUrl": "https://learn.microsoft.com/credentials/certifications/azure-ai-cloud-developer-associate/",
+  "learningPaths": [
+    {
+      "key": "container-hosting",
+      "title": "Implement container application hosting on Azure",
+      "url": "https://learn.microsoft.com/training/paths/implement-container-app-hosting-azure/",
+      "modules": 2,
+      "product": "Azure Container Registry",
+      "domain": "containers"
+    },
+    {
+      "key": "container-apps",
+      "title": "Deploy and manage apps on Azure Container Apps",
+      "url": "https://learn.microsoft.com/training/paths/deploy-manage-apps-azure-container-apps/",
+      "modules": 3,
+      "product": "Azure Container Apps",
+      "domain": "containers"
+    },
+    {
+      "key": "aks",
+      "title": "Deploy and monitor applications on Azure Kubernetes Service",
+      "url": "https://learn.microsoft.com/training/paths/deploy-monitor-apps-azure-kubernetes-service/",
+      "modules": 3,
+      "product": "Azure Kubernetes Service (AKS)",
+      "domain": "containers"
+    },
+    {
+      "key": "cosmos-db",
+      "title": "Develop AI solutions with Azure Cosmos DB for NoSQL",
+      "url": "https://learn.microsoft.com/training/paths/develop-ai-solutions-azure-cosmos-db/",
+      "modules": 3,
+      "product": "Azure Cosmos DB",
+      "domain": "data"
+    },
+    {
+      "key": "postgresql",
+      "title": "Develop AI solutions with Azure Database for PostgreSQL",
+      "url": "https://learn.microsoft.com/training/paths/develop-ai-solutions-azure-database-postgresql/",
+      "modules": 3,
+      "product": "Azure Database for PostgreSQL",
+      "domain": "data"
+    },
+    {
+      "key": "redis",
+      "title": "Enhance AI solutions with Azure Managed Redis",
+      "url": "https://learn.microsoft.com/training/paths/enhance-ai-solutions-azure-managed-redis/",
+      "modules": 3,
+      "product": "Azure Managed Redis",
+      "domain": "data"
+    },
+    {
+      "key": "backend-services",
+      "title": "Integrate backend services for AI solutions",
+      "url": "https://learn.microsoft.com/training/paths/integrate-backend-services-ai-solutions/",
+      "modules": 3,
+      "product": "Azure Service Bus",
+      "domain": "integration"
+    },
+    {
+      "key": "secrets-config",
+      "title": "Manage application secrets and configuration for AI solutions",
+      "url": "https://learn.microsoft.com/training/paths/manage-app-secrets-configuration/",
+      "modules": 2,
+      "product": "Azure Key Vault",
+      "domain": "operations"
+    },
+    {
+      "key": "observability",
+      "title": "Observe and troubleshoot apps on Azure",
+      "url": "https://learn.microsoft.com/training/paths/observe-troubleshoot-apps/",
+      "modules": 2,
+      "product": "Azure Monitor",
+      "domain": "operations"
+    }
   ]
 }

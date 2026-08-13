@@ -17,6 +17,8 @@ public sealed class ExamBank
 
     public int CountFor(string domainKey) => Questions.Count(q => q.Domain == domainKey);
 
+    public int CountForPath(string pathKey) => Questions.Count(q => q.Path == pathKey);
+
     public IEnumerable<string> ObjectivesFor(string domainKey) =>
         Questions.Where(q => q.Domain == domainKey).Select(q => q.Objective).Distinct().Order();
 
@@ -192,12 +194,33 @@ public sealed class ExamCatalog(IWebHostEnvironment env, ILogger<ExamCatalog> lo
         }
 
         var domainKeys = definition.Domains.Select(d => d.Key).ToHashSet();
+        var pathKeys = definition.LearningPaths.Select(p => p.Key).ToHashSet();
+
+        foreach (var path in definition.LearningPaths.Where(p => !domainKeys.Contains(p.Domain)))
+        {
+            yield return $"Learning path '{path.Key}': unknown domain '{path.Domain}'.";
+        }
+
+        // A syllabus that covers only part of the bank would silently hide questions from the
+        // browse screen, so every question must land on a path once one exists.
+        if (definition.HasSyllabus)
+        {
+            foreach (var q in questions.Where(q => string.IsNullOrEmpty(q.Path)))
+            {
+                yield return $"{q.Id}: no learning path, but {definition.Code} declares a syllabus.";
+            }
+        }
 
         foreach (var q in questions)
         {
             if (!domainKeys.Contains(q.Domain))
             {
                 yield return $"{q.Id}: unknown domain '{q.Domain}' for {definition.Code}.";
+            }
+
+            if (q.Path is { Length: > 0 } pathKey && !pathKeys.Contains(pathKey))
+            {
+                yield return $"{q.Id}: unknown learning path '{pathKey}' for {definition.Code}.";
             }
 
             if (string.IsNullOrWhiteSpace(q.Explanation))

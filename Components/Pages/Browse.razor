@@ -11,25 +11,89 @@
     <h1>Browse and search</h1>
     <p class="lede">
         The whole bank with answers and explanations on tap. Good for reading through one
-        objective at a time rather than drilling at random.
+        @(Exams.Exam.HasSyllabus ? "learning path" : "objective") at a time rather than drilling
+        at random.
     </p>
 </div>
 
-<div class="card section">
-    <div class="row" style="margin-bottom:12px">
-        @foreach (var domain in Exams.Exam.Domains)
-        {
-            var on = _domains.Contains(domain.Key);
-            <button type="button" class="chip @(on ? "on" : "")" @onclick="() => ToggleDomain(domain.Key)">
-                <span class="dot" style="background-color:@domain.Accent"></span>@domain.ShortName
-            </button>
-        }
-        <span class="spacer"></span>
-        <label class="check">
-            <input type="checkbox" checked="@_missedOnly" @onchange="e => _missedOnly = (bool)e.Value!" />
-            Only ones I have got wrong
-        </label>
+@if (Exams.Exam.HasSyllabus)
+{
+    @* Grouped by the published course syllabus rather than by skill area: while you are still
+       working through the material, the learning path you are on is the useful filter. Skill
+       areas still drive the mock weightings and the progress breakdown. *@
+    <div class="card section">
+        <div class="row between" style="margin-bottom:4px">
+            <h3 style="margin:0">Course syllabus</h3>
+            @if (Exams.Exam.SyllabusUrl is { Length: > 0 } syllabus)
+            {
+                <a class="xs" href="@syllabus" target="_blank" rel="noopener">
+                    On Microsoft Learn @Icons.External
+                </a>
+            }
+        </div>
+        <p class="small muted" style="margin-bottom:16px">
+            @Exams.Exam.LearningPaths.Count learning paths ·
+            @Exams.Exam.LearningPaths.Sum(p => p.Modules) modules · Intermediate · Developer
+        </p>
+
+        <div class="paths">
+            @foreach (var path in Exams.Exam.LearningPaths)
+            {
+                var accent = Exams.Exam.Domain(path.Domain).Accent;
+                var on = _paths.Contains(path.Key);
+                var count = Exams.Bank.CountForPath(path.Key);
+
+                <div class="path @(on ? "on" : "")">
+                    <button type="button" class="path-pick" @onclick="() => TogglePath(path.Key)"
+                            aria-pressed="@on.ToString().ToLowerInvariant()">
+                        <span class="path-rail" style="background-color:@accent"></span>
+                        <span class="path-main">
+                            <span class="path-title">@path.Title</span>
+                            <span class="path-meta">
+                                <span class="path-product">@path.Product</span>
+                                <span class="q-sep">·</span>
+                                <span>@path.Modules modules</span>
+                                <span class="q-sep">·</span>
+                                <span class="num">@count question@(count == 1 ? "" : "s")</span>
+                            </span>
+                        </span>
+                    </button>
+                    <a class="path-link" href="@path.Url" target="_blank" rel="noopener"
+                       title="Open this learning path on Microsoft Learn"
+                       aria-label="@path.Title on Microsoft Learn">@Icons.External</a>
+                </div>
+            }
+        </div>
+
+        <div class="row xs" style="margin-top:14px">
+            <button class="btn ghost sm" @onclick="() => _paths.Clear()">All paths</button>
+            <span class="spacer"></span>
+            <label class="check">
+                <input type="checkbox" checked="@_missedOnly" @onchange="e => _missedOnly = (bool)e.Value!" />
+                Only ones I have got wrong
+            </label>
+        </div>
     </div>
+}
+
+<div class="card section">
+    @if (!Exams.Exam.HasSyllabus)
+    {
+        <div class="row" style="margin-bottom:12px">
+            @foreach (var domain in Exams.Exam.Domains)
+            {
+                var on = _domains.Contains(domain.Key);
+                <button type="button" class="chip @(on ? "on" : "")" @onclick="() => ToggleDomain(domain.Key)">
+                    <span class="dot" style="background-color:@domain.Accent"></span>@domain.ShortName
+                </button>
+            }
+            <span class="spacer"></span>
+            <label class="check">
+                <input type="checkbox" checked="@_missedOnly" @onchange="e => _missedOnly = (bool)e.Value!" />
+                Only ones I have got wrong
+            </label>
+        </div>
+    }
 
     <input type="search" placeholder="Search stems, options, explanations and tags…"
            value="@_search" @oninput="OnSearchInput" />
@@ -110,6 +174,7 @@ else
     {
         _presented.Clear();
         _domains.Clear();
+        _paths.Clear();
         _revealed.Clear();
         _allRevealed = false;
         InvokeAsync(StateHasChanged);
@@ -130,6 +195,7 @@ else
     }
 
     private readonly HashSet<string> _domains = [];
+    private readonly HashSet<string> _paths = [];
     private readonly HashSet<string> _revealed = [];
     private string _search = "";
     private bool _missedOnly;
@@ -140,6 +206,11 @@ else
         get
         {
             IEnumerable<Question> query = Exams.Bank.Questions;
+
+            if (_paths.Count > 0)
+            {
+                query = query.Where(q => q.Path is not null && _paths.Contains(q.Path));
+            }
 
             if (_domains.Count > 0)
             {
@@ -167,6 +238,20 @@ else
                     || q.Options.Any(o => Contains(o.Text, needle)));
             }
 
+            // With a syllabus, read in the order Microsoft teaches it rather than alphabetically.
+            if (Exams.Exam.HasSyllabus)
+            {
+                var order = Exams.Exam.LearningPaths
+                    .Select((p, i) => (p.Key, i))
+                    .ToDictionary(x => x.Key, x => x.i);
+
+                return query
+                    .OrderBy(q => q.Path is not null && order.TryGetValue(q.Path, out var i) ? i : int.MaxValue)
+                    .ThenBy(q => q.Objective)
+                    .ThenBy(q => q.Id)
+                    .ToList();
+            }
+
             return query.OrderBy(q => q.Domain).ThenBy(q => q.Objective).ThenBy(q => q.Id).ToList();
         }
     }
@@ -179,6 +264,11 @@ else
     private void ToggleDomain(string key)
     {
         if (!_domains.Remove(key)) _domains.Add(key);
+    }
+
+    private void TogglePath(string key)
+    {
+        if (!_paths.Remove(key)) _paths.Add(key);
     }
 
     private void ToggleReveal(string id)
