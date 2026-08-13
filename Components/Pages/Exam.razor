@@ -54,29 +54,31 @@
 
     <div class="card section">
         <h3 style="margin-bottom:16px">Composition</h3>
-        <table>
-            <thead>
-                <tr><th>Skill area</th><th style="width:70px">Weight</th><th style="width:90px">Questions</th><th></th></tr>
-            </thead>
-            <tbody>
-                @foreach (var (key, want) in Exams.Exam.Allocate(_count))
-                {
-                    var domain = Exams.Exam.Domain(key);
-                    var have = Exams.Bank.CountFor(key);
-                    <tr>
-                        <td style="color:var(--text)">
-                            <span class="swatch" style="background-color:@domain.Accent;margin-right:8px"></span>
-                            @domain.Name
-                        </td>
-                        <td class="nowrap xs faint mono">@domain.WeightLabel</td>
-                        <td class="nowrap num" style="color:var(--text)">@Math.Min(want, have)</td>
-                        <td class="nowrap xs" style="color:var(--warn)">
-                            @(have < want ? $"bank only has {have}" : "")
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+        <div class="table-scroll">
+            <table>
+                <thead>
+                    <tr><th>Skill area</th><th style="width:70px">Weight</th><th style="width:90px">Questions</th><th></th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var (key, want) in Exams.Exam.Allocate(_count))
+                    {
+                        var domain = Exams.Exam.Domain(key);
+                        var have = Exams.Bank.CountFor(key);
+                        <tr>
+                            <td style="color:var(--text)">
+                                <span class="swatch" style="background-color:@domain.Accent;margin-right:8px"></span>
+                                @domain.Name
+                            </td>
+                            <td class="nowrap xs faint mono">@domain.WeightLabel</td>
+                            <td class="nowrap num" style="color:var(--text)">@Math.Min(want, have)</td>
+                            <td class="nowrap xs" style="color:var(--warn)">
+                                @(have < want ? $"bank only has {have}" : "")
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <button class="btn primary lg" disabled="@(Exams.Bank.Questions.Count == 0)" @onclick="Start">
@@ -87,25 +89,27 @@
     {
         <h2 style="margin:32px 0 12px">Previous mocks</h2>
         <div class="card">
-            <table>
-                <thead>
-                    <tr><th>When</th><th>Score</th><th>Scaled</th><th>Time</th><th></th></tr>
-                </thead>
-                <tbody>
-                    @foreach (var record in _pastExams.AsEnumerable().Reverse().Take(10))
-                    {
-                        <tr>
-                            <td class="nowrap">@record.FinishedAt.ToString("d MMM HH:mm")</td>
-                            <td class="nowrap num">@record.Correct / @record.Total</td>
-                            <td class="nowrap num" style="color:@(record.ScaledScore >= Exams.Exam.PassMark ? "var(--good)" : "var(--bad)")">
-                                <b>@record.ScaledScore</b>
-                            </td>
-                            <td class="nowrap faint num">@($"{record.ElapsedMinutes:F0}") min</td>
-                            <td class="nowrap xs">@(record.ScaledScore >= Exams.Exam.PassMark ? "Pass" : "Below cut")</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr><th>When</th><th>Score</th><th>Scaled</th><th>Time</th><th></th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var record in _pastExams.AsEnumerable().Reverse().Take(10))
+                        {
+                            <tr>
+                                <td class="nowrap">@record.FinishedAt.ToString("d MMM HH:mm")</td>
+                                <td class="nowrap num">@record.Correct / @record.Total</td>
+                                <td class="nowrap num" style="color:@(record.ScaledScore >= Exams.Exam.PassMark ? "var(--good)" : "var(--bad)")">
+                                    <b>@record.ScaledScore</b>
+                                </td>
+                                <td class="nowrap faint num">@($"{record.ElapsedMinutes:F0}") min</td>
+                                <td class="nowrap xs">@(record.ScaledScore >= Exams.Exam.PassMark ? "Pass" : "Below cut")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     }
 }

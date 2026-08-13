@@ -11,30 +11,38 @@
 
         <ExamSwitcher />
 
+        @* Each item carries a short label as well: the sidebar has room for "Exam simulation",
+           the mobile tab bar gives it about 60px. CSS swaps which one is shown. *@
         <nav>
             <NavLink class="nav-item" href="" Match="NavLinkMatch.All">
                 @Icons.Dashboard
                 <span class="nav-label">Dashboard</span>
+                <span class="nav-short">Home</span>
             </NavLink>
             <NavLink class="nav-item" href="practice">
                 @Icons.Practice
                 <span class="nav-label">Practice</span>
+                <span class="nav-short">Practice</span>
             </NavLink>
             <NavLink class="nav-item" href="exam">
                 @Icons.Exam
                 <span class="nav-label">Exam simulation</span>
+                <span class="nav-short">Mock</span>
             </NavLink>
             <NavLink class="nav-item" href="browse">
                 @Icons.Browse
                 <span class="nav-label">Question bank</span>
+                <span class="nav-short">Bank</span>
             </NavLink>
             <NavLink class="nav-item" href="cram">
                 @Icons.Cram
                 <span class="nav-label">Cram sheet</span>
+                <span class="nav-short">Cram</span>
             </NavLink>
             <NavLink class="nav-item" href="stats">
                 @Icons.Stats
                 <span class="nav-label">Progress</span>
+                <span class="nav-short">Progress</span>
             </NavLink>
         </nav>
 

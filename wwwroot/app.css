@@ -1258,8 +1258,25 @@ tbody tr:first-child td { border-top: none; }
 
 /* ═══════════════ responsive ═══════════════ */
 
+.nav-short { display: none; }
+
+/* Wide tables scroll inside their own container rather than pushing the page sideways. */
+.table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+}
+
+.table-scroll > table { min-width: 100%; }
+
+/* ═══════════════ mobile ═══════════════
+   The sidebar splits in two: a sticky top bar carrying the exam switcher, theme and
+   countdown, and a fixed bottom tab bar for navigation. The previous single scrolling
+   strip pushed the nav off the right edge and hid the theme control entirely. */
+
 @media (max-width: 900px) {
     .shell { flex-direction: column; }
+
     .sidebar {
         width: auto;
         flex: none;
@@ -1269,19 +1286,148 @@ tbody tr:first-child td { border-top: none; }
         z-index: 20;
         flex-direction: row;
         align-items: center;
-        gap: 16px;
-        overflow-x: auto;
-        padding: 10px 16px;
+        gap: 10px;
+        padding: 9px 14px calc(9px + env(safe-area-inset-bottom, 0px) * 0);
+        padding-left: max(14px, env(safe-area-inset-left));
+        padding-right: max(14px, env(safe-area-inset-right));
         border-right: none;
         border-bottom: 1px solid var(--hairline);
+        background-color: var(--surface);
+        /* backdrop-filter makes this a containing block for position:fixed, which would
+           anchor the tab bar to the sidebar instead of the viewport. The bar is opaque
+           here anyway, so there is nothing to blur behind it. */
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
     }
-    .sidebar nav { flex-direction: row; }
-    .nav-item { padding: 7px 10px; }
+
+    /* Lifts the foot's children into the top bar so each can be placed individually. */
+    .sidebar-foot { display: contents; }
+
+    /* The switcher already shows the exam code, so the wordmark is duplication here. */
+    .brand, .brand-sub, .disclaimer { display: none; }
+
+    .exam-switch { flex: 0 1 auto; min-width: 0; padding: 0; }
+    .exam-switch-label { display: none; }
+    .exam-trigger { padding: 7px 9px 7px 11px; }
+    /* The certification name is the widest thing in the bar and the code already
+       identifies the exam; it stays in the menu, where there is room for it. */
+    .exam-trigger-cert { display: none; }
+    .exam-menu { left: 0; right: auto; min-width: 236px; }
+
+    /* compact is sized for the sidebar column, where 100% is the full width. */
+    .segmented.compact { width: auto; flex: none; margin-left: auto; }
+    .segmented.compact .segment { flex: none; font-size: 11.5px; padding: 8px 10px; }
+
+    /* Reduced to a tap-sized pill: the day count, with the picker invisible on top of it. */
+    .countdown {
+        flex: none;
+        position: relative;
+        display: flex;
+        align-items: center;
+        padding: 6px 10px;
+        min-height: 32px;
+        background-color: var(--surface-2);
+        border-radius: var(--r-pill);
+        box-shadow: none;
+    }
+    .countdown-row { gap: 1px; }
+    .countdown-days { font-size: 15px; }
+    .countdown-row .countdown-label { display: none; }
+    .countdown-row::after {
+        content: "d";
+        font-size: 12px;
+        font-weight: 550;
+        color: var(--text-3);
+    }
+    .countdown .xs.faint { display: none; }
+    .countdown input[type="date"] {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        opacity: 0;
+        padding: 0;
+        margin: 0;
+        border: none;
+        cursor: pointer;
+    }
+
+    /* Navigation becomes a bottom tab bar. */
+    .sidebar nav {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 30;
+        flex-direction: row;
+        justify-content: space-around;
+        gap: 0;
+        padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
+        background-color: var(--surface);
+        border-top: 1px solid var(--hairline);
+    }
+
+    .nav-item {
+        flex-direction: column;
+        gap: 3px;
+        flex: 1 1 0;
+        min-width: 0;
+        padding: 6px 2px;
+        border-radius: 10px;
+        text-align: center;
+    }
+
+    .nav-item svg { flex: none; }
     .nav-label { display: none; }
-    .sidebar-foot, .brand-sub { display: none; }
-    .content { padding: 28px 20px 80px; }
-    h1 { font-size: 32px; }
-    .q-stem { font-size: 18px; }
+
+    .nav-short {
+        display: block;
+        font-size: 10px;
+        font-weight: 560;
+        letter-spacing: -.002em;
+        line-height: 1.2;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 100%;
+    }
+
+    /* Clears the fixed tab bar, plus the home indicator on notched phones. */
+    .content { padding: 24px 18px calc(104px + env(safe-area-inset-bottom, 0px)); }
+
+    h1 { font-size: 30px; }
+    .q-stem { font-size: 17px; }
+
+    /* nowrap keeps commands like `az acr build --no-wait` on one line, which is right on a
+       wide column and wrong on a phone — a long span pushed the whole page sideways. */
+    .facts code { white-space: normal; overflow-wrap: anywhere; }
+
+    /* Long identifiers break rather than overflow the card. */
+    .q-stem code, .option-text code, .blank-label code,
+    .scenario-body code, .explain code, .why-wrong code { overflow-wrap: anywhere; }
+
+    /* Section links were 27px tall — under a comfortable thumb. */
+    .toc { gap: 2px 0; }
+    .toc a { padding: 8px 0; }
+
+    /* The scroller is edge-to-edge inside the card so the cut-off column reads as
+       scrollable rather than as a clipped layout. */
+    .card > .table-scroll,
+    .card > * > .table-scroll { margin-inline: -18px; padding-inline: 18px; }
+
+    /* Rows of controls wrap instead of overflowing. */
+    .row { flex-wrap: wrap; }
+    .row.between { gap: 10px; }
+    .segmented:not(.compact) { width: 100%; }
+    .segmented:not(.compact) .segment { flex: 1; text-align: center; }
+
+    /* Full-width primary actions are easier to hit with a thumb. */
+    .btn.lg { width: 100%; justify-content: center; }
+
+    /* Keeps iOS from zooming the page when a field takes focus. */
+    input, select, textarea { font-size: 16px; }
+
+    .stat-value { font-size: 26px; }
+    .kbd-hint { display: none; }
 }
 
 /* ═══════════════ pace & retry ═══════════════ */

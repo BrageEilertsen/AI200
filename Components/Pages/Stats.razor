@@ -96,44 +96,46 @@
 
 <div class="card section">
     <h2>By objective</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Skill area</th>
-                <th>Objective</th>
-                <th class="nowrap" style="width:70px">Attempts</th>
-                <th class="nowrap" style="width:150px">Accuracy</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var row in ObjectiveRows())
-            {
+    <div class="table-scroll">
+        <table>
+            <thead>
                 <tr>
-                    <td class="nowrap">
-                        <span class="swatch" style="background-color:@row.Accent;margin-right:7px"></span>
-                        <span class="xs">@row.DomainName</span>
-                    </td>
-                    <td style="color:var(--text)">@row.Objective</td>
-                    <td class="nowrap faint num">@row.Attempts</td>
-                    <td>
-                        @if (row.Attempts == 0)
-                        {
-                            <span class="faint xs">not started</span>
-                        }
-                        else
-                        {
-                            <div class="row" style="gap:9px;flex-wrap:nowrap">
-                                <div class="bar" style="flex:1;min-width:50px">
-                                    <span style="width:@Css.Pct(row.Accuracy);background-color:@Colour(row.Accuracy, row.Attempts)"></span>
-                                </div>
-                                <span class="xs nowrap num" style="color:@Colour(row.Accuracy, row.Attempts)">@($"{row.Accuracy:F0}%")</span>
-                            </div>
-                        }
-                    </td>
+                    <th>Skill area</th>
+                    <th>Objective</th>
+                    <th class="nowrap" style="width:70px">Attempts</th>
+                    <th class="nowrap" style="width:150px">Accuracy</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var row in ObjectiveRows())
+                {
+                    <tr>
+                        <td class="nowrap">
+                            <span class="swatch" style="background-color:@row.Accent;margin-right:7px"></span>
+                            <span class="xs">@row.DomainName</span>
+                        </td>
+                        <td style="color:var(--text)">@row.Objective</td>
+                        <td class="nowrap faint num">@row.Attempts</td>
+                        <td>
+                            @if (row.Attempts == 0)
+                            {
+                                <span class="faint xs">not started</span>
+                            }
+                            else
+                            {
+                                <div class="row" style="gap:9px;flex-wrap:nowrap">
+                                    <div class="bar" style="flex:1;min-width:50px">
+                                        <span style="width:@Css.Pct(row.Accuracy);background-color:@Colour(row.Accuracy, row.Attempts)"></span>
+                                    </div>
+                                    <span class="xs nowrap num" style="color:@Colour(row.Accuracy, row.Attempts)">@($"{row.Accuracy:F0}%")</span>
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
 
 @{

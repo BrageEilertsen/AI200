@@ -90,21 +90,23 @@
 {
     <div class="card section">
         <h2>Weakest objectives in this run</h2>
-        <table>
-            <thead>
-                <tr><th>Objective</th><th style="width:80px">Score</th></tr>
-            </thead>
-            <tbody>
-                @foreach (var (objective, tally) in weakObjectives)
-                {
-                    var percent = 100.0 * tally.Correct / tally.Total;
-                    <tr>
-                        <td>@objective</td>
-                        <td class="nowrap num" style="color:@Colour(percent)">@tally.Correct / @tally.Total</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+        <div class="table-scroll">
+            <table>
+                <thead>
+                    <tr><th>Objective</th><th style="width:80px">Score</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var (objective, tally) in weakObjectives)
+                    {
+                        var percent = 100.0 * tally.Correct / tally.Total;
+                        <tr>
+                            <td>@objective</td>
+                            <td class="nowrap num" style="color:@Colour(percent)">@tally.Correct / @tally.Total</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 }
 
