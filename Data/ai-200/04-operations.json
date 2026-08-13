@@ -90,7 +90,8 @@
       "throttling",
       "caching",
       "performance"
-    ]
+    ],
+    "hint": "Key Vault is a management-plane service with request limits; it was never meant to be on the hot path. What should sit between it and each request?"
   },
   {
     "id": "o-kv-003",
@@ -233,7 +234,8 @@
       "key-vault",
       "rotation",
       "event-grid"
-    ]
+    ],
+    "hint": "Key Vault can tell you a credential is nearing expiry, and that notice has to travel somewhere an automation can subscribe to."
   },
   {
     "id": "o-kv-006",
@@ -371,7 +373,8 @@
       "app-configuration",
       "refresh",
       "sentinel-key"
-    ]
+    ],
+    "hint": "The problem is a partial read while several keys are mid-update. You need one key whose change signals that the whole set is now consistent."
   },
   {
     "id": "o-ac-003",
@@ -600,7 +603,8 @@
       "security",
       "workload-identity",
       "cicd"
-    ]
+    ],
+    "hint": "The workflow can prove who it is with a signed token from GitHub. Something on the Entra side has to be configured to trust that token."
   },
   {
     "id": "o-otel-001",
@@ -692,7 +696,8 @@
       "opentelemetry",
       "correlation",
       "troubleshooting"
-    ]
+    ],
+    "hint": "Two unrelated traces means the correlation identifier did not survive the hop. Ask what carries it, and whether a queue message preserves it."
   },
   {
     "id": "o-otel-003",
@@ -966,7 +971,8 @@
     "tags": [
       "kql",
       "performance"
-    ]
+    ],
+    "hint": "KQL evaluates the pipeline in order, so every later operator works on whatever the earlier ones left. Which filter discards the most rows soonest?"
   },
   {
     "id": "o-kql-004",
@@ -1149,7 +1155,8 @@
       "kql",
       "aggregation",
       "performance"
-    ]
+    ],
+    "hint": "You want one number per operation, so the aggregation needs a `by` clause. Ask which operator computes an aggregate over groups."
   },
   {
     "id": "o-kql-008",

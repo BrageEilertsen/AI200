@@ -43,7 +43,8 @@
       "deployment-strategy",
       "rings",
       "progressive-exposure"
-    ]
+    ],
+    "hint": "Named audiences, in sequence, with a wait between each. Ask whether the answer is describing cohorts of users or a comparison between two versions."
   },
   {
     "id": "p-dep-007",
@@ -182,7 +183,8 @@
       "yaml",
       "resources",
       "triggers"
-    ]
+    ],
+    "hint": "The trigger comes from something outside this pipeline finishing. Look for the YAML block that declares things a pipeline consumes."
   },
   {
     "id": "p-yaml-006",
@@ -321,7 +323,8 @@
       "iac",
       "deployment-environments",
       "self-service"
-    ]
+    ],
+    "hint": "Two constraints: developers get no standing subscription access, and the templates are pre-approved. That points at a service built for self-service, not a governance control."
   },
   {
     "id": "s-branch-004",
@@ -413,7 +416,8 @@
       "git",
       "scalar",
       "repository-health"
-    ]
+    ],
+    "hint": "Separate two problems: a few enormous files, versus an enormous number of files and a deep history. Only one tool targets the second."
   },
   {
     "id": "pr-comm-003",
@@ -553,7 +557,8 @@
       "github-actions",
       "github-token",
       "least-privilege"
-    ]
+    ],
+    "hint": "The workflow already has a credential it did not have to create, scoped to this repository and gone when the job ends. What limits what it can do?"
   },
   {
     "id": "sec-sec-003",
@@ -599,7 +604,8 @@
       "security",
       "secure-files",
       "secrets"
-    ]
+    ],
+    "hint": "This is a binary file, not a string, and it must not reach the repository. Azure Pipelines has a library feature for exactly that kind of asset."
   },
   {
     "id": "sec-scan-003",
@@ -646,7 +652,8 @@
       "defender-for-cloud",
       "ghas",
       "posture"
-    ]
+    ],
+    "hint": "Several organisations, plus the Azure resources they deploy to, in one view. Ask which product sits above both rather than inside one repository."
   },
   {
     "id": "i-mon-007",

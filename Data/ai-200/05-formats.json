@@ -86,7 +86,8 @@
       "aks",
       "troubleshooting",
       "kubectl"
-    ]
+    ],
+    "hint": "Order by cost, not by cleverness: the commands that tell you the most for the least effort come first, and anything that opens a connection into the pod comes last."
   },
   {
     "id": "f-ord-003",
@@ -131,7 +132,8 @@
       "pgvector",
       "indexing",
       "ivfflat"
-    ]
+    ],
+    "hint": "Each step unlocks the next. Two of them are prerequisites that fail loudly if skipped, and one is worth deferring until there is data to work with."
   },
   {
     "id": "f-ord-004",
@@ -359,7 +361,8 @@
       "pgvector",
       "indexing",
       "hnsw"
-    ]
+    ],
+    "hint": "The method name is the graph-based one, and the operator class has to name the distance function so the index and the query agree."
   },
   {
     "id": "f-blk-003",
@@ -602,7 +605,8 @@
     "tags": [
       "cosmos-db",
       "change-feed"
-    ]
+    ],
+    "hint": "Default change feed mode shows you the current state of changed items. Judge each statement against that: deletes, intermediate versions, and what a second reader sees."
   },
   {
     "id": "f-yn-002",
@@ -684,7 +688,8 @@
       "container-apps",
       "revisions",
       "secrets"
-    ]
+    ],
+    "hint": "Split the changes into revision-scope and app-scope. One kind snapshots into a new revision; the other applies to what is already running."
   },
   {
     "id": "f-yn-003",
@@ -814,7 +819,8 @@
       "service-bus",
       "architecture",
       "resiliency"
-    ]
+    ],
+    "hint": "A multi-hour outage means the event must wait somewhere durable. Ask which service holds a message until a consumer is ready, and which only retries for a while."
   },
   {
     "id": "f-cs-002",
@@ -862,7 +868,8 @@
       "pgvector",
       "rag",
       "filtering"
-    ]
+    ],
+    "hint": "Retrieval and filtering happen in a particular order, and the small tenants are being hurt by it. Which one runs first?"
   },
   {
     "id": "f-cs-003",
@@ -957,7 +964,8 @@
       "opentelemetry",
       "correlation",
       "troubleshooting"
-    ]
+    ],
+    "hint": "The two halves are joined by an identifier that must travel in the message. Ask what standard header carries it."
   },
   {
     "id": "f-cs-005",
@@ -1057,7 +1065,8 @@
       "cosmos-db",
       "change-feed",
       "ttl"
-    ]
+    ],
+    "hint": "The account and partition key are fixed, so the fix is either in how the feed is read or in making the deletion look like a change the feed can see."
   },
   {
     "id": "f-cs-007",
@@ -1104,7 +1113,8 @@
       "cosmos-db",
       "partitioning",
       "throttling"
-    ]
+    ],
+    "hint": "Throughput is divided across partitions rather than pooled. Ask what that means when one key attracts most of the writes."
   },
   {
     "id": "f-ord-006",

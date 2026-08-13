@@ -89,7 +89,8 @@
       "monitoring",
       "alerts",
       "metrics"
-    ]
+    ],
+    "hint": "Azure Monitor keeps numbers and text in different stores. One is pre-aggregated and evaluated continuously; the other runs a query on a schedule."
   },
   {
     "id": "i-mon-003",
@@ -135,7 +136,8 @@
       "monitoring",
       "application-insights",
       "distributed-tracing"
-    ]
+    ],
+    "hint": "Four services means four sets of telemetry. Something has to tie them together — ask what is propagated between the services to make that possible."
   },
   {
     "id": "i-mon-004",
@@ -182,7 +184,8 @@
       "application-insights",
       "sampling",
       "cost"
-    ]
+    ],
+    "hint": "The cost is in how much telemetry arrives, not how long it is kept. You need to send less while keeping the totals honest."
   },
   {
     "id": "i-mon-005",
@@ -243,7 +246,8 @@
       "monitoring",
       "kql",
       "application-insights"
-    ]
+    ],
+    "hint": "One operator groups rows and computes an aggregate; another sorts the result. Both are the plainest KQL verbs for those jobs."
   },
   {
     "id": "i-mon-006",

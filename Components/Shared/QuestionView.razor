@@ -41,6 +41,25 @@
     <pre class="code">@Question.Code</pre>
 }
 
+@* Only before the answer is out — afterwards the explanation says everything the hint would. *@
+@if (AllowHint && !Revealed && !string.IsNullOrWhiteSpace(Question.Hint))
+{
+    @if (_hintShown)
+    {
+        <div class="hint" role="note">
+            <span class="hint-mark" aria-hidden="true">@Icons.Hint</span>
+            <span class="hint-body">@Markup.InlineCode(Question.Hint)</span>
+        </div>
+    }
+    else
+    {
+        <button type="button" class="btn ghost sm hint-toggle" @onclick="() => _hintShown = true">
+            @Icons.Hint
+            <span>Hint</span>
+        </button>
+    }
+}
+
 @if (Question.Kind == QuestionKind.Blanks)
 {
     <div class="blanks">
@@ -207,9 +226,28 @@ else
     /// <summary>Whether the scenario panel starts expanded. Collapsed on review lists.</summary>
     [Parameter] public bool ScenarioOpen { get; set; } = true;
 
+    /// <summary>
+    /// Whether the hint button is offered. Off during a mock: the point of sitting one is an
+    /// honest read on whether you would pass, and a hinted score is not that.
+    /// </summary>
+    [Parameter] public bool AllowHint { get; set; }
+
     [Parameter] public EventCallback<string> OnToggle { get; set; }
 
     [Parameter] public EventCallback<BlankChoice> OnSetBlank { get; set; }
+
+    private bool _hintShown;
+
+    private string? _hintFor;
+
+    // Practice reuses one QuestionView across the whole set, so the panel has to collapse
+    // when the question underneath it changes.
+    protected override void OnParametersSet()
+    {
+        if (_hintFor == Question.Id) return;
+        _hintFor = Question.Id;
+        _hintShown = false;
+    }
 
     private string? KindHint => Question.Kind switch
     {

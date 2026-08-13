@@ -81,6 +81,14 @@ public sealed class Question
     /// <summary>Optional code, CLI, YAML or KQL block rendered above the options.</summary>
     public string? Code { get; set; }
 
+    /// <summary>
+    /// A nudge shown on request before answering — the discriminating idea, never the answer.
+    /// Written by hand rather than generated at run time: a hint that is confidently wrong is
+    /// worse than no hint, and stored text can be reviewed once instead of trusted every time.
+    /// Optional; the button only appears where one exists.
+    /// </summary>
+    public string? Hint { get; set; }
+
     /// <summary>Id of a shared scenario in <c>case-studies.json</c>, when this is a case-study question.</summary>
     public string? CaseStudyId { get; set; }
 
@@ -166,6 +174,7 @@ public sealed class Question
             Difficulty = Difficulty,
             Stem = Stem,
             Code = Code,
+            Hint = Hint,
             CaseStudyId = CaseStudyId,
             Explanation = Explanation,
             Docs = Docs,

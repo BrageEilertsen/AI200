@@ -89,7 +89,8 @@
       "redis",
       "vector-search",
       "indexing"
-    ]
+    ],
+    "hint": "FLAT does no approximation at all. Work out what that buys you, and what it must therefore cost."
   },
   {
     "id": "d2-red-003",
@@ -182,7 +183,8 @@
       "semantic-cache",
       "vector-search",
       "rag"
-    ]
+    ],
+    "hint": "A nearest-neighbour search always returns a nearest neighbour, even a poor one. Something has to decide the match was not good enough."
   },
   {
     "id": "d2-red-005",
@@ -279,7 +281,8 @@
       "redis",
       "security",
       "sizing"
-    ]
+    ],
+    "hint": "Compare on things a managed service can do that you cannot easily bolt on yourself: how callers authenticate, and how the service is sized."
   },
   {
     "id": "d2-red-007",
@@ -418,7 +421,8 @@
       "redis",
       "caching",
       "resiliency"
-    ]
+    ],
+    "hint": "The problem is that every caller reacts to the same miss simultaneously. The fix is to let one of them do the work."
   },
   {
     "id": "d2-red-010",
@@ -557,7 +561,8 @@
       "postgresql",
       "pgvector",
       "query-plan"
-    ]
+    ],
+    "hint": "The planner is not always wrong. At this row count, ask whether the index would actually save any work."
   },
   {
     "id": "d2-pg-003",
@@ -697,7 +702,8 @@
       "pgvector",
       "indexing",
       "rag"
-    ]
+    ],
+    "hint": "The slow part is the filter, not the ranking. Ask what index type serves lookups inside a JSONB document."
   },
   {
     "id": "d2-pg-006",
@@ -838,7 +844,8 @@
       "rag",
       "filtering",
       "indexing"
-    ]
+    ],
+    "hint": "Few tenants, stable, and the filter is always equality on one column. That combination allows an index that already excludes everything else."
   },
   {
     "id": "d2-cos-001",
@@ -931,7 +938,8 @@
       "ru",
       "modelling",
       "cost"
-    ]
+    ],
+    "hint": "The embedding is read every time and filtered on never. Ask whether it needs to live in the same item at all."
   },
   {
     "id": "d2-cos-003",
@@ -1069,7 +1077,8 @@
       "cosmos-db",
       "concurrency",
       "etag"
-    ]
+    ],
+    "hint": "Both writers read, then wrote. Something has to make the second write fail because the document changed underneath it."
   },
   {
     "id": "d2-cos-006",
@@ -1168,7 +1177,8 @@
       "indexing",
       "ru",
       "cost"
-    ]
+    ],
+    "hint": "RU cost on writes comes from indexing every path and from what comes back in the response. Reduce both."
   },
   {
     "id": "d2-cos-008",

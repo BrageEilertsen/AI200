@@ -138,7 +138,8 @@
       "templates",
       "governance",
       "security"
-    ]
+    ],
+    "hint": "Anything written in the pipeline file can be edited by whoever owns the pipeline. Where does a control have to live for that not to be true?"
   },
   {
     "id": "p-yaml-004",
@@ -291,7 +292,8 @@
       "feature-flags",
       "app-configuration",
       "deployment-strategy"
-    ]
+    ],
+    "hint": "The code is already in production. What has to change for the feature to appear, and does that thing live in the deployment or in the running app?"
   },
   {
     "id": "p-dep-003",
@@ -338,7 +340,8 @@
       "database",
       "expand-contract",
       "rollback"
-    ]
+    ],
+    "hint": "Think about the moment between the two steps. Whatever order you pick, the old code and the new code each have to work against whatever the schema looks like right then."
   },
   {
     "id": "p-dep-004",
@@ -475,7 +478,8 @@
       "iac",
       "bicep",
       "what-if"
-    ]
+    ],
+    "hint": "You want a diff against what is actually deployed, not a check that the file is well formed. Only one of these compares the template to live state."
   },
   {
     "id": "p-iac-003",
@@ -660,7 +664,8 @@
       "code-coverage",
       "branch-policies",
       "quality-gates"
-    ]
+    ],
+    "hint": "Publishing a number and blocking a merge are different jobs. Which part of Azure DevOps has the power to stop a pull request completing?"
   },
   {
     "id": "p-test-002",
@@ -706,7 +711,8 @@
       "testing",
       "flaky-tests",
       "pipeline-health"
-    ]
+    ],
+    "hint": "Different tests each time, passing on re-run — that is not the product failing. Consider what an unreliable gate does to the team's willingness to believe it."
   },
   {
     "id": "p-agent-001",
@@ -798,7 +804,8 @@
       "pipeline-health",
       "caching",
       "performance"
-    ]
+    ],
+    "hint": "The step is slow because it does the same work every run even when nothing changed. What would let it skip that work, and what should decide when it cannot?"
   },
   {
     "id": "p-gha-001",
@@ -890,7 +897,8 @@
       "github-actions",
       "environments",
       "approvals"
-    ]
+    ],
+    "hint": "GitHub has a resource that deployments target and that carries protection rules of its own. The rule wants to live there, not in the workflow file."
   },
   {
     "id": "p-var-001",
@@ -982,7 +990,8 @@
       "azure-pipelines",
       "secrets",
       "logging"
-    ]
+    ],
+    "hint": "The agent knows the literal value it marked as secret, so it can look for it. Ask what happens if the script encodes or splits that value first."
   },
   {
     "id": "p-art-001",
@@ -1124,7 +1133,8 @@
     "tags": [
       "pipeline-health",
       "metrics"
-    ]
+    ],
+    "hint": "Pipeline health is about whether a red build still means something. Which of these change that, and which just describe a project getting bigger?"
   },
   {
     "id": "p-dep-005",

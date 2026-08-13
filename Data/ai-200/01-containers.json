@@ -184,7 +184,8 @@
       "acr",
       "acr-tasks",
       "base-image"
-    ]
+    ],
+    "hint": "Nothing in your repository changed - the trigger is upstream. Which build mechanism knows what your image was built FROM?"
   },
   {
     "id": "c-acr-005",
@@ -323,7 +324,8 @@
       "acr",
       "authentication",
       "least-privilege"
-    ]
+    ],
+    "hint": "The constraint is one repository, not the whole registry. Which credential type can be scoped that narrowly?"
   },
   {
     "id": "c-app-001",
@@ -460,7 +462,8 @@
       "app-service",
       "slots",
       "configuration"
-    ]
+    ],
+    "hint": "By default a setting travels with the code when slots swap. You need one that stays behind with the slot instead."
   },
   {
     "id": "c-app-004",
@@ -602,7 +605,8 @@
     "tags": [
       "container-apps",
       "revisions"
-    ]
+    ],
+    "hint": "Revisions are immutable snapshots of the container. Sort each change by whether it describes the container itself or the app around it."
   },
   {
     "id": "c-aca-003",
@@ -741,7 +745,8 @@
       "container-apps",
       "troubleshooting",
       "logs"
-    ]
+    ],
+    "hint": "An empty console stream means your process never got far enough to print anything. Something else recorded why it did not start."
   },
   {
     "id": "c-aca-006",
@@ -834,7 +839,8 @@
       "keda",
       "secrets",
       "scaling"
-    ]
+    ],
+    "hint": "Never inline a connection string in a scale rule. KEDA rules reference a credential indirectly - ask what block does the mapping."
   },
   {
     "id": "c-aca-008",
@@ -1018,7 +1024,8 @@
       "aks",
       "probes",
       "troubleshooting"
-    ]
+    ],
+    "hint": "All replicas ready, but traffic fails during rollout - so a pod is being marked usable before it truly is. Which probe controls Service membership?"
   },
   {
     "id": "c-aks-004",
@@ -1111,7 +1118,8 @@
       "managed-identity",
       "security",
       "workload-identity"
-    ]
+    ],
+    "hint": "Pod-managed identity is the old answer. The current one federates a Kubernetes identity with an Entra one - what does the pod already have that can be federated?"
   },
   {
     "id": "c-aks-006",
@@ -1343,7 +1351,8 @@
       "aks",
       "deployments",
       "troubleshooting"
-    ]
+    ],
+    "hint": "Two things happen at once when a pod goes away, and the app needs a moment before the second one matters. Consider what can delay the shutdown and what the app itself must handle."
   },
   {
     "id": "c-aks-011",

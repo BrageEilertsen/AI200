@@ -185,7 +185,8 @@
       "service-bus",
       "duplicate-detection",
       "troubleshooting"
-    ]
+    ],
+    "hint": "Duplicate detection has to compare something. Ask what field the broker hashes, and whether your sender is setting it."
   },
   {
     "id": "i-sb-005",
@@ -506,7 +507,8 @@
       "event-grid",
       "idempotency",
       "delivery"
-    ]
+    ],
+    "hint": "Redelivery is part of the contract this service offers, not a defect in it. Given that, ask what the handler has to be able to survive."
   },
   {
     "id": "i-eg-004",
@@ -600,7 +602,8 @@
       "event-grid",
       "service-bus",
       "architecture"
-    ]
+    ],
+    "hint": "Millions per hour plus replay for a later job. That combination points at a streaming service with a retention window, not a queue or a notification router."
   },
   {
     "id": "i-eg-006",
@@ -831,7 +834,8 @@
       "managed-identity",
       "service-bus",
       "security"
-    ]
+    ],
+    "hint": "For identity-based bindings the connection name becomes a prefix, and you supply the resource's address rather than a key. Note the double underscore."
   },
   {
     "id": "i-fn-004",
@@ -927,7 +931,8 @@
       "functions",
       "durable-functions",
       "determinism"
-    ]
+    ],
+    "hint": "An orchestrator re-executes its own code from the top on every replay. Anything reading the real clock will therefore change - you need the value the framework replays."
   },
   {
     "id": "i-fn-006",
@@ -1112,7 +1117,8 @@
       "hosting",
       "networking",
       "cold-start"
-    ]
+    ],
+    "hint": "Two requirements at once: private networking and no cold start. Only one hosting plan gives you both."
   },
   {
     "id": "i-fn-010",
@@ -1344,7 +1350,8 @@
       "durable-functions",
       "patterns",
       "http-trigger"
-    ]
+    ],
+    "hint": "The client cannot wait, so the first response must carry a way to check back later. Durable Functions has a named pattern for exactly that shape."
   },
   {
     "id": "i-sb-009",

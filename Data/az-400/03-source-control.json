@@ -135,7 +135,8 @@
       "azure-repos",
       "branch-policies",
       "code-owners"
-    ]
+    ],
+    "hint": "The trigger is a file path, and the outcome is a person having to approve. Which branch policy takes a path filter as input?"
   },
   {
     "id": "s-repo-001",
@@ -227,7 +228,8 @@
       "repository-strategy",
       "monorepo",
       "package-management"
-    ]
+    ],
+    "hint": "Each team needs to upgrade on its own schedule and see exactly what version it depends on. What form does shared code take when that is the requirement?"
   },
   {
     "id": "s-repo-003",
@@ -273,7 +275,8 @@
       "git",
       "secrets",
       "incident-response"
-    ]
+    ],
+    "hint": "Ask what is already true the moment you notice: who else might have cloned the repository, and does rewriting your copy of history reach them?"
   },
   {
     "id": "s-pr-001",

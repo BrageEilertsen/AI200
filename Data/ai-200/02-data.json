@@ -136,7 +136,8 @@
       "rbac",
       "security",
       "managed-identity"
-    ]
+    ],
+    "hint": "Cosmos DB separates permission over the account from permission over the documents inside it. One of those was granted; the other was not."
   },
   {
     "id": "d-cos-004",
@@ -227,7 +228,8 @@
     "tags": [
       "cosmos-db",
       "change-feed"
-    ]
+    ],
+    "hint": "The processor sees the current state of items that changed. Ask whether a deleted item still has a current state to emit."
   },
   {
     "id": "d-cos-007",
@@ -552,7 +554,8 @@
       "sdk",
       "bulk",
       "performance"
-    ]
+    ],
+    "hint": "Two million small writes issued one at a time will throttle no matter the RU budget. The SDK has a mode that groups them."
   },
   {
     "id": "d-cos-014",
@@ -835,7 +838,8 @@
       "pgvector",
       "indexing",
       "troubleshooting"
-    ]
+    ],
+    "hint": "IVFFlat groups vectors into lists. Ask what it needs to see in order to decide where those groups should be, and when it looks."
   },
   {
     "id": "d-pg-004",
@@ -886,7 +890,8 @@
       "postgresql",
       "pgvector",
       "indexing"
-    ]
+    ],
+    "hint": "Compare HNSW with IVFFlat on two axes: whether the index needs data present at build time, and what you pay for better recall."
   },
   {
     "id": "d-pg-005",
@@ -982,7 +987,8 @@
       "rag",
       "filtering",
       "troubleshooting"
-    ]
+    ],
+    "hint": "Consider whether the index can see your WHERE clause at all, and what that means for how many rows survive to the end."
   },
   {
     "id": "d-pg-007",
@@ -1169,7 +1175,8 @@
       "pgvector",
       "indexing",
       "tuning"
-    ]
+    ],
+    "hint": "Index builds get slow when they spill to disk. Which server parameters govern the memory a maintenance operation may use, and how many workers help?"
   },
   {
     "id": "d-pg-011",
@@ -1402,7 +1409,8 @@
       "postgresql",
       "azure-ai-extension",
       "embeddings"
-    ]
+    ],
+    "hint": "Azure ships a PostgreSQL extension whose whole purpose is calling Azure AI services from SQL. The name is short."
   },
   {
     "id": "d-red-001",
@@ -1541,7 +1549,8 @@
       "eviction",
       "memory",
       "troubleshooting"
-    ]
+    ],
+    "hint": "Items vanishing early plus high memory usage is not a TTL problem. Redis is making room - ask what it does when it runs out."
   },
   {
     "id": "d-red-004",
@@ -1587,7 +1596,8 @@
       "redis",
       "vector-search",
       "redisearch"
-    ]
+    ],
+    "hint": "Redis vector search is part of the search module, so the command is one of the FT family, and the schema has to declare the dimension and metric."
   },
   {
     "id": "d-red-005",

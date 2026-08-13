@@ -34,6 +34,9 @@ public static class Icons
     public static MarkupString External => Svg(
         """<path d="M6.5 3H3.5A1.5 1.5 0 0 0 2 4.5v8A1.5 1.5 0 0 0 3.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-3M9.5 2H14v4.5M14 2 7.5 8.5"/>""");
 
+    public static MarkupString Hint => Svg(
+        """<path d="M6 12.5h4M6.5 14.5h3M8 1.5a4.5 4.5 0 0 0-2.6 8.17c.37.27.6.69.6 1.15v.18h4v-.18c0-.46.23-.88.6-1.15A4.5 4.5 0 0 0 8 1.5Z"/>""");
+
     public static MarkupString Check => Svg("""<path d="M3 8.5 6.25 12 13 4.5"/>""");
 
     public static MarkupString Cross => Svg("""<path d="M4 4l8 8M12 4l-8 8"/>""");

@@ -837,6 +837,46 @@ pre.code {
     .blank-control select { flex: 1; }
 }
 
+/* ═══════════════ hint ═══════════════ */
+
+.hint-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 18px;
+    color: var(--text-2);
+}
+
+.hint-toggle svg { width: 14px; height: 14px; }
+
+.hint {
+    display: flex;
+    gap: 11px;
+    align-items: flex-start;
+    margin-bottom: 18px;
+    padding: 13px 16px;
+    border-radius: var(--r);
+    background-color: var(--warn-tint);
+    font-size: 14.5px;
+    line-height: 1.5;
+    letter-spacing: -.011em;
+    color: var(--text-2);
+    animation: hint-in .2s var(--ease);
+}
+
+.hint-mark { flex: none; color: var(--warn); line-height: 0; padding-top: 2px; }
+.hint-mark svg { width: 15px; height: 15px; }
+.hint-body code { overflow-wrap: anywhere; }
+
+@keyframes hint-in {
+    from { opacity: 0; transform: translateY(-3px); }
+    to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hint { animation: none; }
+}
+
 /* ═══════════════ explanation ═══════════════ */
 
 .explain { background-color: var(--surface-2); border-radius: var(--r); padding: 20px 22px; }
