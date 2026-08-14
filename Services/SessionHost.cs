@@ -14,11 +14,12 @@ public sealed class SessionHost(ExamContext exams, ProgressStore progress)
 
     public StudySession StartPractice(
         IReadOnlyCollection<string> domains,
+        IReadOnlyCollection<string> paths,
         int count,
         bool focusWeak,
         bool retryMissed = false)
     {
-        var questions = exams.Draw(domains, count, focusWeak, progress.Stats);
+        var questions = exams.Draw(domains, paths, count, focusWeak, progress.Stats);
         Current = new StudySession
         {
             Mode = SessionMode.Practice,

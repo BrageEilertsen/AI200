@@ -83,17 +83,24 @@ public sealed class ExamContext(ExamCatalog catalog, IJSRuntime js, ILogger<Exam
     // ---- drawing ----------------------------------------------------------------
 
     /// <summary>
-    /// Draws <paramref name="count"/> questions from the given domains of the current exam.
+    /// Draws <paramref name="count"/> questions from the current exam, narrowed to the given
+    /// skill areas and — for exams with a published syllabus — learning paths. An empty
+    /// collection means no restriction on that axis.
     /// When <paramref name="focusWeak"/> is set, questions never seen or recently missed are
     /// strongly favoured; otherwise the draw is uniformly random.
     /// </summary>
     public List<Question> Draw(
         IReadOnlyCollection<string> domainKeys,
+        IReadOnlyCollection<string> pathKeys,
         int count,
         bool focusWeak,
         IReadOnlyDictionary<string, QuestionStat>? stats = null)
     {
-        var pool = Bank.Questions.Where(q => domainKeys.Count == 0 || domainKeys.Contains(q.Domain)).ToList();
+        var pool = Bank.Questions
+            .Where(q => domainKeys.Count == 0 || domainKeys.Contains(q.Domain))
+            .Where(q => pathKeys.Count == 0 || (q.Path is not null && pathKeys.Contains(q.Path)))
+            .ToList();
+
         return Present(Pick(pool, count, focusWeak, stats));
     }
 

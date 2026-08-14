@@ -21,23 +21,79 @@
     </div>
 
     <div class="card section">
-        <h3>Skill areas</h3>
-        <div class="row" style="margin-bottom:10px">
-            @foreach (var domain in Exams.Exam.Domains)
-            {
-                var on = _pickedDomains.Contains(domain.Key);
-                <button type="button" class="chip @(on ? "on" : "")" @onclick="() => ToggleDomain(domain.Key)">
-                    <span class="dot" style="background-color:@domain.Accent"></span>
-                    @domain.ShortName
-                    <span class="faint">@Exams.Bank.CountFor(domain.Key)</span>
-                </button>
-            }
-        </div>
-        <div class="row xs">
-            <button class="btn ghost sm" @onclick="SelectAllDomains">Select all</button>
-            <button class="btn ghost sm" @onclick="() => _pickedDomains.Clear()">Clear</button>
-            <span class="faint">@AvailableCount question(s) match</span>
-        </div>
+        @if (Exams.Exam.HasSyllabus)
+        {
+            @* Same grouping as the question bank: while you are working through the material,
+               the module you are on is a more useful thing to drill than a skill area. *@
+            <div class="syllabus-head">
+                <div>
+                    <h3>Modules to practise</h3>
+                    <p class="syllabus-meta">
+                        Pick the learning paths you are working through
+                    </p>
+                </div>
+                <span class="xs faint num" style="flex:none">@AvailableCount selected</span>
+            </div>
+
+            <div class="paths">
+                @foreach (var path in Exams.Exam.LearningPaths)
+                {
+                    var accent = Exams.Exam.Domain(path.Domain).Accent;
+                    var on = _pickedPaths.Contains(path.Key);
+                    var count = Exams.Bank.CountForPath(path.Key);
+
+                    <div class="path @(on ? "on" : "")">
+                        <button type="button" class="path-pick" @onclick="() => TogglePath(path.Key)"
+                                aria-pressed="@on.ToString().ToLowerInvariant()">
+                            <span class="path-rail" style="background-color:@accent"></span>
+                            <span class="path-main">
+                                <span class="path-title">@path.Title</span>
+                                <span class="path-meta">
+                                    <span class="path-product">@path.Product</span>
+                                    <span class="q-sep">·</span>
+                                    <span>@path.Modules modules</span>
+                                    <span class="q-sep">·</span>
+                                    <span class="num">@count question@(count == 1 ? "" : "s")</span>
+                                </span>
+                            </span>
+                        </button>
+                        <a class="path-link" href="@path.Url" target="_blank" rel="noopener"
+                           title="Open this learning path on Microsoft Learn"
+                           aria-label="@path.Title on Microsoft Learn">@Icons.External</a>
+                    </div>
+                }
+            </div>
+
+            <div class="row xs" style="margin-top:14px">
+                <button class="btn ghost sm" @onclick="SelectAllPaths">Select all</button>
+                <button class="btn ghost sm" @onclick="() => _pickedPaths.Clear()">Clear</button>
+                <span class="faint">
+                    @(_pickedPaths.Count == 0
+                        ? "Nothing selected draws from the whole bank"
+                        : $"{_pickedPaths.Count} of {Exams.Exam.LearningPaths.Count} paths")
+                </span>
+            </div>
+        }
+        else
+        {
+            <h3>Skill areas</h3>
+            <div class="row" style="margin-bottom:10px">
+                @foreach (var domain in Exams.Exam.Domains)
+                {
+                    var on = _pickedDomains.Contains(domain.Key);
+                    <button type="button" class="chip @(on ? "on" : "")" @onclick="() => ToggleDomain(domain.Key)">
+                        <span class="dot" style="background-color:@domain.Accent"></span>
+                        @domain.ShortName
+                        <span class="faint">@Exams.Bank.CountFor(domain.Key)</span>
+                    </button>
+                }
+            </div>
+            <div class="row xs">
+                <button class="btn ghost sm" @onclick="SelectAllDomains">Select all</button>
+                <button class="btn ghost sm" @onclick="() => _pickedDomains.Clear()">Clear</button>
+                <span class="faint">@AvailableCount question(s) match</span>
+            </div>
+        }
     </div>
 
     <div class="card section">
@@ -152,6 +208,7 @@ else
     private StudySession? _session;
     private ElementReference _root;
     private readonly HashSet<string> _pickedDomains = [];
+    private readonly HashSet<string> _pickedPaths = [];
     private int _count = 20;
     private bool _focusWeak = true;
     private bool _retryMissed = true;
@@ -161,7 +218,7 @@ else
     protected override void OnInitialized()
     {
         Exams.Changed += OnExamChanged;
-        SelectAllDomains();
+        SelectAll();
 
         // Resume a set that is still open on the circuit.
         if (Host.Current is { Mode: SessionMode.Practice } existing)
@@ -175,14 +232,14 @@ else
     public void Dispose() => Exams.Changed -= OnExamChanged;
 
     /// <summary>
-    /// The picked domains and any open set belong to the exam they were built from, so a
-    /// switch has to start over rather than carry another certification's keys across.
+    /// The selection and any open set belong to the exam they were built from, so a switch
+    /// has to start over rather than carry another certification's keys across.
     /// </summary>
     private void OnExamChanged()
     {
         Host.Clear();
         _session = null;
-        SelectAllDomains();
+        SelectAll();
         _lastResult = Progress.Sessions.LastOrDefault(s => s.Mode == SessionMode.Practice);
         InvokeAsync(StateHasChanged);
     }
@@ -209,8 +266,23 @@ else
         }
     }
 
-    private int AvailableCount =>
-        Exams.Bank.Questions.Count(q => _pickedDomains.Count == 0 || _pickedDomains.Contains(q.Domain));
+    private int AvailableCount => Exams.Bank.Questions.Count(q =>
+        (_pickedDomains.Count == 0 || _pickedDomains.Contains(q.Domain))
+        && (_pickedPaths.Count == 0 || (q.Path is not null && _pickedPaths.Contains(q.Path))));
+
+    /// <summary>
+    /// Selects everything on whichever axis this exam is grouped by, and empties the other.
+    /// Both matter: a key left over from the previous exam would filter the pool down to
+    /// nothing, since no question carries a domain or path from a different certification.
+    /// </summary>
+    private void SelectAll()
+    {
+        _pickedDomains.Clear();
+        _pickedPaths.Clear();
+
+        if (Exams.Exam.HasSyllabus) SelectAllPaths();
+        else SelectAllDomains();
+    }
 
     private void SelectAllDomains()
     {
@@ -218,15 +290,26 @@ else
         foreach (var domain in Exams.Exam.Domains) _pickedDomains.Add(domain.Key);
     }
 
+    private void SelectAllPaths()
+    {
+        _pickedPaths.Clear();
+        foreach (var path in Exams.Exam.LearningPaths) _pickedPaths.Add(path.Key);
+    }
+
     private void ToggleDomain(string key)
     {
         if (!_pickedDomains.Remove(key)) _pickedDomains.Add(key);
     }
 
+    private void TogglePath(string key)
+    {
+        if (!_pickedPaths.Remove(key)) _pickedPaths.Add(key);
+    }
+
     private void Start()
     {
         var size = _count == int.MaxValue ? AvailableCount : Math.Min(_count, AvailableCount);
-        _session = Host.StartPractice(_pickedDomains, size, _focusWeak, _retryMissed);
+        _session = Host.StartPractice(_pickedDomains, _pickedPaths, size, _focusWeak, _retryMissed);
         _shouldFocus = true;
     }
 
