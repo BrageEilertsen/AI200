@@ -1,0 +1,283 @@
+[
+  {
+    "id": "r3-001",
+    "domain": "data",
+    "path": "redis",
+    "objective": "Integrate Azure Managed Redis in AI solutions",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "A development team needs a large Redis instance for a memory-hungry embedding cache, but the workload is low-traffic and throughput is not a concern. They want the lowest price for the memory they get. Which Azure Managed Redis tier fits?",
+    "options": [
+      { "id": "A", "text": "Memory Optimized, which gives an 8:1 memory-to-vCPU ratio" },
+      { "id": "B", "text": "Balanced, which gives a 4:1 memory-to-vCPU ratio" },
+      { "id": "C", "text": "Compute Optimized, which gives a 2:1 memory-to-vCPU ratio" },
+      { "id": "D", "text": "Flash Optimized, which spills to NVMe storage" }
+    ],
+    "correct": ["A"],
+    "explanation": "The three in-memory tiers differ only in how much memory you get per vCPU. Memory Optimized is the 8:1 ratio — the most memory for the least compute — which Microsoft calls out as a good fit for dev and test, where you need the data to fit but do not need the throughput.",
+    "whyWrong": {
+      "B": "Balanced is the 4:1 middle ground for standard workloads; you pay for compute the scenario does not use.",
+      "C": "Compute Optimized is 2:1, the highest throughput and the worst value when throughput is not the constraint.",
+      "D": "Flash Optimized is for datasets too large to hold in RAM at all, and it moves cold data to disk, which costs latency."
+    },
+    "docs": [
+      { "title": "What is Azure Managed Redis? — Choosing the right tier", "url": "https://learn.microsoft.com/azure/redis/overview" }
+    ],
+    "tags": ["redis", "managed-redis", "tiers", "cost"],
+    "hint": "Three of the four hold everything in memory and differ only by one ratio. Work out which end of that ratio the scenario cares about."
+  },
+  {
+    "id": "r3-002",
+    "domain": "data",
+    "path": "redis",
+    "objective": "Integrate Azure Managed Redis in AI solutions",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "A RAG service needs a Redis instance holding roughly 1 TB of data, and it must serve vector similarity search over stored embeddings. A colleague proposes Flash Optimized to keep the cost of that much data down. What is wrong with the proposal?",
+    "options": [
+      { "id": "A", "text": "Flash Optimized does not support the search module, so vector search is unavailable on that tier" },
+      { "id": "B", "text": "Flash Optimized caps out well below 1 TB, so the data would not fit" },
+      { "id": "C", "text": "Flash Optimized does not support data persistence, so the index would be lost on restart" },
+      { "id": "D", "text": "Flash Optimized does not support private endpoints, so the service could not reach it privately" }
+    ],
+    "correct": ["A"],
+    "explanation": "Flash Optimized is the one tier where search functionality — which is what vector search is built on — is not available. The tier is designed for large, mostly cold key-value data that can live on NVMe, not for an index that has to be traversed on every query.",
+    "whyWrong": {
+      "B": "Flash Optimized scales to 4500 GB, so capacity is the one thing that is not a problem here.",
+      "C": "Data persistence is available on Flash Optimized as well as the in-memory tiers.",
+      "D": "Network isolation with private endpoints is offered on every tier."
+    },
+    "docs": [
+      { "title": "Azure Managed Redis feature comparison by tier", "url": "https://learn.microsoft.com/azure/redis/overview" }
+    ],
+    "tags": ["redis", "managed-redis", "tiers", "vector-search", "rag"],
+    "hint": "Only one row of the tier feature table has a No against Flash Optimized that this workload depends on."
+  },
+  {
+    "id": "r3-003",
+    "domain": "data",
+    "path": "redis",
+    "objective": "Integrate Azure Managed Redis in AI solutions",
+    "kind": "multi",
+    "difficulty": 3,
+    "stem": "Which two capabilities are unavailable on the Flash Optimized tier but available on the in-memory tiers? Choose two.",
+    "options": [
+      { "id": "A", "text": "Active geo-replication" },
+      { "id": "B", "text": "Non-clustered instances" },
+      { "id": "C", "text": "Data persistence" },
+      { "id": "D", "text": "Microsoft Entra ID authentication" },
+      { "id": "E", "text": "Replication and failover" }
+    ],
+    "correct": ["A", "B"],
+    "explanation": "Flash Optimized always runs clustered, and it is the only tier without active geo-replication. Everything else in the feature table — persistence, Entra authentication, replication and failover, private networking — it shares with the in-memory tiers.",
+    "whyWrong": {
+      "C": "Persistence is supported on every tier; it is a backup copy on disk, which is a different thing from Flash Optimized's normal use of disk.",
+      "D": "Entra ID based authentication is available on all four tiers.",
+      "E": "Replication and failover is a Yes on every tier."
+    },
+    "docs": [
+      { "title": "Azure Managed Redis feature comparison by tier", "url": "https://learn.microsoft.com/azure/redis/overview" }
+    ],
+    "tags": ["redis", "managed-redis", "tiers", "geo-replication"]
+  },
+  {
+    "id": "r3-004",
+    "domain": "data",
+    "path": "redis",
+    "objective": "Integrate Azure Managed Redis in AI solutions",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "A team enables data persistence on a Balanced instance and concludes that they have also reduced their memory bill, because data now lives on disk. Why is that conclusion wrong?",
+    "options": [
+      { "id": "A", "text": "Persistence writes a backup copy to disk for recovery; the working set still lives entirely in memory" },
+      { "id": "B", "text": "Persistence is only a metadata snapshot and does not include key values" },
+      { "id": "C", "text": "Persistence moves cold keys to disk, but only above 350 GB" },
+      { "id": "D", "text": "Persistence is billed separately at a higher rate than memory, so the bill rises rather than falls" }
+    ],
+    "correct": ["A"],
+    "explanation": "Persistence and Flash Optimized both put data on disk but for opposite reasons. Persistence is a recovery feature — a copy on disk so an unexpected outage does not lose the cache — while Flash Optimized is a tiering feature that actually moves less-used data out of RAM. Only the latter changes how much memory you need.",
+    "whyWrong": {
+      "B": "Persistence captures the data, not just metadata.",
+      "C": "Tiering cold keys to NVMe is what the Flash Optimized tier does, and it has nothing to do with a 350 GB threshold.",
+      "D": "The billing claim is invented; the real error is thinking memory use went down at all."
+    },
+    "docs": [
+      { "title": "Azure Managed Redis data persistence", "url": "https://learn.microsoft.com/azure/redis/how-to-persistence" }
+    ],
+    "tags": ["redis", "managed-redis", "persistence", "cost"],
+    "hint": "Both features write to disk. Ask which one changes what has to be in RAM."
+  },
+  {
+    "id": "r3-005",
+    "domain": "data",
+    "path": "redis",
+    "objective": "Integrate Azure Managed Redis in AI solutions",
+    "kind": "blanks",
+    "difficulty": 2,
+    "stem": "Match each Azure Managed Redis in-memory tier to its memory-to-vCPU ratio.",
+    "blanks": [
+      {
+        "id": "b1",
+        "label": "Memory Optimized",
+        "choices": [
+          { "id": "a", "text": "8:1" },
+          { "id": "b", "text": "4:1" },
+          { "id": "c", "text": "2:1" }
+        ],
+        "correct": "a"
+      },
+      {
+        "id": "b2",
+        "label": "Balanced",
+        "choices": [
+          { "id": "a", "text": "8:1" },
+          { "id": "b", "text": "4:1" },
+          { "id": "c", "text": "2:1" }
+        ],
+        "correct": "b"
+      },
+      {
+        "id": "b3",
+        "label": "Compute Optimized",
+        "choices": [
+          { "id": "a", "text": "8:1" },
+          { "id": "b", "text": "4:1" },
+          { "id": "c", "text": "2:1" }
+        ],
+        "correct": "c"
+      }
+    ],
+    "explanation": "The ratios halve as you move toward compute: 8:1 Memory Optimized, 4:1 Balanced, 2:1 Compute Optimized. The name tells you which resource is plentiful, so the only thing to memorise is that the sequence is 8, 4, 2.",
+    "docs": [
+      { "title": "What is Azure Managed Redis? — Tiers and SKUs at a glance", "url": "https://learn.microsoft.com/azure/redis/overview" }
+    ],
+    "tags": ["redis", "managed-redis", "tiers"]
+  },
+  {
+    "id": "r3-006",
+    "domain": "data",
+    "path": "redis",
+    "objective": "Integrate Azure Managed Redis in AI solutions",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "You are adding a semantic cache in front of an Azure OpenAI chat deployment, using Azure Managed Redis. What is stored, and what makes a lookup a hit?",
+    "options": [
+      { "id": "A", "text": "The prompt's embedding alongside the completion; a hit is a stored embedding within a distance threshold of the incoming prompt's embedding" },
+      { "id": "B", "text": "A hash of the prompt string alongside the completion; a hit is an exact hash match" },
+      { "id": "C", "text": "The completion keyed by user id; a hit is any earlier completion for the same user" },
+      { "id": "D", "text": "The model's weights; a hit is any prompt the cached model can answer locally" }
+    ],
+    "correct": ["A"],
+    "explanation": "A semantic cache is a vector search over previous prompts. \"What is the refund window?\" and \"How long do I have to return something?\" hash differently but embed close together, so a similarity threshold catches the second one. That is exactly why a semantic cache needs a tier with search support.",
+    "whyWrong": {
+      "B": "Hashing gives you an ordinary exact-match cache — it misses every paraphrase, which is the whole point of going semantic.",
+      "C": "Keying by user returns unrelated answers and leaks one question's answer into another.",
+      "D": "Nothing about a cache deploys model weights."
+    },
+    "docs": [
+      { "title": "Semantic caching with Azure Managed Redis", "url": "https://learn.microsoft.com/azure/redis/tutorial-semantic-cache" }
+    ],
+    "tags": ["redis", "managed-redis", "semantic-cache", "embeddings", "azure-openai"],
+    "hint": "Two of these would miss a reworded question. Only one is doing anything you would call semantic."
+  },
+  {
+    "id": "r3-007",
+    "domain": "data",
+    "path": "redis",
+    "objective": "Integrate Azure Managed Redis in AI solutions",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "A Redis instance is used purely as a cache-aside store in front of Cosmos DB. As it fills, writes start failing with an out-of-memory error instead of older entries being dropped. Which setting is wrong?",
+    "options": [
+      { "id": "A", "text": "The eviction policy is `noeviction`; it should be an `allkeys-*` policy such as `allkeys-lru`" },
+      { "id": "B", "text": "Data persistence is disabled, so nothing can be flushed to disk to make room" },
+      { "id": "C", "text": "The clustering policy is set to OSS rather than Enterprise" },
+      { "id": "D", "text": "High availability is disabled, so the replica cannot absorb the overflow" }
+    ],
+    "correct": ["A"],
+    "explanation": "With `noeviction`, Redis refuses writes rather than discarding anything once maxmemory is reached — correct for a queue or session store you cannot lose, wrong for a cache. A cache wants an `allkeys-*` policy so that any key is a candidate, not just ones that happen to carry a TTL.",
+    "whyWrong": {
+      "B": "Persistence is a backup copy for recovery; it never frees memory.",
+      "C": "Clustering policy affects how clients address shards, not what happens at the memory ceiling.",
+      "D": "A replica mirrors the primary; it does not add usable capacity."
+    },
+    "docs": [
+      { "title": "Azure Managed Redis best practices for memory management", "url": "https://learn.microsoft.com/azure/redis/best-practices-memory-management" }
+    ],
+    "tags": ["redis", "managed-redis", "eviction", "troubleshooting", "cache-aside"],
+    "hint": "The instance is doing exactly what it was told to do at the memory ceiling. Ask what it was told."
+  },
+  {
+    "id": "r3-008",
+    "domain": "data",
+    "path": "redis",
+    "objective": "Integrate Azure Managed Redis in AI solutions",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "A Container Apps service must connect to Azure Managed Redis with no secret stored anywhere in the app. What should it use?",
+    "options": [
+      { "id": "A", "text": "Microsoft Entra ID authentication with the app's managed identity, granted a Redis data access role" },
+      { "id": "B", "text": "The primary access key, read from Key Vault at startup" },
+      { "id": "C", "text": "A connection string held in an App Configuration Key Vault reference" },
+      { "id": "D", "text": "A client certificate uploaded to the Redis instance" }
+    ],
+    "correct": ["A"],
+    "explanation": "Managed Redis supports Entra ID based authentication on every tier, which lets a managed identity acquire a token instead of presenting an access key. Nothing is stored, so nothing has to be rotated.",
+    "whyWrong": {
+      "B": "The key is still a secret — Key Vault only moves where it is kept, and it still has to be rotated.",
+      "C": "Same problem: the connection string embeds the key, however indirectly it is fetched.",
+      "D": "Redis client certificate authentication is not the Azure mechanism here."
+    },
+    "docs": [
+      { "title": "Use Microsoft Entra ID for cache authentication", "url": "https://learn.microsoft.com/azure/redis/entra-for-authentication" }
+    ],
+    "tags": ["redis", "managed-redis", "managed-identity", "security", "least-privilege"]
+  },
+  {
+    "id": "r3-009",
+    "domain": "data",
+    "path": "redis",
+    "objective": "Integrate Azure Managed Redis in AI solutions",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "During a cost review someone suggests disabling high availability on the production Azure Managed Redis instance to save money. What is the consequence?",
+    "options": [
+      { "id": "A", "text": "The instance runs without a replica, so a node failure means data loss and downtime — it is a dev/test-only setting" },
+      { "id": "B", "text": "The instance loses its SLA but keeps its replica, so only the credit changes" },
+      { "id": "C", "text": "The instance drops to a single availability zone but keeps in-zone redundancy" },
+      { "id": "D", "text": "The instance becomes read-only until high availability is re-enabled" }
+    ],
+    "correct": ["A"],
+    "explanation": "With high availability on, primary and replica shards are spread over at least two nodes, and across availability zones in regions that have them. Turning it off removes the replica entirely — cheaper, but a failure now costs you the data. Microsoft is explicit that this is for dev/test only.",
+    "whyWrong": {
+      "B": "The replica is exactly what goes away; this is not merely an SLA change.",
+      "C": "Zone distribution is a consequence of having multiple nodes, which is what you just removed.",
+      "D": "The instance stays writable — right up until the node it lives on fails."
+    },
+    "docs": [
+      { "title": "Azure Managed Redis high availability", "url": "https://learn.microsoft.com/azure/redis/overview" }
+    ],
+    "tags": ["redis", "managed-redis", "resiliency", "cost", "availability-zones"]
+  },
+  {
+    "id": "r3-010",
+    "domain": "data",
+    "path": "redis",
+    "objective": "Integrate Azure Managed Redis in AI solutions",
+    "kind": "ordering",
+    "difficulty": 2,
+    "stem": "Put the steps of a cache-aside read through Azure Managed Redis into the order the application performs them.",
+    "options": [
+      { "id": "A", "text": "Look the key up in Redis" },
+      { "id": "B", "text": "On a miss, read the item from the backing store" },
+      { "id": "C", "text": "Write the item into Redis with a TTL" },
+      { "id": "D", "text": "Return the item to the caller" }
+    ],
+    "correct": ["A", "B", "C", "D"],
+    "explanation": "Cache-aside puts the application in charge: it asks the cache first, falls back to the database on a miss, populates the cache itself, and only then answers. The TTL matters — it is what stops the cache serving a value the database has since changed.",
+    "docs": [
+      { "title": "Cache-aside pattern", "url": "https://learn.microsoft.com/azure/architecture/patterns/cache-aside" }
+    ],
+    "tags": ["redis", "managed-redis", "cache-aside", "architecture"]
+  }
+]

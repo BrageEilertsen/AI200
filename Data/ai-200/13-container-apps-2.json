@@ -1,0 +1,252 @@
+[
+  {
+    "id": "ca3-001",
+    "domain": "containers",
+    "path": "container-apps",
+    "objective": "Implement container application hosting",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "A container app loads a 4 GB model into memory before it can serve anything, which takes about three minutes. It keeps being restarted during that window. Which probe should be configured to fix this?",
+    "options": [
+      { "id": "A", "text": "A startup probe, which runs during the initial startup phase and holds off the other probes until it succeeds" },
+      { "id": "B", "text": "A liveness probe with a longer period, so it checks less often" },
+      { "id": "C", "text": "A readiness probe with a higher success threshold" },
+      { "id": "D", "text": "No probe — disable ingress until the model has loaded" }
+    ],
+    "correct": ["A"],
+    "explanation": "The startup probe exists precisely for the slow-boot case: it is checked separately from liveness during the initial startup phase, so a container that is still loading is not judged dead. Its default failure threshold of 240 with a one-second period gives a generous window to widen further.",
+    "whyWrong": {
+      "B": "A longer period just spaces out the failing checks; the app still fails them and is still restarted.",
+      "C": "Readiness governs whether traffic is routed, not whether the replica is killed.",
+      "D": "Ingress is not something you toggle per-startup, and the restarts would continue regardless."
+    },
+    "docs": [
+      { "title": "Health probes in Azure Container Apps", "url": "https://learn.microsoft.com/azure/container-apps/health-probes" }
+    ],
+    "tags": ["container-apps", "health-probes", "startup", "troubleshooting"],
+    "hint": "One of the three probe types is defined as running only during the initial startup phase."
+  },
+  {
+    "id": "ca3-002",
+    "domain": "containers",
+    "path": "container-apps",
+    "objective": "Implement container application hosting",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "A container app runs in multiple revision mode. A new revision is deployed, and traffic must not reach it until its replicas can actually serve requests. What governs that?",
+    "options": [
+      { "id": "A", "text": "The readiness probe — wait until it reports success before shifting traffic to the new revision" },
+      { "id": "B", "text": "The liveness probe — traffic shifts as soon as the replica is not being restarted" },
+      { "id": "C", "text": "The startup probe — traffic shifts the moment startup completes" },
+      { "id": "D", "text": "The revision's provisioning state — traffic shifts when it reaches Provisioned" }
+    ],
+    "correct": ["A"],
+    "explanation": "Readiness is the probe that answers \"can this replica handle incoming requests\". In single revision mode Container Apps shifts traffic automatically once readiness succeeds; in multiple revision mode you control the split yourself, so it is on you to wait for readiness before moving the weights.",
+    "whyWrong": {
+      "B": "Liveness only says the process is still alive and responsive, which is a weaker claim than being able to serve.",
+      "C": "Startup finishing means the app booted, not that dependencies are reachable.",
+      "D": "A provisioned revision can still have replicas that are not ready."
+    },
+    "docs": [
+      { "title": "Health probes in Azure Container Apps", "url": "https://learn.microsoft.com/azure/container-apps/health-probes" },
+      { "title": "Revisions in Azure Container Apps", "url": "https://learn.microsoft.com/azure/container-apps/revisions" }
+    ],
+    "tags": ["container-apps", "health-probes", "revisions", "readiness"]
+  },
+  {
+    "id": "ca3-003",
+    "domain": "containers",
+    "path": "container-apps",
+    "objective": "Implement container application hosting",
+    "kind": "multi",
+    "difficulty": 3,
+    "stem": "Which two statements about Azure Container Apps health probes are true? Choose two.",
+    "options": [
+      { "id": "A", "text": "You can define at most one probe of each type per container" },
+      { "id": "B", "text": "`exec` probes, which run a command inside the container, are not supported" },
+      { "id": "C", "text": "Probes can target a named port defined in the container spec" },
+      { "id": "D", "text": "gRPC probes are supported in addition to HTTP and TCP" },
+      { "id": "E", "text": "A failing liveness probe takes the replica out of rotation without restarting it" }
+    ],
+    "correct": ["A", "B"],
+    "explanation": "Container Apps supports HTTP(S) and TCP probes only, one of each type per container, and does not support `exec` or gRPC. Ports must be integers — named ports are not supported. An HTTP probe succeeds on a status code of at least 200 and below 400.",
+    "whyWrong": {
+      "C": "Named ports are explicitly unsupported; port values must be integers.",
+      "D": "gRPC probes are on the unsupported list alongside `exec`.",
+      "E": "That describes readiness. Liveness failure means the replica is restarted."
+    },
+    "docs": [
+      { "title": "Health probes in Azure Container Apps — Restrictions", "url": "https://learn.microsoft.com/azure/container-apps/health-probes" }
+    ],
+    "tags": ["container-apps", "health-probes", "limits"]
+  },
+  {
+    "id": "ca3-004",
+    "domain": "containers",
+    "path": "container-apps",
+    "objective": "Implement container application hosting",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "A container app has ingress enabled and no probes defined in its template. A sidecar container was added alongside the main container. What is true about probes on this app?",
+    "options": [
+      { "id": "A", "text": "The main app container gets default TCP probes on the ingress target port; the sidecar gets none" },
+      { "id": "B", "text": "Both containers get default TCP probes on the ingress target port" },
+      { "id": "C", "text": "Neither container gets probes, because none were defined in the template" },
+      { "id": "D", "text": "Both containers get default HTTP probes against `/health`" }
+    ],
+    "correct": ["A"],
+    "explanation": "When ingress is enabled the portal fills in default startup, liveness and readiness probes on the main app container — TCP, against the ingress target port — for each type you did not define yourself. Sidecars are left alone, so a sidecar that needs a probe needs one written explicitly.",
+    "whyWrong": {
+      "B": "Defaults are not added to sidecar containers.",
+      "C": "The defaults are added for you; assuming no probes exist is how people are surprised by restarts.",
+      "D": "The defaults are TCP, not HTTP, and there is no assumed `/health` path."
+    },
+    "docs": [
+      { "title": "Health probes in Azure Container Apps — Default configuration", "url": "https://learn.microsoft.com/azure/container-apps/health-probes" }
+    ],
+    "tags": ["container-apps", "health-probes", "sidecar", "ingress"],
+    "hint": "The defaults are attached to one specific container, and they use the simplest protocol available."
+  },
+  {
+    "id": "ca3-005",
+    "domain": "containers",
+    "path": "container-apps",
+    "objective": "Implement container application hosting",
+    "kind": "blanks",
+    "difficulty": 2,
+    "stem": "Complete the probe definition so that the runtime restarts the replica when the app stops responding, checking an HTTP endpoint.",
+    "code": "probes:\n  - type: [1]\n    [2]:\n      path: \"/health\"\n      port: 8080\n    initialDelaySeconds: 7\n    periodSeconds: 3",
+    "blanks": [
+      {
+        "id": "b1",
+        "label": "Blank 1 — the probe type that triggers a restart",
+        "choices": [
+          { "id": "a", "text": "Liveness" },
+          { "id": "b", "text": "Readiness" },
+          { "id": "c", "text": "Startup" }
+        ],
+        "correct": "a"
+      },
+      {
+        "id": "b2",
+        "label": "Blank 2 — the probe mechanism",
+        "choices": [
+          { "id": "a", "text": "httpGet" },
+          { "id": "b", "text": "tcpSocket" },
+          { "id": "c", "text": "exec" }
+        ],
+        "correct": "a"
+      }
+    ],
+    "explanation": "Liveness is the probe whose failure means the replica is restarted; readiness only removes it from rotation. The HTTP mechanism is `httpGet` — `tcpSocket` would ignore the path, and `exec` is not supported in Container Apps at all.",
+    "docs": [
+      { "title": "Health probes in Azure Container Apps", "url": "https://learn.microsoft.com/azure/container-apps/health-probes" }
+    ],
+    "tags": ["container-apps", "health-probes", "yaml", "liveness"]
+  },
+  {
+    "id": "ca3-006",
+    "domain": "containers",
+    "path": "container-apps",
+    "objective": "Implement container application hosting",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "One replica out of six in a revision is repeatedly failing its readiness probe. How does Container Apps report and handle this?",
+    "options": [
+      { "id": "A", "text": "The whole revision shows as unhealthy, and the failing replica is restarted until it recovers or exceeds the failure threshold" },
+      { "id": "B", "text": "The revision stays healthy because a majority of replicas pass, and the failing replica is silently removed" },
+      { "id": "C", "text": "The revision is deactivated and traffic fails over to the previous revision automatically" },
+      { "id": "D", "text": "The failing replica is left in rotation but its responses are marked with a degraded header" }
+    ],
+    "correct": ["A"],
+    "explanation": "Revision health is not a majority vote: one failing replica marks the revision unhealthy even when the other five are fine. Container Apps keeps restarting the offending replica until it passes or blows through the failure threshold — at which point the revision is usually misconfigured rather than unlucky.",
+    "whyWrong": {
+      "B": "There is no quorum rule; a single failing replica is enough to show the revision as unhealthy.",
+      "C": "Automatic failover to a previous revision is not what happens — traffic weights are yours to manage.",
+      "D": "Nothing decorates responses; an unready replica does not receive traffic."
+    },
+    "docs": [
+      { "title": "Health probes in Azure Container Apps — Default configuration", "url": "https://learn.microsoft.com/azure/container-apps/health-probes" }
+    ],
+    "tags": ["container-apps", "health-probes", "revisions", "troubleshooting"]
+  },
+  {
+    "id": "ca3-007",
+    "domain": "containers",
+    "path": "container-apps",
+    "objective": "Implement container application hosting",
+    "kind": "single",
+    "difficulty": 3,
+    "stem": "An inference API on Container Apps is configured with `minReplicas: 0`. Users report that the first request after a quiet period takes several seconds, while later requests are fast. What is the trade-off being made?",
+    "options": [
+      { "id": "A", "text": "Scaling to zero removes billing for idle time at the cost of a cold start on the first request" },
+      { "id": "B", "text": "Scaling to zero disables the readiness probe, so the first request arrives before the app is ready" },
+      { "id": "C", "text": "Scaling to zero forces the revision into single revision mode, which serialises requests" },
+      { "id": "D", "text": "Scaling to zero switches the app to the consumption profile, which throttles the first request" }
+    ],
+    "correct": ["A"],
+    "explanation": "`minReplicas: 0` is the scale-to-zero setting: with no replicas running you pay nothing for idle, but the next request has to wait for a replica to be created, the image to start and the app to become ready. Setting `minReplicas: 1` buys away the cold start by keeping one replica warm.",
+    "whyWrong": {
+      "B": "Probes still run on the new replica — the delay is the replica being created, not a probe being skipped.",
+      "C": "Revision mode is an independent setting and does not serialise requests.",
+      "D": "Workload profile is chosen separately, and nothing throttles the first request."
+    },
+    "docs": [
+      { "title": "Set scaling rules in Azure Container Apps", "url": "https://learn.microsoft.com/azure/container-apps/scale-app" }
+    ],
+    "tags": ["container-apps", "scaling", "keda", "cost", "performance"],
+    "hint": "Nothing is broken. Ask what has to happen between the request arriving and a replica existing."
+  },
+  {
+    "id": "ca3-008",
+    "domain": "containers",
+    "path": "container-hosting",
+    "objective": "Implement container application hosting",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "A validated image already exists in a development Azure Container Registry and must be copied into the production registry without rebuilding it and without pulling it to a local machine. Which command does this?",
+    "options": [
+      { "id": "A", "text": "`az acr import --name prodacr --source devacr.azurecr.io/copilot:v3 --image copilot:v3`" },
+      { "id": "B", "text": "`az acr build --registry prodacr --image copilot:v3 .`" },
+      { "id": "C", "text": "`az acr repository update --name prodacr --image copilot:v3`" },
+      { "id": "D", "text": "`docker tag devacr.azurecr.io/copilot:v3 prodacr.azurecr.io/copilot:v3 && docker push prodacr.azurecr.io/copilot:v3`" }
+    ],
+    "correct": ["A"],
+    "explanation": "`az acr import` copies an image registry-to-registry on the service side. Nothing is pulled locally and nothing is rebuilt, so the digest that was tested in dev is the digest that lands in production — which is the point of promoting rather than rebuilding.",
+    "whyWrong": {
+      "B": "`az acr build` produces a new image from source; the artefact you tested is not the one you ship.",
+      "C": "`az acr repository update` changes attributes such as write-enabled; it does not copy images.",
+      "D": "This works but violates the constraint — it pulls to and pushes from the local machine, and needs a Docker daemon."
+    },
+    "docs": [
+      { "title": "Import container images to a container registry", "url": "https://learn.microsoft.com/azure/container-registry/container-registry-import-images" }
+    ],
+    "tags": ["acr", "cli", "promotion", "supply-chain"]
+  },
+  {
+    "id": "ca3-009",
+    "domain": "containers",
+    "path": "container-apps",
+    "objective": "Implement container application hosting",
+    "kind": "single",
+    "difficulty": 2,
+    "stem": "A container app should be reachable only from other apps in the same Container Apps environment, never from the internet, while still being addressable by name over HTTP. How should ingress be configured?",
+    "options": [
+      { "id": "A", "text": "Ingress enabled with external traffic set to internal, so the app gets an environment-internal FQDN" },
+      { "id": "B", "text": "Ingress disabled, and callers reach it by replica IP address" },
+      { "id": "C", "text": "Ingress enabled and external, protected by an IP restriction list covering the environment's subnet" },
+      { "id": "D", "text": "Ingress enabled and external, with authentication required on every route" }
+    ],
+    "correct": ["A"],
+    "explanation": "Internal ingress gives the app a stable FQDN that resolves only inside the environment. The alternatives either give up name-based addressing or expose a public endpoint and then try to fence it off, which is more moving parts for a weaker guarantee.",
+    "whyWrong": {
+      "B": "With ingress disabled there is no endpoint or FQDN, and replica IPs are not stable.",
+      "C": "The endpoint is still public; an IP allowlist is a filter in front of exposure, not the absence of it.",
+      "D": "Authentication protects the endpoint but does not stop it being internet-reachable."
+    },
+    "docs": [
+      { "title": "Ingress in Azure Container Apps", "url": "https://learn.microsoft.com/azure/container-apps/ingress-overview" }
+    ],
+    "tags": ["container-apps", "ingress", "networking", "security"]
+  }
+]
