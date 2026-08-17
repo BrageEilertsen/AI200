@@ -8,12 +8,26 @@
     "difficulty": 3,
     "stem": "Embeddings from `text-embedding-3-large` at full size — 3072 dimensions — must be indexed in an Azure Cosmos DB for NoSQL container. Which vector index types can be used?",
     "options": [
-      { "id": "A", "text": "`quantizedFlat` or `diskANN`, both of which allow up to 4096 dimensions" },
-      { "id": "B", "text": "`flat` only, because it is the only type that stores full-precision vectors" },
-      { "id": "C", "text": "Any of `flat`, `quantizedFlat` or `diskANN` — the limit applies to the vector policy, not the index" },
-      { "id": "D", "text": "None; vectors above 2048 dimensions must be reduced before indexing" }
+      {
+        "id": "A",
+        "text": "`quantizedFlat` or `diskANN`, both of which allow up to 4096 dimensions"
+      },
+      {
+        "id": "B",
+        "text": "`flat` only, because it is the only type that stores full-precision vectors"
+      },
+      {
+        "id": "C",
+        "text": "Any of `flat`, `quantizedFlat` or `diskANN` — the limit applies to the vector policy, not the index"
+      },
+      {
+        "id": "D",
+        "text": "None; vectors above 2048 dimensions must be reduced before indexing"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "`flat` tops out at 505 dimensions, which rules it out immediately. `quantizedFlat` and `diskANN` both accept up to 4096, so a 3072-dimension embedding fits either — the choice between them then comes down to how many vectors the search is scoped to.",
     "whyWrong": {
       "B": "`flat` is the one type 3072 dimensions will not fit on.",
@@ -21,9 +35,17 @@
       "D": "4096 is the ceiling for the quantized types, and nothing requires dimensionality reduction at 3072."
     },
     "docs": [
-      { "title": "Vector indexing policies in Azure Cosmos DB for NoSQL", "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/vector-search" }
+      {
+        "title": "Vector indexing policies in Azure Cosmos DB for NoSQL",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/vector-search"
+      }
     ],
-    "tags": ["cosmos-db", "vector-search", "indexing", "embeddings"],
+    "tags": [
+      "cosmos-db",
+      "vector-search",
+      "indexing",
+      "embeddings"
+    ],
     "hint": "One of the three types has a dimension limit an order of magnitude below the others."
   },
   {
@@ -35,12 +57,26 @@
     "difficulty": 3,
     "stem": "A container holds about two million indexed vectors and queries search across all of them. Which vector index type gives the lowest latency and RU cost while keeping high accuracy?",
     "options": [
-      { "id": "A", "text": "`diskANN`, which is the most performant type once the search is scoped to more than about 50,000 vectors" },
-      { "id": "B", "text": "`quantizedFlat`, because compression always beats a graph index at scale" },
-      { "id": "C", "text": "`flat`, because only an exact search can be trusted at this volume" },
-      { "id": "D", "text": "No index; a full scan with a `WHERE` filter is cheaper above a million vectors" }
+      {
+        "id": "A",
+        "text": "`diskANN`, the most performant above ~50,000 vectors"
+      },
+      {
+        "id": "B",
+        "text": "`quantizedFlat`, since compression beats a graph index"
+      },
+      {
+        "id": "C",
+        "text": "`flat`, since only an exact search can be trusted"
+      },
+      {
+        "id": "D",
+        "text": "No index; a full scan with a `WHERE` filter is cheaper"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "The 50,000-vector line is the one to remember: at or below it `quantizedFlat` is the recommendation, above it `diskANN` wins on latency, throughput and RU charge. Both are brute-force versus graph — `quantizedFlat` still scans every quantized vector, which is what stops scaling.",
     "whyWrong": {
       "B": "`quantizedFlat` is still a brute-force search over compressed vectors; its cost grows with the vector count.",
@@ -48,9 +84,18 @@
       "D": "Unindexed vector queries cost more RUs, not fewer — that is the whole reason vector indexes exist."
     },
     "docs": [
-      { "title": "Vector indexing policies in Azure Cosmos DB for NoSQL", "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/vector-search" }
+      {
+        "title": "Vector indexing policies in Azure Cosmos DB for NoSQL",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/vector-search"
+      }
     ],
-    "tags": ["cosmos-db", "vector-search", "diskann", "ru", "performance"]
+    "tags": [
+      "cosmos-db",
+      "vector-search",
+      "diskann",
+      "ru",
+      "performance"
+    ]
   },
   {
     "id": "vx-003",
@@ -61,12 +106,26 @@
     "difficulty": 3,
     "stem": "A team adds a `diskANN` index to a test container holding 300 documents with vectors. Queries return correct results but the RU charge is far higher than expected. What explains it?",
     "options": [
-      { "id": "A", "text": "`diskANN` and `quantizedFlat` require at least 1,000 indexed vectors; below that a full scan is executed instead" },
-      { "id": "B", "text": "`diskANN` indexes are built lazily and are not used until the container is repartitioned" },
-      { "id": "C", "text": "The container is missing a `flat` index, which `diskANN` falls back to" },
-      { "id": "D", "text": "RU charges for vector queries are fixed and do not depend on the index at all" }
+      {
+        "id": "A",
+        "text": "`diskANN` needs 1,000 vectors; below that it full-scans"
+      },
+      {
+        "id": "B",
+        "text": "`diskANN` indexes are built lazily until repartitioning"
+      },
+      {
+        "id": "C",
+        "text": "The container is missing the `flat` index it falls back to"
+      },
+      {
+        "id": "D",
+        "text": "RU charges for vector queries do not depend on the index"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Both quantized index types need at least 1,000 vectors before the quantization can be trained accurately. Below that threshold Cosmos DB quietly falls back to a full scan — the results stay correct, which is exactly why the symptom shows up as cost rather than as an error.",
     "whyWrong": {
       "B": "There is no repartitioning prerequisite for a vector index to be used.",
@@ -74,9 +133,18 @@
       "D": "RU cost for vector queries drops substantially when an index is actually used."
     },
     "docs": [
-      { "title": "Vector search limitations in Azure Cosmos DB for NoSQL", "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/vector-search" }
+      {
+        "title": "Vector search limitations in Azure Cosmos DB for NoSQL",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/vector-search"
+      }
     ],
-    "tags": ["cosmos-db", "vector-search", "diskann", "ru", "troubleshooting"],
+    "tags": [
+      "cosmos-db",
+      "vector-search",
+      "diskann",
+      "ru",
+      "troubleshooting"
+    ],
     "hint": "The results are right and the bill is wrong. That points at a fallback, not a failure."
   },
   {
@@ -93,9 +161,18 @@
         "id": "b1",
         "label": "Blank 1 — full-precision data type",
         "choices": [
-          { "id": "a", "text": "float32" },
-          { "id": "b", "text": "float16" },
-          { "id": "c", "text": "int8" }
+          {
+            "id": "a",
+            "text": "float32"
+          },
+          {
+            "id": "b",
+            "text": "float16"
+          },
+          {
+            "id": "c",
+            "text": "int8"
+          }
         ],
         "correct": "a"
       },
@@ -103,9 +180,18 @@
         "id": "b2",
         "label": "Blank 2 — distance function",
         "choices": [
-          { "id": "a", "text": "cosine" },
-          { "id": "b", "text": "dotproduct" },
-          { "id": "c", "text": "euclidean" }
+          {
+            "id": "a",
+            "text": "cosine"
+          },
+          {
+            "id": "b",
+            "text": "dotproduct"
+          },
+          {
+            "id": "c",
+            "text": "euclidean"
+          }
         ],
         "correct": "a"
       },
@@ -113,18 +199,35 @@
         "id": "b3",
         "label": "Blank 3 — dimensions",
         "choices": [
-          { "id": "a", "text": "1536" },
-          { "id": "b", "text": "505" },
-          { "id": "c", "text": "4096" }
+          {
+            "id": "a",
+            "text": "1536"
+          },
+          {
+            "id": "b",
+            "text": "505"
+          },
+          {
+            "id": "c",
+            "text": "4096"
+          }
         ],
         "correct": "a"
       }
     ],
     "explanation": "`float32` is the full-precision type most embedding models emit; `float16` halves the storage at some accuracy cost. Cosine is both the requested metric and the default. `dimensions` must match the model's output — 1536 here — and is not a limit you pick.",
     "docs": [
-      { "title": "Container vector policies", "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/vector-search" }
+      {
+        "title": "Container vector policies",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/vector-search"
+      }
     ],
-    "tags": ["cosmos-db", "vector-search", "vector-policy", "embeddings"]
+    "tags": [
+      "cosmos-db",
+      "vector-search",
+      "vector-policy",
+      "embeddings"
+    ]
   },
   {
     "id": "vx-005",
@@ -135,12 +238,26 @@
     "difficulty": 3,
     "stem": "A vector query runs against a container with a `diskANN` index. Run twice against unchanged data, it returns slightly different orderings. Is this a defect?",
     "options": [
-      { "id": "A", "text": "No — `diskANN` is an approximate search and each replica builds its index independently, so some variation between runs is expected" },
-      { "id": "B", "text": "Yes — it indicates the vector policy and indexing policy have drifted out of sync" },
-      { "id": "C", "text": "Yes — it means the index build has not completed and results are being served from a partial index" },
-      { "id": "D", "text": "No — but only because the query is missing an `ORDER BY`, which would make it deterministic" }
+      {
+        "id": "A",
+        "text": "No; `diskANN` is approximate and replicas index separately"
+      },
+      {
+        "id": "B",
+        "text": "Yes; the vector policy and index policy have drifted apart"
+      },
+      {
+        "id": "C",
+        "text": "Yes; the index build has not completed on every replica"
+      },
+      {
+        "id": "D",
+        "text": "No; the query is missing an `ORDER BY` to make it stable"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "`diskANN` trades guaranteed recall for latency and RU cost, and any replica can serve the query using its own independently built index. If you need identical, exact results every time, `flat` is the only type that promises 100% recall; otherwise `searchListSizeMultiplier` on `VectorDistance` buys recall back at the cost of RUs.",
     "whyWrong": {
       "B": "Policy drift would surface as the index not being used, not as small ordering differences.",
@@ -148,9 +265,18 @@
       "D": "The query does have an ordering — approximate search means the candidate set itself can differ."
     },
     "docs": [
-      { "title": "Approximate search and result determinism", "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/vector-search" }
+      {
+        "title": "Approximate search and result determinism",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/vector-search"
+      }
     ],
-    "tags": ["cosmos-db", "vector-search", "diskann", "recall", "troubleshooting"]
+    "tags": [
+      "cosmos-db",
+      "vector-search",
+      "diskann",
+      "recall",
+      "troubleshooting"
+    ]
   },
   {
     "id": "vx-006",
@@ -162,12 +288,26 @@
     "stem": "Which query correctly retrieves the ten most semantically similar documents to a query vector in Azure Cosmos DB for NoSQL?",
     "code": "-- @v is the query embedding",
     "options": [
-      { "id": "A", "text": "`SELECT TOP 10 c.title, VectorDistance(c.contentVector, @v) AS score FROM c ORDER BY VectorDistance(c.contentVector, @v)`" },
-      { "id": "B", "text": "`SELECT c.title FROM c WHERE VectorDistance(c.contentVector, @v) < 0.2`" },
-      { "id": "C", "text": "`SELECT TOP 10 c.title FROM c ORDER BY c.contentVector DESC`" },
-      { "id": "D", "text": "`SELECT c.title, VectorDistance(c.contentVector, @v) AS score FROM c ORDER BY score`" }
+      {
+        "id": "A",
+        "text": "`SELECT TOP 10 c.title FROM c ORDER BY VectorDistance(c.v, @q)`"
+      },
+      {
+        "id": "B",
+        "text": "`SELECT c.title FROM c WHERE VectorDistance(c.v, @q) < 0.2`"
+      },
+      {
+        "id": "C",
+        "text": "`SELECT TOP 10 c.title FROM c ORDER BY c.v DESC`"
+      },
+      {
+        "id": "D",
+        "text": "`SELECT c.title, VectorDistance(c.v, @q) AS s FROM c ORDER BY s`"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "A vector search is `ORDER BY VectorDistance(...)` with a `TOP N`. The `TOP N` is not cosmetic — without it the engine tries to rank the whole container, and both the RU charge and the latency go up sharply.",
     "whyWrong": {
       "B": "A raw distance threshold with no ordering or TOP does not give you nearest neighbours, and the cut-off is metric-dependent.",
@@ -175,9 +315,17 @@
       "D": "Missing the `TOP N`, which is the specific thing Microsoft warns about; ordering by the projected alias also does not limit the work."
     },
     "docs": [
-      { "title": "Perform vector search with VectorDistance", "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/vector-search" }
+      {
+        "title": "Perform vector search with VectorDistance",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/vector-search"
+      }
     ],
-    "tags": ["cosmos-db", "vector-search", "vectordistance", "ru"]
+    "tags": [
+      "cosmos-db",
+      "vector-search",
+      "vectordistance",
+      "ru"
+    ]
   },
   {
     "id": "vx-007",
@@ -188,12 +336,26 @@
     "difficulty": 3,
     "stem": "A container's vector policy specifies 1536 dimensions with cosine distance. The team switches embedding models and now needs 3072 dimensions. What has to happen?",
     "options": [
-      { "id": "A", "text": "The existing vector policy and index must be dropped and re-added with the new configuration — the settings cannot be changed in place" },
-      { "id": "B", "text": "Update the `dimensions` value on the policy; Cosmos DB reindexes in the background" },
-      { "id": "C", "text": "Nothing — `dimensions` is advisory and vectors of any length are accepted" },
-      { "id": "D", "text": "Disable vector search on the container, then re-enable it with the new dimensions" }
+      {
+        "id": "A",
+        "text": "The policy and index must be dropped and re-added"
+      },
+      {
+        "id": "B",
+        "text": "Update `dimensions`; Cosmos DB reindexes in the background"
+      },
+      {
+        "id": "C",
+        "text": "Nothing; `dimensions` is advisory and any length is accepted"
+      },
+      {
+        "id": "D",
+        "text": "Disable vector search, then re-enable it with new dimensions"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "You can add or remove path configurations, but you cannot edit the settings of an existing vector embedding or vector index policy. A dimension change therefore means dropping the policy and index and adding them back — which in practice means a new container and a re-embed of the data.",
     "whyWrong": {
       "B": "In-place edits to policy settings are not supported; that is the specific limitation being tested.",
@@ -201,9 +363,17 @@
       "D": "Once vector indexing and search are enabled on a container, they cannot be disabled."
     },
     "docs": [
-      { "title": "Vector indexing policies — limitations", "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/vector-search" }
+      {
+        "title": "Vector indexing policies — limitations",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/nosql/vector-search"
+      }
     ],
-    "tags": ["cosmos-db", "vector-search", "vector-policy", "limits"]
+    "tags": [
+      "cosmos-db",
+      "vector-search",
+      "vector-policy",
+      "limits"
+    ]
   },
   {
     "id": "vx-008",
@@ -219,9 +389,18 @@
         "id": "b1",
         "label": "Blank 1 — how the dependency on the `vector` extension is satisfied",
         "choices": [
-          { "id": "a", "text": "CASCADE" },
-          { "id": "b", "text": "WITH SCHEMA public" },
-          { "id": "c", "text": "REQUIRES vector" }
+          {
+            "id": "a",
+            "text": "CASCADE"
+          },
+          {
+            "id": "b",
+            "text": "WITH SCHEMA public"
+          },
+          {
+            "id": "c",
+            "text": "REQUIRES vector"
+          }
         ],
         "correct": "a"
       },
@@ -229,9 +408,18 @@
         "id": "b2",
         "label": "Blank 2 — the index access method",
         "choices": [
-          { "id": "a", "text": "diskann" },
-          { "id": "b", "text": "hnsw" },
-          { "id": "c", "text": "ivfflat" }
+          {
+            "id": "a",
+            "text": "diskann"
+          },
+          {
+            "id": "b",
+            "text": "hnsw"
+          },
+          {
+            "id": "c",
+            "text": "ivfflat"
+          }
         ],
         "correct": "a"
       },
@@ -239,18 +427,36 @@
         "id": "b3",
         "label": "Blank 3 — the operator class for cosine distance",
         "choices": [
-          { "id": "a", "text": "vector_cosine_ops" },
-          { "id": "b", "text": "vector_l2_ops" },
-          { "id": "c", "text": "vector_ip_ops" }
+          {
+            "id": "a",
+            "text": "vector_cosine_ops"
+          },
+          {
+            "id": "b",
+            "text": "vector_l2_ops"
+          },
+          {
+            "id": "c",
+            "text": "vector_ip_ops"
+          }
         ],
         "correct": "a"
       }
     ],
     "explanation": "`pg_diskann` depends on `vector`, and `CASCADE` tells PostgreSQL to create that dependency for you rather than failing. The access method is `diskann`, and the operator class must match the distance operator your queries use — `vector_cosine_ops` for `<=>`. Pick the wrong operator class and the planner simply ignores the index.",
     "docs": [
-      { "title": "Enable and use DiskANN in Azure Database for PostgreSQL", "url": "https://learn.microsoft.com/azure/postgresql/extensions/how-to-use-pgdiskann" }
+      {
+        "title": "Enable and use DiskANN in Azure Database for PostgreSQL",
+        "url": "https://learn.microsoft.com/azure/postgresql/extensions/how-to-use-pgdiskann"
+      }
     ],
-    "tags": ["postgresql", "pgvector", "diskann", "indexing", "sql"]
+    "tags": [
+      "postgresql",
+      "pgvector",
+      "diskann",
+      "indexing",
+      "sql"
+    ]
   },
   {
     "id": "vx-009",
@@ -265,9 +471,18 @@
         "id": "b1",
         "label": "`<=>` — cosine distance",
         "choices": [
-          { "id": "a", "text": "vector_cosine_ops" },
-          { "id": "b", "text": "vector_l2_ops" },
-          { "id": "c", "text": "vector_ip_ops" }
+          {
+            "id": "a",
+            "text": "vector_cosine_ops"
+          },
+          {
+            "id": "b",
+            "text": "vector_l2_ops"
+          },
+          {
+            "id": "c",
+            "text": "vector_ip_ops"
+          }
         ],
         "correct": "a"
       },
@@ -275,9 +490,18 @@
         "id": "b2",
         "label": "`<->` — Euclidean distance",
         "choices": [
-          { "id": "a", "text": "vector_cosine_ops" },
-          { "id": "b", "text": "vector_l2_ops" },
-          { "id": "c", "text": "vector_ip_ops" }
+          {
+            "id": "a",
+            "text": "vector_cosine_ops"
+          },
+          {
+            "id": "b",
+            "text": "vector_l2_ops"
+          },
+          {
+            "id": "c",
+            "text": "vector_ip_ops"
+          }
         ],
         "correct": "b"
       },
@@ -285,18 +509,36 @@
         "id": "b3",
         "label": "`<#>` — inner product",
         "choices": [
-          { "id": "a", "text": "vector_cosine_ops" },
-          { "id": "b", "text": "vector_l2_ops" },
-          { "id": "c", "text": "vector_ip_ops" }
+          {
+            "id": "a",
+            "text": "vector_cosine_ops"
+          },
+          {
+            "id": "b",
+            "text": "vector_l2_ops"
+          },
+          {
+            "id": "c",
+            "text": "vector_ip_ops"
+          }
         ],
         "correct": "c"
       }
     ],
     "explanation": "The operator and the operator class have to agree, or the index is not a candidate and you get a sequential scan — fast enough on a test table, ruinous in production. L2 is Euclidean and uses `<->`; cosine uses `<=>`; inner product uses `<#>`.",
     "docs": [
-      { "title": "Selecting the index access function", "url": "https://learn.microsoft.com/azure/postgresql/extensions/how-to-use-pgdiskann" }
+      {
+        "title": "Selecting the index access function",
+        "url": "https://learn.microsoft.com/azure/postgresql/extensions/how-to-use-pgdiskann"
+      }
     ],
-    "tags": ["postgresql", "pgvector", "diskann", "indexing", "sql"]
+    "tags": [
+      "postgresql",
+      "pgvector",
+      "diskann",
+      "indexing",
+      "sql"
+    ]
   },
   {
     "id": "vx-010",
@@ -307,12 +549,26 @@
     "difficulty": 3,
     "stem": "A RAG store on Azure Database for PostgreSQL holds 40 million rows of embeddings. Query recall is acceptable but the index no longer fits comfortably in memory and queries are hitting storage. Which index option addresses this directly?",
     "options": [
-      { "id": "A", "text": "Build the `diskann` index with `product_quantized = true` so compressed vectors take less memory" },
-      { "id": "B", "text": "Lower `max_neighbors` to 8 to shrink the graph" },
-      { "id": "C", "text": "Set `diskann.l_value_is` to 20 so fewer candidates are fetched" },
-      { "id": "D", "text": "Switch to an `ivfflat` index, which stores no graph structure" }
+      {
+        "id": "A",
+        "text": "Build the index with `product_quantized = true`"
+      },
+      {
+        "id": "B",
+        "text": "Lower `max_neighbors` to 8 to shrink the graph"
+      },
+      {
+        "id": "C",
+        "text": "Set `diskann.l_value_is` to 20 so fewer candidates are fetched"
+      },
+      {
+        "id": "D",
+        "text": "Switch to an `ivfflat` index, which stores no graph structure"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Product quantization compresses the vectors themselves, so far more of the index stays resident and comparisons are done on smaller values. Microsoft recommends turning it on above about a million rows for exactly this reason.",
     "whyWrong": {
       "B": "Cutting `max_neighbors` well below the recommended 64–96 for a dataset this size trades away recall to save comparatively little.",
@@ -320,9 +576,18 @@
       "D": "`ivfflat` stores full vectors in lists and does not solve the memory problem; it usually gives worse recall at this scale too."
     },
     "docs": [
-      { "title": "Scale efficiently with quantization", "url": "https://learn.microsoft.com/azure/postgresql/extensions/how-to-use-pgdiskann" }
+      {
+        "title": "Scale efficiently with quantization",
+        "url": "https://learn.microsoft.com/azure/postgresql/extensions/how-to-use-pgdiskann"
+      }
     ],
-    "tags": ["postgresql", "pgvector", "diskann", "quantization", "performance"],
+    "tags": [
+      "postgresql",
+      "pgvector",
+      "diskann",
+      "quantization",
+      "performance"
+    ],
     "hint": "Two of these change how thoroughly you search. Only one changes how big the thing you are searching is."
   },
   {
@@ -334,12 +599,26 @@
     "difficulty": 3,
     "stem": "A team wants to index 3072-dimension embeddings in Azure Database for PostgreSQL and finds that their HNSW index creation fails. What is the constraint, and what is the fix?",
     "options": [
-      { "id": "A", "text": "HNSW in pgvector is limited to 2,000 dimensions; `pg_diskann` with product quantization supports up to 16,000" },
-      { "id": "B", "text": "HNSW requires the vectors to be normalised first; normalise and retry" },
-      { "id": "C", "text": "HNSW cannot be created on an empty table; insert 1,000 rows and retry" },
-      { "id": "D", "text": "HNSW requires `shared_preload_libraries` to include `vector`; add it and restart" }
+      {
+        "id": "A",
+        "text": "HNSW caps at 2,000 dimensions; `pg_diskann` goes to 16,000"
+      },
+      {
+        "id": "B",
+        "text": "HNSW requires the vectors to be normalised first; normalise and retry"
+      },
+      {
+        "id": "C",
+        "text": "HNSW cannot be created on an empty table; insert 1,000 rows and retry"
+      },
+      {
+        "id": "D",
+        "text": "HNSW requires `shared_preload_libraries` to include `vector`; add it and restart"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "pgvector's HNSW caps out at 2,000 dimensions, which rules out the full-size large embedding models. DiskANN from v0.6 indexes up to 16,000 dimensions, provided product quantization is turned on — that support is what the quantization unlocks.",
     "whyWrong": {
       "B": "Normalisation affects which distance metric is meaningful, not whether the index can be built.",
@@ -347,8 +626,17 @@
       "D": "The extension being allowed and created is a prerequisite generally, but it is not what the dimension limit is about."
     },
     "docs": [
-      { "title": "Support for high dimension embeddings", "url": "https://learn.microsoft.com/azure/postgresql/extensions/how-to-use-pgdiskann" }
+      {
+        "title": "Support for high dimension embeddings",
+        "url": "https://learn.microsoft.com/azure/postgresql/extensions/how-to-use-pgdiskann"
+      }
     ],
-    "tags": ["postgresql", "pgvector", "hnsw", "diskann", "limits"]
+    "tags": [
+      "postgresql",
+      "pgvector",
+      "hnsw",
+      "diskann",
+      "limits"
+    ]
   }
 ]

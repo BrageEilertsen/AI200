@@ -103,7 +103,7 @@
     "options": [
       {
         "id": "A",
-        "text": "A data-plane role assignment, created with `az cosmosdb sql role assignment create`"
+        "text": "A data-plane role assignment on the account"
       },
       {
         "id": "B",
@@ -199,7 +199,7 @@
     "options": [
       {
         "id": "A",
-        "text": "The default latest-version change feed mode does not emit delete events"
+        "text": "The latest-version change feed mode omits deletes"
       },
       {
         "id": "B",
@@ -246,7 +246,7 @@
     "options": [
       {
         "id": "A",
-        "text": "A lease container that stores checkpoints and distributes partitions across instances"
+        "text": "A lease container to store checkpoints"
       },
       {
         "id": "B",
@@ -293,7 +293,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Add the unused paths to excludedPaths in the container's indexing policy"
+        "text": "Add the unused paths to excludedPaths"
       },
       {
         "id": "B",
@@ -341,11 +341,11 @@
     "options": [
       {
         "id": "A",
-        "text": "A composite index on tenantId and createdAt in the indexing policy"
+        "text": "A composite index on tenantId and createdAt"
       },
       {
         "id": "B",
-        "text": "A spatial index on both properties"
+        "text": "A spatial index covering both properties"
       },
       {
         "id": "C",
@@ -388,7 +388,7 @@
     "options": [
       {
         "id": "A",
-        "text": "A hot logical partition — the partition key concentrates that customer's traffic on one partition"
+        "text": "A hot logical partition from the partition key"
       },
       {
         "id": "B",
@@ -436,7 +436,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Registered as a singleton and reused for the lifetime of the application"
+        "text": "Registered as a singleton for the app's lifetime"
       },
       {
         "id": "B",
@@ -530,11 +530,11 @@
     "options": [
       {
         "id": "A",
-        "text": "Set `AllowBulkExecution` to true on the `CosmosClient`Options"
+        "text": "Set `AllowBulkExecution` to true"
       },
       {
         "id": "B",
-        "text": "Set ConnectionMode to Gateway"
+        "text": "Set `ConnectionMode` to Gateway"
       },
       {
         "id": "C",
@@ -579,15 +579,15 @@
     "options": [
       {
         "id": "A",
-        "text": "The partition key is not being passed in `QueryRequestOptions`, so the query fans out across all partitions"
+        "text": "The partition key is not set in `QueryRequestOptions`"
       },
       {
         "id": "B",
-        "text": "The container is using autoscale throughput"
+        "text": "The container is provisioned with autoscale throughput"
       },
       {
         "id": "C",
-        "text": "The query is missing a TOP clause"
+        "text": "The query is missing a TOP N clause"
       },
       {
         "id": "D",
@@ -627,7 +627,7 @@
     "options": [
       {
         "id": "A",
-        "text": "The JSON path of the embedding property"
+        "text": "The JSON path of the embedding"
       },
       {
         "id": "B",
@@ -679,7 +679,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Time to live on the container, with the value expressed in seconds"
+        "text": "Time to live on the container, in seconds"
       },
       {
         "id": "B",
@@ -726,7 +726,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Add vector to the `azure.extensions` server parameter and let the change apply"
+        "text": "Add vector to the `azure.extensions` parameter"
       },
       {
         "id": "B",
@@ -820,7 +820,7 @@
     "options": [
       {
         "id": "A",
-        "text": "IVFFlat centroids are computed from the data present when the index is built"
+        "text": "IVFFlat centroids come from the data at build time"
       },
       {
         "id": "B",
@@ -869,11 +869,11 @@
     "options": [
       {
         "id": "A",
-        "text": "They can be created on an empty table and stay effective as rows are inserted"
+        "text": "They can be created on an empty table"
       },
       {
         "id": "B",
-        "text": "They generally give better recall and query latency than IVFFlat at the same dataset size"
+        "text": "They give better recall than IVFFlat at size"
       },
       {
         "id": "C",
@@ -971,7 +971,7 @@
     "options": [
       {
         "id": "A",
-        "text": "The ANN index returns a bounded candidate set before the filter is applied"
+        "text": "The ANN index returns a bounded candidate set"
       },
       {
         "id": "B",
@@ -1021,7 +1021,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Route connections through the built-in `PgBouncer` on port 6432 in transaction pooling mode"
+        "text": "Use the built-in `PgBouncer` in transaction mode"
       },
       {
         "id": "B",
@@ -1069,7 +1069,7 @@
     "options": [
       {
         "id": "A",
-        "text": "`EXPLAIN ANALYZE` on the query and check for an `Index Scan` rather than a `Seq Scan`"
+        "text": "`EXPLAIN ANALYZE` and look for an `Index Scan`"
       },
       {
         "id": "B",
@@ -1077,7 +1077,7 @@
       },
       {
         "id": "C",
-        "text": "VACUUM ANALYZE on the table"
+        "text": "Run `VACUUM ANALYZE` on the table"
       },
       {
         "id": "D",
@@ -1164,7 +1164,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Raise `maintenance_work_mem` so the build stays in memory, and increase max_parallel_maintenance_workers"
+        "text": "Raise `maintenance_work_mem` for the build"
       },
       {
         "id": "B",
@@ -1213,7 +1213,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Move to a memory-optimized SKU with enough RAM to hold the index"
+        "text": "Move to a memory-optimized SKU that fits the index"
       },
       {
         "id": "B",
@@ -1309,7 +1309,7 @@
     "options": [
       {
         "id": "A",
-        "text": "A partial vector index defined WHERE the filter matches, or a composite strategy that keeps filtered candidates in the index"
+        "text": "A partial vector index matching the filter"
       },
       {
         "id": "B",
@@ -1357,7 +1357,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Microsoft Entra ID authentication, using an access token from the app's managed identity as the password"
+        "text": "Entra ID authentication with a managed identity token"
       },
       {
         "id": "B",
@@ -1546,7 +1546,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Move to a larger tier or set an eviction policy appropriate to the workload, since Redis is evicting under memory pressure"
+        "text": "Move to a larger tier or set an eviction policy"
       },
       {
         "id": "B",
@@ -1558,7 +1558,7 @@
       },
       {
         "id": "D",
-        "text": "Enable AOF persistence"
+        "text": "Enable AOF persistence on the instance"
       }
     ],
     "correct": [
@@ -1595,19 +1595,19 @@
     "options": [
       {
         "id": "A",
-        "text": "`FT.CREATE idx ON HASH PREFIX 1 doc: SCHEMA embedding VECTOR HNSW 6 TYPE FLOAT32 DIM 1536 DISTANCE_METRIC COSINE`"
+        "text": "`FT.CREATE idx SCHEMA embedding VECTOR HNSW 6 TYPE FLOAT32 DIM 1536 DISTANCE_METRIC COSINE`"
       },
       {
         "id": "B",
-        "text": "VADD idx embedding 1536 COSINE"
+        "text": "`VADD idx SCHEMA embedding VECTOR HNSW 6 TYPE FLOAT32 DIM 1536 DISTANCE_METRIC COSINE`"
       },
       {
         "id": "C",
-        "text": "`ZADD` idx 1536 embedding"
+        "text": "`ZADD idx SCHEMA embedding VECTOR FLAT 6 TYPE FLOAT32 DIM 1536 DISTANCE_METRIC EUCLIDEAN`"
       },
       {
         "id": "D",
-        "text": "`CREATE INDEX idx ON doc (embedding) USING hnsw`"
+        "text": "`CREATE INDEX idx ON doc USING hnsw (embedding) WITH (type=float32, dim=1536)`"
       }
     ],
     "correct": [
@@ -1643,19 +1643,19 @@
     "options": [
       {
         "id": "A",
-        "text": "`FT.SEARCH idx \"*=>[KNN 5 @embedding $vec AS score]\" PARAMS 2 vec <bytes> DIALECT 2`"
+        "text": "`FT.SEARCH idx \"*=>[KNN 5 @embedding $v]\" PARAMS 2 v <b> DIALECT 2`"
       },
       {
         "id": "B",
-        "text": "`FT.SEARCH idx \"@embedding:[0 5]\"`"
+        "text": "`FT.SEARCH idx \"@embedding:[0 5]\" PARAMS 2 v <b> DIALECT 2`"
       },
       {
         "id": "C",
-        "text": "`GEORADIUS idx 0 0 5 km WITHDIST COUNT 5`"
+        "text": "`GEORADIUS idx 0 0 5 km WITHDIST COUNT 5 ASC DIALECT 2`"
       },
       {
         "id": "D",
-        "text": "`ZRANGEBYSCORE idx 0 5 WITHSCORES LIMIT 0 5`"
+        "text": "`ZRANGEBYSCORE idx 0 5 WITHSCORES LIMIT 0 5 REV`"
       }
     ],
     "correct": [
@@ -1690,7 +1690,7 @@
     "options": [
       {
         "id": "A",
-        "text": "KEYS blocks the server for the duration of the scan; use `SCAN`, which iterates in small batches with a cursor"
+        "text": "KEYS blocks the server; use `SCAN` with a cursor"
       },
       {
         "id": "B",
@@ -1737,7 +1737,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Create one `ConnectionMultiplexer` and share it as a singleton for the application's lifetime"
+        "text": "Share one `ConnectionMultiplexer` as a singleton"
       },
       {
         "id": "B",
@@ -1785,7 +1785,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Compute Optimized, which provides the highest vCPU-to-memory ratio for search-heavy workloads"
+        "text": "Compute Optimized, for the highest vCPU ratio"
       },
       {
         "id": "B",
@@ -1797,7 +1797,7 @@
       },
       {
         "id": "D",
-        "text": "Any tier — vector search performance does not vary by tier"
+        "text": "Any tier; vector search does not vary by tier"
       }
     ],
     "correct": [
@@ -1832,7 +1832,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Embed the prompt, run a KNN query against the cache index, and return the cached answer only if the nearest match is within a similarity threshold"
+        "text": "Embed the prompt and KNN-search within a threshold"
       },
       {
         "id": "B",
@@ -1880,7 +1880,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Autoscale, which scales between 10% and 100% of the maximum RU/s you set"
+        "text": "Autoscale between 10% and 100% of the maximum"
       },
       {
         "id": "B",
@@ -1927,7 +1927,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Let the SDK retry automatically, and tune MaxRetryAttemptsOnRateLimitedRequests and MaxRetryWaitTimeOnRateLimitedRequests if needed"
+        "text": "Let the SDK retry, tuning the retry options"
       },
       {
         "id": "B",

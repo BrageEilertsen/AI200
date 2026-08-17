@@ -56,7 +56,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Cache the secret in memory and refresh it periodically or on an authentication failure"
+        "text": "Cache the secret and refresh it periodically"
       },
       {
         "id": "B",
@@ -121,7 +121,7 @@
       },
       {
         "id": "E",
-        "text": "Soft-deleted secrets are permanently removed immediately when purged by an administrator with purge protection on"
+        "text": "Soft-deleted secrets are purged immediately by an admin"
       }
     ],
     "correct": [
@@ -157,7 +157,7 @@
     "options": [
       {
         "id": "A",
-        "text": "By a versionless secret URI, so the current version is always returned"
+        "text": "By a versionless secret URI in the reference"
       },
       {
         "id": "B",
@@ -204,7 +204,7 @@
     "options": [
       {
         "id": "A",
-        "text": "A rotation policy on the secret, which raises SecretNearExpiry through Event Grid"
+        "text": "A rotation policy raising SecretNearExpiry"
       },
       {
         "id": "B",
@@ -216,7 +216,7 @@
       },
       {
         "id": "D",
-        "text": "A soft-delete retention alert"
+        "text": "A soft-delete retention alert on the vault"
       }
     ],
     "correct": [
@@ -299,7 +299,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Give each value a label matching the environment, and select that label when loading configuration"
+        "text": "Give each value an environment label and select it"
       },
       {
         "id": "B",
@@ -311,7 +311,7 @@
       },
       {
         "id": "D",
-        "text": "Use a feature flag per environment"
+        "text": "Use a separate feature flag per environment"
       }
     ],
     "correct": [
@@ -346,7 +346,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Register a single sentinel key for refresh, and update it last after changing all the other keys"
+        "text": "Register a sentinel key and update it last"
       },
       {
         "id": "B",
@@ -394,7 +394,7 @@
     "options": [
       {
         "id": "A",
-        "text": "A feature flag in App Configuration with a percentage filter, read through `IFeatureManager`"
+        "text": "A feature flag with a percentage filter"
       },
       {
         "id": "B",
@@ -440,7 +440,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Store Key Vault references in App Configuration and give the app identity access to both"
+        "text": "Store Key Vault references in App Configuration"
       },
       {
         "id": "B",
@@ -487,11 +487,11 @@
     "options": [
       {
         "id": "A",
-        "text": "A system-assigned identity is tied to one resource and deleted with it; a user-assigned identity is a standalone resource that several resources can share"
+        "text": "System-assigned is tied to one resource; user-assigned is shared"
       },
       {
         "id": "B",
-        "text": "A system-assigned identity can be shared by several resources; a user-assigned identity cannot"
+        "text": "System-assigned can be shared; user-assigned cannot"
       },
       {
         "id": "C",
@@ -581,7 +581,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Workload identity federation, with a federated credential on an Entra app registration trusting the workflow's OIDC token"
+        "text": "Workload identity federation with an OIDC trust"
       },
       {
         "id": "B",
@@ -676,7 +676,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Trace context is not propagated across the hop, so the `traceparent` header or message property never reaches the worker"
+        "text": "Trace context is not propagated across the hop"
       },
       {
         "id": "B",
@@ -724,7 +724,7 @@
     "options": [
       {
         "id": "A",
-        "text": "A trace is one end-to-end operation composed of spans, each representing a unit of work"
+        "text": "A trace is one operation composed of spans"
       },
       {
         "id": "B",
@@ -770,7 +770,7 @@
     "options": [
       {
         "id": "A",
-        "text": "An `ActivitySource`, starting an Activity around the embedding call"
+        "text": "An `ActivitySource` starting an Activity"
       },
       {
         "id": "B",
@@ -782,7 +782,7 @@
       },
       {
         "id": "D",
-        "text": "An ILogger scope"
+        "text": "An ILogger scope around the call"
       }
     ],
     "correct": [
@@ -817,7 +817,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Sampling, which keeps or drops whole traces rather than individual spans"
+        "text": "Sampling applied to whole traces"
       },
       {
         "id": "B",
@@ -829,7 +829,7 @@
       },
       {
         "id": "D",
-        "text": "A daily cap on the workspace"
+        "text": "A daily ingestion cap on the workspace"
       }
     ],
     "correct": [
@@ -911,11 +911,11 @@
     "options": [
       {
         "id": "A",
-        "text": "union requests, dependencies, exceptions, traces | where `operation_Id` == \"abc123\""
+        "text": "union requests, dependencies | where `operation_Id` == \"abc123\""
       },
       {
         "id": "B",
-        "text": "search \"abc123\""
+        "text": "search \"abc123\" across all tables"
       },
       {
         "id": "C",
@@ -1005,7 +1005,7 @@
     "options": [
       {
         "id": "A",
-        "text": "`| extend tenant = tostring(customDimensions.tenantId) | summarize count() by tenant`"
+        "text": "`| extend t = tostring(customDimensions.tenantId) | summarize count() by t`"
       },
       {
         "id": "B",
@@ -1051,7 +1051,7 @@
     "options": [
       {
         "id": "A",
-        "text": "dependencies | where timestamp > ago(1d) | top 10 by duration desc | project target, name, duration"
+        "text": "dependencies | top 10 by duration desc | project target, duration"
       },
       {
         "id": "B",
@@ -1145,7 +1145,7 @@
     "options": [
       {
         "id": "A",
-        "text": "requests | where timestamp > ago(6h) | `summarize` percentile(duration, 95) by operation_Name"
+        "text": "requests | `summarize` percentile(duration, 95) by operation_Name"
       },
       {
         "id": "B",
@@ -1244,7 +1244,7 @@
       },
       {
         "id": "B",
-        "text": "union with a where clause"
+        "text": "union with a where clause on ids"
       },
       {
         "id": "C",
@@ -1252,7 +1252,7 @@
       },
       {
         "id": "D",
-        "text": "lookup on timestamp"
+        "text": "lookup on timestamp ranges"
       }
     ],
     "correct": [
@@ -1287,7 +1287,7 @@
     "options": [
       {
         "id": "A",
-        "text": "A log search alert rule running a KQL query on a schedule with a threshold condition"
+        "text": "A log search alert rule on a schedule"
       },
       {
         "id": "B",
@@ -1295,7 +1295,7 @@
       },
       {
         "id": "C",
-        "text": "A service health alert"
+        "text": "A service health alert on the subscription"
       },
       {
         "id": "D",
@@ -1381,7 +1381,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Redact or omit personal data before logging, and reduce what is captured to what diagnosis actually requires"
+        "text": "Redact personal data before it is logged"
       },
       {
         "id": "B",

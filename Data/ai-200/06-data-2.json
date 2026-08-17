@@ -9,7 +9,7 @@
     "options": [
       {
         "id": "A",
-        "text": "`FT.CREATE`, defining a VECTOR field with the algorithm, dimension and distance metric"
+        "text": "`FT.CREATE` with a VECTOR field definition"
       },
       {
         "id": "B",
@@ -56,7 +56,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Search is exact but scans every vector, so latency grows linearly with the dataset"
+        "text": "Search is exact but scans every vector"
       },
       {
         "id": "B",
@@ -151,7 +151,7 @@
     "options": [
       {
         "id": "A",
-        "text": "A similarity threshold, so a nearest match that is not close enough is treated as a miss"
+        "text": "A similarity threshold below which it is a miss"
       },
       {
         "id": "B",
@@ -159,11 +159,11 @@
       },
       {
         "id": "C",
-        "text": "A longer TTL on cached answers"
+        "text": "A longer TTL on the cached answers"
       },
       {
         "id": "D",
-        "text": "Clustering enabled on the cache"
+        "text": "Clustering enabled on the cache instance"
       }
     ],
     "correct": [
@@ -200,7 +200,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Call `EXPIRE` on the key each time a message is appended"
+        "text": "Call `EXPIRE` on each appended message"
       },
       {
         "id": "B",
@@ -212,7 +212,7 @@
       },
       {
         "id": "D",
-        "text": "Use `PERSIST` after each write"
+        "text": "Use `PERSIST` after each session write"
       }
     ],
     "correct": [
@@ -300,7 +300,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Client-side connection handling, such as a multiplexer created per request"
+        "text": "Client-side connection handling in the app"
       },
       {
         "id": "B",
@@ -348,7 +348,7 @@
     "options": [
       {
         "id": "A",
-        "text": "A hash of the normalised prompt plus the model and parameters that affect the output"
+        "text": "A hash of the prompt plus model and parameters"
       },
       {
         "id": "B",
@@ -395,19 +395,19 @@
     "options": [
       {
         "id": "A",
-        "text": "Cache stampede — have one caller rebuild the value under a lock while others wait or serve stale"
+        "text": "Cache stampede: rebuild under a lock"
       },
       {
         "id": "B",
-        "text": "Cache poisoning — validate the value before writing it"
+        "text": "Cache poisoning: validate before writing"
       },
       {
         "id": "C",
-        "text": "Hot partition — change the key's hash slot"
+        "text": "Hot partition: change the key's hash slot"
       },
       {
         "id": "D",
-        "text": "Split brain — enable persistence"
+        "text": "Split brain: enable persistence"
       }
     ],
     "correct": [
@@ -443,7 +443,7 @@
     "options": [
       {
         "id": "A",
-        "text": "It protects against data loss on restart, at the cost of some throughput"
+        "text": "It protects against data loss on restart"
       },
       {
         "id": "B",
@@ -451,7 +451,7 @@
       },
       {
         "id": "C",
-        "text": "It removes the need to set TTLs"
+        "text": "It removes the need to set TTLs on keys"
       },
       {
         "id": "D",
@@ -538,7 +538,7 @@
     "options": [
       {
         "id": "A",
-        "text": "The planner has judged a sequential scan cheaper at this table size, which is often correct"
+        "text": "The planner judged a sequential scan cheaper"
       },
       {
         "id": "B",
@@ -546,7 +546,7 @@
       },
       {
         "id": "C",
-        "text": "The vector column allows NULLs"
+        "text": "The vector column allows NULL values"
       },
       {
         "id": "D",
@@ -634,7 +634,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Use a client-side connection pool and reuse connections across requests"
+        "text": "Use a client-side connection pool"
       },
       {
         "id": "B",
@@ -681,7 +681,7 @@
     "options": [
       {
         "id": "A",
-        "text": "A GIN index on the metadata column, or a B-tree index on the extracted expression"
+        "text": "A GIN index on the metadata column"
       },
       {
         "id": "B",
@@ -693,7 +693,7 @@
       },
       {
         "id": "D",
-        "text": "Raising `hnsw.ef_search`"
+        "text": "Raising `hnsw.ef_search` at query time"
       }
     ],
     "correct": [
@@ -730,7 +730,7 @@
     "options": [
       {
         "id": "A",
-        "text": "High disk read throughput with modest CPU utilisation"
+        "text": "High disk reads with modest CPU"
       },
       {
         "id": "B",
@@ -742,7 +742,7 @@
       },
       {
         "id": "D",
-        "text": "Growing table bloat"
+        "text": "Growing table bloat over time"
       }
     ],
     "correct": [
@@ -825,7 +825,7 @@
     "options": [
       {
         "id": "A",
-        "text": "A partial vector index per tenant, defined WHERE tenant_id = <value>"
+        "text": "A partial vector index per tenant"
       },
       {
         "id": "B",
@@ -922,7 +922,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Split the embedding into a separate item and fetch it only when needed"
+        "text": "Split the embedding into a separate item"
       },
       {
         "id": "B",
@@ -934,7 +934,7 @@
       },
       {
         "id": "D",
-        "text": "Enable autoscale throughput"
+        "text": "Enable autoscale throughput on it"
       }
     ],
     "correct": [
@@ -1018,7 +1018,7 @@
     "options": [
       {
         "id": "A",
-        "text": "The lease container was deleted or recreated, losing the checkpoints"
+        "text": "The lease container was deleted or recreated"
       },
       {
         "id": "B",
@@ -1065,7 +1065,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Optimistic concurrency using the item's ETag with an If-Match condition"
+        "text": "Optimistic concurrency with the item's ETag"
       },
       {
         "id": "B",
@@ -1073,7 +1073,7 @@
       },
       {
         "id": "C",
-        "text": "Enabling autoscale throughput"
+        "text": "Enabling autoscale on the container"
       },
       {
         "id": "D",
@@ -1161,7 +1161,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Add the unused paths to excludedPaths in the indexing policy"
+        "text": "Add unused paths to excludedPaths"
       },
       {
         "id": "B",
@@ -1215,7 +1215,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Hybrid search, combining full-text scoring with vector distance"
+        "text": "Hybrid search over text and vectors"
       },
       {
         "id": "B",
@@ -1223,11 +1223,11 @@
       },
       {
         "id": "C",
-        "text": "Cross-partition search"
+        "text": "Cross-partition search on the container"
       },
       {
         "id": "D",
-        "text": "Materialised view search"
+        "text": "Materialised view search over the data"
       }
     ],
     "correct": [

@@ -796,19 +796,19 @@
     "options": [
       {
         "id": "A",
-        "text": "Have Event Grid deliver blob-created events into a Service Bus queue that the worker consumes"
+        "text": "Event Grid to a Service Bus queue the worker consumes"
       },
       {
         "id": "B",
-        "text": "Have Event Grid deliver blob-created events directly to the worker's HTTP endpoint"
+        "text": "Event Grid directly to the worker's HTTP endpoint"
       },
       {
         "id": "C",
-        "text": "Poll the container every minute from a timer-triggered Function"
+        "text": "Poll the container from a timer-triggered Function"
       },
       {
         "id": "D",
-        "text": "Increase the Event Grid maximum delivery attempts to 100"
+        "text": "Raise the Event Grid delivery attempts to 100"
       }
     ],
     "correct": [
@@ -846,7 +846,7 @@
     "options": [
       {
         "id": "A",
-        "text": "The ANN index returns a fixed candidate set before the tenant filter is applied, so few candidates survive it"
+        "text": "The ANN index returns a fixed candidate set first"
       },
       {
         "id": "B",
@@ -896,7 +896,7 @@
     "options": [
       {
         "id": "A",
-        "text": "`minReplicas` 0 on the Container App with a KEDA `azure-servicebus` scale rule"
+        "text": "`minReplicas` 0 with a KEDA `azure-servicebus` rule"
       },
       {
         "id": "B",
@@ -945,7 +945,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Ensure the W3C `traceparent` context is propagated across the hop into the worker"
+        "text": "Propagate the W3C `traceparent` into the worker"
       },
       {
         "id": "B",
@@ -1047,7 +1047,7 @@
       },
       {
         "id": "B",
-        "text": "Soft-delete products with a flag and a TTL so the deletion arrives as an update"
+        "text": "Soft-delete with a flag so it arrives as an update"
       },
       {
         "id": "C",
@@ -1097,7 +1097,7 @@
     "options": [
       {
         "id": "A",
-        "text": "A hot logical partition — that publisher's traffic lands on one partition, which can only use its share of the throughput"
+        "text": "A hot logical partition from that publisher"
       },
       {
         "id": "B",

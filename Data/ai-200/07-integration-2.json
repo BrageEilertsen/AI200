@@ -9,7 +9,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Virtual network integration on the function app, with the endpoint reachable via a private endpoint"
+        "text": "VNet integration with a private endpoint"
       },
       {
         "id": "B",
@@ -21,7 +21,7 @@
       },
       {
         "id": "D",
-        "text": "A hybrid connection"
+        "text": "A hybrid connection to the resource"
       }
     ],
     "correct": [
@@ -56,7 +56,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Event Grid blob-created events delivered to the function, rather than the polling blob trigger"
+        "text": "Event Grid blob-created events to the function"
       },
       {
         "id": "B",
@@ -205,7 +205,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Call the activities with a retry policy, so the framework retries each one independently"
+        "text": "Call the activities with a retry policy"
       },
       {
         "id": "B",
@@ -253,7 +253,7 @@
     "options": [
       {
         "id": "A",
-        "text": "The Cosmos DB trigger, which is built on the change feed processor"
+        "text": "The Cosmos DB trigger on the change feed"
       },
       {
         "id": "B",
@@ -301,7 +301,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Nothing extra — the timer trigger takes a singleton lease so only one instance runs per occurrence"
+        "text": "Nothing extra; the timer takes a singleton lease"
       },
       {
         "id": "B",
@@ -348,7 +348,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Return 202 with a status URL immediately and process the work asynchronously"
+        "text": "Return 202 with a status URL immediately"
       },
       {
         "id": "B",
@@ -397,7 +397,7 @@
     "options": [
       {
         "id": "A",
-        "text": "In `host.json`, under `extensions.eventHubs`"
+        "text": "In `host.json` under `extensions.eventHubs`"
       },
       {
         "id": "B",
@@ -409,7 +409,7 @@
       },
       {
         "id": "D",
-        "text": "In `local.settings.json`"
+        "text": "In `local.settings.json` locally"
       }
     ],
     "correct": [
@@ -445,7 +445,7 @@
     "options": [
       {
         "id": "A",
-        "text": "It supports virtual network integration and lets you configure always-ready instances"
+        "text": "It supports VNet integration and warm instances"
       },
       {
         "id": "B",
@@ -492,7 +492,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Make the write idempotent by using a deterministic document id derived from the message"
+        "text": "Use a deterministic document id from the message"
       },
       {
         "id": "B",
@@ -650,7 +650,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Sessions keyed on customer id, with several concurrent session receivers"
+        "text": "Sessions keyed on customer id with concurrent receivers"
       },
       {
         "id": "B",
@@ -793,7 +793,7 @@
     "options": [
       {
         "id": "A",
-        "text": "The lock expired before the completion call, so the broker had already released the message"
+        "text": "The lock expired before the completion call"
       },
       {
         "id": "B",
@@ -805,7 +805,7 @@
       },
       {
         "id": "D",
-        "text": "The queue has sessions enabled"
+        "text": "The queue has sessions enabled on it"
       }
     ],
     "correct": [
@@ -889,11 +889,11 @@
     "options": [
       {
         "id": "A",
-        "text": "Pull delivery, where the consumer reads events from a namespace queue"
+        "text": "Pull delivery from a namespace queue"
       },
       {
         "id": "B",
-        "text": "Push delivery to a webhook"
+        "text": "Push delivery to a webhook endpoint"
       },
       {
         "id": "C",
@@ -936,7 +936,7 @@
     "options": [
       {
         "id": "A",
-        "text": "The advanced filter references a field path that does not match the event schema in use"
+        "text": "The filter path does not match the event schema"
       },
       {
         "id": "B",
@@ -985,19 +985,19 @@
     "options": [
       {
         "id": "A",
-        "text": "Event Grid for discrete reactive notifications, Event Hubs for high-throughput streams, Service Bus for ordered transactional messages"
+        "text": "Event Grid for notifications, Event Hubs for streams, Service Bus for transactions"
       },
       {
         "id": "B",
-        "text": "Event Grid for high-throughput streams, Event Hubs for reactive notifications, Service Bus for telemetry"
+        "text": "Event Grid for streams, Event Hubs for notifications, Service Bus for telemetry"
       },
       {
         "id": "C",
-        "text": "Service Bus for reactive notifications, Event Grid for ordered messages, Event Hubs for transactions"
+        "text": "Service Bus for notifications, Event Grid for ordering, Event Hubs for transactions"
       },
       {
         "id": "D",
-        "text": "All three are interchangeable for any messaging workload"
+        "text": "All three are interchangeable for any workload"
       }
     ],
     "correct": [
@@ -1081,7 +1081,7 @@
     "options": [
       {
         "id": "A",
-        "text": "A record of how far each partition has been processed, so a restart resumes rather than replays"
+        "text": "A record of how far each partition is processed"
       },
       {
         "id": "B",
@@ -1089,7 +1089,7 @@
       },
       {
         "id": "C",
-        "text": "Automatic deduplication of events"
+        "text": "Automatic deduplication of the events"
       },
       {
         "id": "D",
@@ -1243,7 +1243,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Scale out the consumers and raise per-instance concurrency and prefetch"
+        "text": "Scale out consumers and raise concurrency"
       },
       {
         "id": "B",
@@ -1291,11 +1291,11 @@
     "options": [
       {
         "id": "A",
-        "text": "It offers a simple, very large queue with no topics, sessions or transactions"
+        "text": "A very large queue with no topics or sessions"
       },
       {
         "id": "B",
-        "text": "It guarantees strict FIFO ordering"
+        "text": "It guarantees strict FIFO ordering of messages"
       },
       {
         "id": "C",
@@ -1303,7 +1303,7 @@
       },
       {
         "id": "D",
-        "text": "It supports messages up to 100 MB"
+        "text": "It supports messages of up to 100 MB"
       }
     ],
     "correct": [
@@ -1338,7 +1338,7 @@
     "options": [
       {
         "id": "A",
-        "text": "PeekLock receive, complete the message only after the write succeeds, and make the write idempotent"
+        "text": "PeekLock, complete after an idempotent write"
       },
       {
         "id": "B",

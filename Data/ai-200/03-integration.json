@@ -17,7 +17,7 @@
       },
       {
         "id": "C",
-        "text": "A subscription rule throws an exception while being evaluated"
+        "text": "A subscription rule error during evaluation"
       },
       {
         "id": "D",
@@ -60,7 +60,7 @@
     "options": [
       {
         "id": "A",
-        "text": "The message lock expires during processing, so the message becomes visible again and is redelivered"
+        "text": "The message lock expires during processing"
       },
       {
         "id": "B",
@@ -154,7 +154,7 @@
     "options": [
       {
         "id": "A",
-        "text": "The sender does not set `MessageId`, so every message is treated as unique"
+        "text": "The sender does not set `MessageId`"
       },
       {
         "id": "B",
@@ -249,7 +249,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Store the document in Blob Storage and send a message containing the blob URI (claim check pattern)"
+        "text": "Store the document in Blob Storage and send the URI"
       },
       {
         "id": "B",
@@ -389,7 +389,7 @@
     "options": [
       {
         "id": "A",
-        "text": "A dead-letter destination, so undeliverable events were dropped after the retry policy expired"
+        "text": "No dead-letter destination on the subscription"
       },
       {
         "id": "B",
@@ -436,7 +436,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Respond to the subscription validation event by echoing the validationCode, or perform a GET on the validationUrl"
+        "text": "Echo the validationCode from the validation event"
       },
       {
         "id": "B",
@@ -483,7 +483,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Make the handler idempotent, since Event Grid guarantees at-least-once delivery"
+        "text": "Make the handler idempotent on event id"
       },
       {
         "id": "B",
@@ -531,7 +531,7 @@
     "options": [
       {
         "id": "A",
-        "text": "On the event subscription, using subject begins-with incoming/ and ends-with .pdf"
+        "text": "On the subscription, with subject begins-with and ends-with"
       },
       {
         "id": "B",
@@ -628,7 +628,7 @@
     "options": [
       {
         "id": "A",
-        "text": "An advanced filter using the NumberGreaterThan operator on data.confidence"
+        "text": "An advanced filter using NumberGreaterThan"
       },
       {
         "id": "B",
@@ -636,11 +636,11 @@
       },
       {
         "id": "C",
-        "text": "A SQL filter on the subscription"
+        "text": "A SQL filter defined on the subscription"
       },
       {
         "id": "D",
-        "text": "An event type filter"
+        "text": "An event type filter on the subscription"
       }
     ],
     "correct": [
@@ -674,7 +674,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Event Grid on blob created, delivering to a Service Bus queue that the worker consumes"
+        "text": "Event Grid on blob created, into a Service Bus queue"
       },
       {
         "id": "B",
@@ -722,7 +722,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Move the Function app to a Premium or Flex Consumption plan, which allows much longer executions"
+        "text": "Move to a Premium or Flex Consumption plan"
       },
       {
         "id": "B",
@@ -816,7 +816,7 @@
     "options": [
       {
         "id": "A",
-        "text": "ServiceBusConn__fullyQualifiedNamespace = contoso.servicebus.windows.net"
+        "text": "ServiceBusConn__fullyQualifiedNamespace = sb.windows.net"
       },
       {
         "id": "B",
@@ -824,7 +824,7 @@
       },
       {
         "id": "C",
-        "text": "ServiceBusConn__connectionString = Endpoint=sb://contoso..."
+        "text": "ServiceBusConn__connectionString = Endpoint=sb://..."
       },
       {
         "id": "D",
@@ -916,7 +916,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Use context.`CurrentUtcDateTime`, which returns a deterministic value across replays"
+        "text": "Use context.`CurrentUtcDateTime` in the orchestrator"
       },
       {
         "id": "B",
@@ -1066,11 +1066,11 @@
       },
       {
         "id": "C",
-        "text": "function.json"
+        "text": "`function.json`"
       },
       {
         "id": "D",
-        "text": "appsettings.json"
+        "text": "`appsettings.json`"
       }
     ],
     "correct": [
@@ -1105,11 +1105,11 @@
     "options": [
       {
         "id": "A",
-        "text": "Premium (Elastic Premium), with pre-warmed instances and VNet integration"
+        "text": "Premium (Elastic Premium) with pre-warmed instances"
       },
       {
         "id": "B",
-        "text": "Consumption, with Always On enabled"
+        "text": "Consumption plan with Always On enabled"
       },
       {
         "id": "C",
@@ -1200,7 +1200,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Let it fail — after `MaxDeliveryCount` attempts Service Bus dead-letters the message automatically — and monitor the dead-letter queue"
+        "text": "Let it fail and monitor the dead-letter queue"
       },
       {
         "id": "B",
@@ -1248,11 +1248,11 @@
     "options": [
       {
         "id": "A",
-        "text": "In `host.json`, under extensions.serviceBus"
+        "text": "In `host.json` under extensions.serviceBus"
       },
       {
         "id": "B",
-        "text": "In `local.settings.json`"
+        "text": "In `local.settings.json` for the app"
       },
       {
         "id": "C",
@@ -1343,7 +1343,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Async HTTP API, using `CreateCheckStatusResponse`"
+        "text": "Async HTTP API with a status endpoint"
       },
       {
         "id": "B",
@@ -1355,7 +1355,7 @@
       },
       {
         "id": "D",
-        "text": "Function chaining"
+        "text": "Function chaining with activity calls"
       }
     ],
     "correct": [
@@ -1392,7 +1392,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Set `ScheduledEnqueueTime` on the message when sending"
+        "text": "Set `ScheduledEnqueueTime` when sending"
       },
       {
         "id": "B",
@@ -1400,7 +1400,7 @@
       },
       {
         "id": "C",
-        "text": "Defer the message on receipt"
+        "text": "Defer the message when it is received"
       },
       {
         "id": "D",

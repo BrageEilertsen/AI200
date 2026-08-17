@@ -57,11 +57,11 @@
     "options": [
       {
         "id": "A",
-        "text": "A user delegation SAS scoped to the container, signed with Entra credentials and given a short expiry"
+        "text": "A short-lived user delegation SAS on the container"
       },
       {
         "id": "B",
-        "text": "The storage account key"
+        "text": "The storage account access key"
       },
       {
         "id": "C",
@@ -106,19 +106,19 @@
     "options": [
       {
         "id": "A",
-        "text": "Feature flags read through `IFeatureManager`"
+        "text": "Feature flags via `IFeatureManager`"
       },
       {
         "id": "B",
-        "text": "Labels"
+        "text": "Labels on the key-values"
       },
       {
         "id": "C",
-        "text": "Snapshots"
+        "text": "Snapshots of the store"
       },
       {
         "id": "D",
-        "text": "Key Vault references"
+        "text": "Key Vault references in the store"
       }
     ],
     "correct": [
@@ -153,7 +153,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Refresh registration with a sentinel key and a cache expiration"
+        "text": "A sentinel key with a cache expiration"
       },
       {
         "id": "B",
@@ -161,7 +161,7 @@
       },
       {
         "id": "C",
-        "text": "Geo-replication of the store"
+        "text": "Geo-replication of the config store"
       },
       {
         "id": "D",
@@ -201,7 +201,7 @@
     "options": [
       {
         "id": "A",
-        "text": "A new identity with a new object id is created, so previous role assignments no longer apply"
+        "text": "A new identity with a new object id is created"
       },
       {
         "id": "B",
@@ -248,7 +248,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Apps read the versionless secret URI, and a rotation policy raises an Event Grid event that a Function handles to write a new version"
+        "text": "Apps read the versionless URI and a policy rotates it"
       },
       {
         "id": "B",
@@ -426,7 +426,7 @@
     "options": [
       {
         "id": "A",
-        "text": "OpenID Connect federation, exchanging the workflow's token for an Azure token"
+        "text": "OpenID Connect federation from the workflow"
       },
       {
         "id": "B",
@@ -473,7 +473,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Several identities are attached and the client id was not supplied to the credential"
+        "text": "Several identities attached and no client id given"
       },
       {
         "id": "B",
@@ -522,11 +522,11 @@
     "options": [
       {
         "id": "A",
-        "text": "Replacing it with a managed identity so there is no credential to leak"
+        "text": "Replacing it with a managed identity"
       },
       {
         "id": "B",
-        "text": "Rotating it every 12 months"
+        "text": "Rotating it every twelve months"
       },
       {
         "id": "C",
@@ -569,7 +569,7 @@
     "options": [
       {
         "id": "A",
-        "text": "A custom span around the embedding call, nested inside the request's trace"
+        "text": "A custom span around the embedding call"
       },
       {
         "id": "B",
@@ -663,15 +663,15 @@
     "options": [
       {
         "id": "A",
-        "text": "Sampling that keeps all traces matching the checkout operation and samples the rest"
+        "text": "Sampling that keeps all checkout traces"
       },
       {
         "id": "B",
-        "text": "A daily cap on the workspace"
+        "text": "A daily ingestion cap on the workspace"
       },
       {
         "id": "C",
-        "text": "A shorter retention period"
+        "text": "A shorter workspace retention period"
       },
       {
         "id": "D",
@@ -711,7 +711,7 @@
     "options": [
       {
         "id": "A",
-        "text": "A metric, aggregated at collection time and cheap to query over months"
+        "text": "A metric, aggregated cheaply at collection time"
       },
       {
         "id": "B",
@@ -804,19 +804,19 @@
     "options": [
       {
         "id": "A",
-        "text": "The number of violations required within an evaluation window"
+        "text": "The number of violations in a window"
       },
       {
         "id": "B",
-        "text": "A longer query time range"
+        "text": "A longer query time range on the rule"
       },
       {
         "id": "C",
-        "text": "A higher severity level"
+        "text": "A higher severity level on the alert"
       },
       {
         "id": "D",
-        "text": "An action group with a delay"
+        "text": "An action group with a delay set"
       }
     ],
     "correct": [
@@ -852,7 +852,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Retry with exponential backoff and jitter, honouring any retry-after hint"
+        "text": "Retry with exponential backoff and jitter"
       },
       {
         "id": "B",
@@ -864,7 +864,7 @@
       },
       {
         "id": "D",
-        "text": "Increase the client timeout"
+        "text": "Increase the client's timeout setting"
       }
     ],
     "correct": [
@@ -899,7 +899,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Time the message spent queued before a worker picked it up"
+        "text": "Time the message spent queued"
       },
       {
         "id": "B",
@@ -1075,7 +1075,7 @@
     "options": [
       {
         "id": "A",
-        "text": "The logging provider is not wired up, or the minimum level filters the entries out"
+        "text": "The logging provider is not wired up"
       },
       {
         "id": "B",

@@ -13,7 +13,7 @@
       },
       {
         "id": "B",
-        "text": "Run `az acr build`, which builds the image in Azure Container Registry"
+        "text": "Run `az acr build` to build the image on ACR Tasks"
       },
       {
         "id": "C",
@@ -21,7 +21,7 @@
       },
       {
         "id": "D",
-        "text": "Import the image with `az acr import`"
+        "text": "Import the image with `az acr import` from Docker Hub"
       }
     ],
     "correct": [
@@ -102,11 +102,11 @@
     "options": [
       {
         "id": "A",
-        "text": "Geo-replication"
+        "text": "Geo-replication across regions"
       },
       {
         "id": "B",
-        "text": "Webhooks"
+        "text": "Webhook notifications on push"
       },
       {
         "id": "C",
@@ -114,11 +114,11 @@
       },
       {
         "id": "D",
-        "text": "Customer-managed keys for encryption at rest"
+        "text": "Customer-managed encryption keys"
       },
       {
         "id": "E",
-        "text": "ACR Tasks"
+        "text": "ACR Tasks for automated builds"
       }
     ],
     "correct": [
@@ -157,11 +157,11 @@
       },
       {
         "id": "B",
-        "text": "An ACR task created with `az acr task create` so that ACR tracks the base image dependency and triggers on base image update"
+        "text": "An ACR task with a base image update trigger"
       },
       {
         "id": "C",
-        "text": "An ACR webhook on the push event that calls a Function which rebuilds the image"
+        "text": "An ACR webhook on push that calls a Function"
       },
       {
         "id": "D",
@@ -202,19 +202,19 @@
     "options": [
       {
         "id": "A",
-        "text": "`docker pull, docker tag, docker push`"
+        "text": "`docker pull`, `docker tag`, then `docker push`"
       },
       {
         "id": "B",
-        "text": "`az acr import --name contoso --source partner.azurecr.io/vendor/embedder:2.1`"
+        "text": "`az acr import --source partner.azurecr.io/embedder:2.1`"
       },
       {
         "id": "C",
-        "text": "`az acr build --registry` contoso --image vendor/embedder:2.1 ."
+        "text": "`az acr build --registry contoso --image embedder:2.1 .`"
       },
       {
         "id": "D",
-        "text": "`az acr repository update --name contoso --image vendor/embedder:2.1`"
+        "text": "`az acr repository update --image embedder:2.1`"
       }
     ],
     "correct": [
@@ -248,19 +248,19 @@
     "options": [
       {
         "id": "A",
-        "text": "Enable the registry admin user and create an imagePullSecret from those credentials"
+        "text": "Enable the admin user and create an imagePullSecret"
       },
       {
         "id": "B",
-        "text": "Run `az aks update --attach-acr`, granting the cluster's kubelet identity the `AcrPull` role"
+        "text": "Run `az aks update --attach-acr` to grant `AcrPull`"
       },
       {
         "id": "C",
-        "text": "Create a service principal with `AcrPush` and add it as an imagePullSecret"
+        "text": "Create a service principal and add an imagePullSecret"
       },
       {
         "id": "D",
-        "text": "Add a repository-scoped token to the deployment manifest"
+        "text": "Add a repository-scoped token to the manifest"
       }
     ],
     "correct": [
@@ -300,15 +300,15 @@
       },
       {
         "id": "B",
-        "text": "A repository-scoped token with the content/write action on that repository"
+        "text": "A repository-scoped token with content/write"
       },
       {
         "id": "C",
-        "text": "The registry admin account"
+        "text": "The registry admin account, shared by the team"
       },
       {
         "id": "D",
-        "text": "A user-assigned managed identity granted Contributor on the registry"
+        "text": "A managed identity granted Contributor on the registry"
       }
     ],
     "correct": [
@@ -344,7 +344,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Set the app setting `WEBSITES_PORT` to 8000"
+        "text": "Set the app setting `WEBSITES_PORT` to the container's port"
       },
       {
         "id": "B",
@@ -437,19 +437,19 @@
     "options": [
       {
         "id": "A",
-        "text": "Store both values in the production slot and select the right one in code"
+        "text": "Store both values and select one in code"
       },
       {
         "id": "B",
-        "text": "Mark the setting as a deployment slot setting so it stays with the slot during a swap"
+        "text": "Mark the setting as a deployment slot setting"
       },
       {
         "id": "C",
-        "text": "Leave the setting unmarked; App Service never swaps connection strings"
+        "text": "Leave it unmarked; connection strings never swap"
       },
       {
         "id": "D",
-        "text": "Put the value in a Key Vault reference, which is automatically slot-specific"
+        "text": "Use a Key Vault reference instead of a setting"
       }
     ],
     "correct": [
@@ -485,11 +485,11 @@
     "options": [
       {
         "id": "A",
-        "text": "`@Microsoft.KeyVault(VaultName=kv-contoso;SecretName=openai-key)`"
+        "text": "`@Microsoft.KeyVault(VaultName=kv;SecretName=key)`"
       },
       {
         "id": "B",
-        "text": "`$(KeyVault:kv-contoso:secrets:openai-key:latest)`"
+        "text": "`$(KeyVault:kv-contoso:secrets:openai-key)`"
       },
       {
         "id": "C",
@@ -497,7 +497,7 @@
       },
       {
         "id": "D",
-        "text": "`#{azure.keyvault/kv-contoso/openai-key}#`"
+        "text": "`#{azure.keyvault/kv-contoso/secrets/openai-key}#`"
       }
     ],
     "correct": [
@@ -532,19 +532,19 @@
     "options": [
       {
         "id": "A",
-        "text": "The app is in single revision mode, so traffic always goes to the latest revision"
+        "text": "The app is running in single revision mode"
       },
       {
         "id": "B",
-        "text": "The previous revision was deactivated automatically after 24 hours"
+        "text": "The previous revision was deactivated after 24 hours"
       },
       {
         "id": "C",
-        "text": "Traffic weights only apply to internal ingress, not external"
+        "text": "Traffic weights apply only to internal ingress"
       },
       {
         "id": "D",
-        "text": "Traffic splitting requires the Dapr sidecar to be enabled"
+        "text": "Traffic splitting requires the Dapr sidecar"
       }
     ],
     "correct": [
@@ -587,7 +587,7 @@
       },
       {
         "id": "C",
-        "text": "Changing CPU and memory allocation for a container"
+        "text": "Changing CPU and memory allocation"
       },
       {
         "id": "D",
@@ -631,19 +631,19 @@
     "options": [
       {
         "id": "A",
-        "text": "`minReplicas` 1 with an HTTP scale rule based on concurrent requests"
+        "text": "`minReplicas` 1 with an HTTP concurrency rule"
       },
       {
         "id": "B",
-        "text": "`minReplicas` 0 with a custom KEDA scale rule of type `azure-servicebus` on the queue"
+        "text": "`minReplicas` 0 with an `azure-servicebus` KEDA rule"
       },
       {
         "id": "C",
-        "text": "`minReplicas` 0 with no scale rule, relying on the default HTTP rule"
+        "text": "`minReplicas` 0 with only the default HTTP rule"
       },
       {
         "id": "D",
-        "text": "A Container Apps scheduled job that runs every five minutes"
+        "text": "A Container Apps job that runs every five minutes"
       }
     ],
     "correct": [
@@ -774,19 +774,19 @@
     "options": [
       {
         "id": "A",
-        "text": "Deploy them to the same Container Apps environment and set ingress to internal on both"
+        "text": "Deploy both to the same environment with internal ingress"
       },
       {
         "id": "B",
-        "text": "Deploy them to separate environments and peer the virtual networks"
+        "text": "Deploy them to separate environments and peer the VNets"
       },
       {
         "id": "C",
-        "text": "Deploy them to the same environment and disable ingress on both"
+        "text": "Deploy both to the same environment with ingress disabled"
       },
       {
         "id": "D",
-        "text": "Deploy them to the same environment with external ingress and an IP restriction list"
+        "text": "Deploy both with external ingress and IP restrictions"
       }
     ],
     "correct": [
@@ -821,19 +821,19 @@
     "options": [
       {
         "id": "A",
-        "text": "As a plain-text connectionString property inside the scale rule metadata"
+        "text": "As a plain-text connectionString in the rule metadata"
       },
       {
         "id": "B",
-        "text": "Through an auth block on the scale rule that maps a trigger parameter to an app secret name"
+        "text": "Through an auth block referencing an app secret"
       },
       {
         "id": "C",
-        "text": "By an environment variable on the container, which KEDA reads at scale time"
+        "text": "By an environment variable the container defines"
       },
       {
         "id": "D",
-        "text": "It is not needed; KEDA uses the Container App's managed identity automatically"
+        "text": "It is not needed; KEDA uses the app's managed identity"
       }
     ],
     "correct": [
@@ -964,7 +964,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Increase the container's memory limit in the deployment manifest"
+        "text": "Increase the container's memory limit"
       },
       {
         "id": "B",
@@ -972,11 +972,11 @@
       },
       {
         "id": "C",
-        "text": "Add more nodes to the cluster"
+        "text": "Add more nodes to the cluster's node pool"
       },
       {
         "id": "D",
-        "text": "Set `imagePullPolicy` to Always"
+        "text": "Set the `imagePullPolicy` to Always"
       }
     ],
     "correct": [
@@ -1011,7 +1011,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Add a readiness probe that only succeeds once the model is loaded"
+        "text": "Add a readiness probe that waits for the model"
       },
       {
         "id": "B",
@@ -1059,7 +1059,7 @@
     "options": [
       {
         "id": "A",
-        "text": "No node has enough unreserved CPU to satisfy the pod's CPU request"
+        "text": "No node has enough unreserved CPU for the request"
       },
       {
         "id": "B",
@@ -1106,19 +1106,19 @@
     "options": [
       {
         "id": "A",
-        "text": "Microsoft Entra Workload ID with a federated identity credential bound to the pod's service account"
+        "text": "Entra Workload ID with a federated credential"
       },
       {
         "id": "B",
-        "text": "Pod-managed identity (aad-pod-identity)"
+        "text": "Pod-managed identity, the aad-pod-identity add-on"
       },
       {
         "id": "C",
-        "text": "A Kubernetes Secret containing a service principal client secret"
+        "text": "A Kubernetes Secret holding a client secret"
       },
       {
         "id": "D",
-        "text": "The kubelet identity, shared by every pod on the node"
+        "text": "The kubelet identity shared by every pod"
       }
     ],
     "correct": [
@@ -1155,7 +1155,7 @@
     "options": [
       {
         "id": "A",
-        "text": "`kubectl port-forward` pod/<pod> 8080:8080 and call localhost:8080 directly"
+        "text": "`kubectl port-forward` straight to the pod"
       },
       {
         "id": "B",
@@ -1167,7 +1167,7 @@
       },
       {
         "id": "D",
-        "text": "`kubectl top pod <pod>`"
+        "text": "`kubectl top pod <pod>` to check usage"
       }
     ],
     "correct": [
@@ -1215,7 +1215,7 @@
       },
       {
         "id": "D",
-        "text": "value: $(app-config.modelName)"
+        "text": "value: $(configMap.app-config.modelName)"
       }
     ],
     "correct": [
@@ -1250,7 +1250,7 @@
     "options": [
       {
         "id": "A",
-        "text": "The KEDA add-on, with a ScaledObject using the `azure-servicebus` trigger"
+        "text": "The KEDA add-on with an `azure-servicebus` ScaledObject"
       },
       {
         "id": "B",
@@ -1258,11 +1258,11 @@
       },
       {
         "id": "C",
-        "text": "The cluster autoscaler with a custom node pool"
+        "text": "The cluster autoscaler on a custom node pool"
       },
       {
         "id": "D",
-        "text": "A VerticalPodAutoscaler in Auto mode"
+        "text": "A VerticalPodAutoscaler running in Auto mode"
       }
     ],
     "correct": [
@@ -1345,7 +1345,7 @@
     "options": [
       {
         "id": "A",
-        "text": "A preStop hook with a short sleep, plus handling SIGTERM to stop accepting new connections and finish in-flight ones"
+        "text": "A preStop hook plus SIGTERM handling for in-flight work"
       },
       {
         "id": "B",
@@ -1353,11 +1353,11 @@
       },
       {
         "id": "C",
-        "text": "Increasing `maxUnavailable` in the rolling update strategy"
+        "text": "Increasing `maxUnavailable` in the rolling update"
       },
       {
         "id": "D",
-        "text": "Adding a startup probe to the container"
+        "text": "Adding a startup probe to the container spec"
       }
     ],
     "correct": [
@@ -1440,7 +1440,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Secret values are app-scope, so existing containers must be restarted or a new revision created to pick them up"
+        "text": "Secret values are app-scope, so containers must restart"
       },
       {
         "id": "B",
@@ -1500,7 +1500,7 @@
       },
       {
         "id": "D",
-        "text": "Content trust, which rejects duplicate pushes"
+        "text": "Content trust to reject duplicate pushes"
       }
     ],
     "correct": [
@@ -1535,7 +1535,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Continuous deployment on the App Service, which registers a webhook in the registry"
+        "text": "Continuous deployment on the App Service"
       },
       {
         "id": "B",
@@ -1543,7 +1543,7 @@
       },
       {
         "id": "C",
-        "text": "A deployment slot auto-swap rule"
+        "text": "A deployment slot auto-swap rule on staging"
       },
       {
         "id": "D",

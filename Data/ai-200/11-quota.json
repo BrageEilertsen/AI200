@@ -8,12 +8,26 @@
     "difficulty": 2,
     "stem": "At what level is Azure OpenAI model quota ultimately constrained?",
     "options": [
-      { "id": "A", "text": "The Azure subscription" },
-      { "id": "B", "text": "The Microsoft Entra tenant" },
-      { "id": "C", "text": "The individual model deployment" },
-      { "id": "D", "text": "The resource group holding the resource" }
+      {
+        "id": "A",
+        "text": "The Azure subscription"
+      },
+      {
+        "id": "B",
+        "text": "The Microsoft Entra tenant"
+      },
+      {
+        "id": "C",
+        "text": "The individual model deployment"
+      },
+      {
+        "id": "D",
+        "text": "The resource group holding the resource"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Microsoft is explicit that quota is not enforced at the tenant level — the highest level of restriction is the Azure subscription. Deployments then draw from that allocation, which is why two deployments in the same subscription compete for the same pool.",
     "whyWrong": {
       "B": "A tenant can hold many subscriptions, each with its own quota.",
@@ -21,9 +35,17 @@
       "D": "Resource groups are a management boundary and carry no quota."
     },
     "docs": [
-      { "title": "Azure OpenAI quotas and limits", "url": "https://learn.microsoft.com/azure/foundry/openai/quotas-limits" }
+      {
+        "title": "Azure OpenAI quotas and limits",
+        "url": "https://learn.microsoft.com/azure/foundry/openai/quotas-limits"
+      }
     ],
-    "tags": ["azure-openai", "quota", "capacity", "limits"]
+    "tags": [
+      "azure-openai",
+      "quota",
+      "capacity",
+      "limits"
+    ]
   },
   {
     "id": "q-quota-002",
@@ -34,12 +56,26 @@
     "difficulty": 2,
     "stem": "In what unit is Azure OpenAI quota allocated to a deployment, and how does the request rate relate to it?",
     "options": [
-      { "id": "A", "text": "Tokens per minute, with a requests-per-minute allowance derived from it at a ratio set per model" },
-      { "id": "B", "text": "Requests per minute, with a token allowance derived from the average request size" },
-      { "id": "C", "text": "Concurrent connections, with tokens counted only for billing" },
-      { "id": "D", "text": "Provisioned throughput units, for every deployment type" }
+      {
+        "id": "A",
+        "text": "Tokens per minute, with requests per minute derived from it"
+      },
+      {
+        "id": "B",
+        "text": "Requests per minute, with tokens derived from request size"
+      },
+      {
+        "id": "C",
+        "text": "Concurrent connections, with tokens counted for billing"
+      },
+      {
+        "id": "D",
+        "text": "Provisioned throughput units, for every deployment type"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "TPM is the allocation, and RPM follows from it at a ratio published per model and version. That is why a workload of many tiny requests can hit the request ceiling while its token usage still looks comfortable.",
     "whyWrong": {
       "B": "The relationship runs the other way — tokens are the allocated unit.",
@@ -47,9 +83,17 @@
       "D": "PTU applies to provisioned deployments, not to Standard ones."
     },
     "docs": [
-      { "title": "Azure OpenAI quotas and limits", "url": "https://learn.microsoft.com/azure/foundry/openai/quotas-limits" }
+      {
+        "title": "Azure OpenAI quotas and limits",
+        "url": "https://learn.microsoft.com/azure/foundry/openai/quotas-limits"
+      }
     ],
-    "tags": ["azure-openai", "quota", "tpm", "limits"],
+    "tags": [
+      "azure-openai",
+      "quota",
+      "tpm",
+      "limits"
+    ],
     "hint": "One of the two numbers is allocated and the other is calculated from it. Ask which one you actually request more of."
   },
   {
@@ -61,12 +105,26 @@
     "difficulty": 3,
     "stem": "A latency-critical production workload must have predictable response times at sustained high volume, not best-effort throughput. Which deployment type fits?",
     "options": [
-      { "id": "A", "text": "Provisioned throughput, which reserves dedicated capacity" },
-      { "id": "B", "text": "Global Standard, which routes to whichever data centre has availability" },
-      { "id": "C", "text": "Data Zone Standard, which routes within one data zone" },
-      { "id": "D", "text": "Global Batch, which processes requests asynchronously" }
+      {
+        "id": "A",
+        "text": "Provisioned throughput, which reserves dedicated capacity"
+      },
+      {
+        "id": "B",
+        "text": "Global Standard, which routes to whichever data centre has availability"
+      },
+      {
+        "id": "C",
+        "text": "Data Zone Standard, which routes within one data zone"
+      },
+      {
+        "id": "D",
+        "text": "Global Batch, which processes requests asynchronously"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Standard deployment types give consistent latency only while you stay inside your usage tier; above it, latency becomes variable. Provisioned throughput reserves capacity, which is what turns latency into something you can promise rather than hope for.",
     "whyWrong": {
       "B": "Global Standard optimises for availability across regions, so latency varies with where a request lands.",
@@ -74,9 +132,18 @@
       "D": "Batch is for work that can wait; it is the opposite of latency-critical."
     },
     "docs": [
-      { "title": "Azure OpenAI quotas and limits", "url": "https://learn.microsoft.com/azure/foundry/openai/quotas-limits" }
+      {
+        "title": "Azure OpenAI quotas and limits",
+        "url": "https://learn.microsoft.com/azure/foundry/openai/quotas-limits"
+      }
     ],
-    "tags": ["azure-openai", "quota", "ptu", "capacity", "performance"],
+    "tags": [
+      "azure-openai",
+      "quota",
+      "ptu",
+      "capacity",
+      "performance"
+    ],
     "hint": "Three of these share capacity with other customers. Ask which one stops sharing."
   },
   {
@@ -88,12 +155,26 @@
     "difficulty": 3,
     "stem": "Data residency requires that inference for EU customers never leaves the EU, but the team still wants Azure to route across data centres for availability. Which deployment type meets both?",
     "options": [
-      { "id": "A", "text": "Data Zone Standard, which routes within a Microsoft-defined data zone" },
-      { "id": "B", "text": "Global Standard, which routes to the best-available data centre worldwide" },
-      { "id": "C", "text": "Standard, pinned to one region with no routing at all" },
-      { "id": "D", "text": "Global Batch, which is processed wherever capacity exists" }
+      {
+        "id": "A",
+        "text": "Data Zone Standard, which routes within a Microsoft-defined data zone"
+      },
+      {
+        "id": "B",
+        "text": "Global Standard, which routes to the best-available data centre worldwide"
+      },
+      {
+        "id": "C",
+        "text": "Standard, pinned to one region with no routing at all"
+      },
+      {
+        "id": "D",
+        "text": "Global Batch, which is processed wherever capacity exists"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Data Zone Standard is the middle option that exists precisely for this: dynamic routing for availability, but bounded by a data zone such as the EU. Global Standard gives up the boundary; a single-region Standard deployment gives up the routing.",
     "whyWrong": {
       "B": "Global routing is exactly what the residency requirement forbids.",
@@ -101,9 +182,17 @@
       "D": "Batch has the same global routing problem, and is asynchronous besides."
     },
     "docs": [
-      { "title": "Azure OpenAI quotas and limits", "url": "https://learn.microsoft.com/azure/foundry/openai/quotas-limits" }
+      {
+        "title": "Azure OpenAI quotas and limits",
+        "url": "https://learn.microsoft.com/azure/foundry/openai/quotas-limits"
+      }
     ],
-    "tags": ["azure-openai", "quota", "data-residency", "deployment-types"],
+    "tags": [
+      "azure-openai",
+      "quota",
+      "data-residency",
+      "deployment-types"
+    ],
     "hint": "Two requirements pull in opposite directions. Look for the option that is deliberately in between."
   },
   {
@@ -115,12 +204,26 @@
     "difficulty": 3,
     "stem": "An ingestion job batches chunks into a single `/embeddings` call to reduce overhead. What are the two hard ceilings it must respect per request?",
     "options": [
-      { "id": "A", "text": "2,048 inputs in the array, and 300,000 tokens summed across all inputs" },
-      { "id": "B", "text": "1,000 inputs in the array, and 128,000 tokens summed across all inputs" },
-      { "id": "C", "text": "No input limit, but 8,192 tokens per individual input" },
-      { "id": "D", "text": "16 inputs in the array, matching the default max_tokens" }
+      {
+        "id": "A",
+        "text": "2,048 inputs in the array, and 300,000 tokens summed across all inputs"
+      },
+      {
+        "id": "B",
+        "text": "1,000 inputs in the array, and 128,000 tokens summed across all inputs"
+      },
+      {
+        "id": "C",
+        "text": "No input limit, but 8,192 tokens per individual input"
+      },
+      {
+        "id": "D",
+        "text": "16 inputs in the array, matching the default max_tokens"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Both limits bite in practice: an array is capped at 2,048 inputs, and the sum of tokens across the whole request at 300,000. A batching loop that only counts inputs will still fail once the chunks get long.",
     "whyWrong": {
       "B": "Neither figure is right, though they look plausible against other model limits.",
@@ -128,9 +231,17 @@
       "D": "16 is the old GPT-4 vision default for `max_tokens`, which is unrelated."
     },
     "docs": [
-      { "title": "Azure OpenAI quotas and limits", "url": "https://learn.microsoft.com/azure/foundry/openai/quotas-limits" }
+      {
+        "title": "Azure OpenAI quotas and limits",
+        "url": "https://learn.microsoft.com/azure/foundry/openai/quotas-limits"
+      }
     ],
-    "tags": ["azure-openai", "embeddings", "limits", "rag"],
+    "tags": [
+      "azure-openai",
+      "embeddings",
+      "limits",
+      "rag"
+    ],
     "hint": "Two ceilings, not one. A batch can be legal by one measure and illegal by the other."
   },
   {
@@ -142,13 +253,31 @@
     "difficulty": 3,
     "stem": "A RAG service returns 429s during traffic spikes. Which two responses does Microsoft recommend before asking for more quota? Choose two.",
     "options": [
-      { "id": "A", "text": "Implement retry logic with backoff in the client" },
-      { "id": "B", "text": "Ramp the workload up gradually rather than in sharp steps" },
-      { "id": "C", "text": "Open a new Azure OpenAI resource in the same region to double the allocation" },
-      { "id": "D", "text": "Cache the API key in memory to reduce round trips" },
-      { "id": "E", "text": "Lower the deployment's TPM so requests are spread out" }
+      {
+        "id": "A",
+        "text": "Implement retry logic with backoff in the client"
+      },
+      {
+        "id": "B",
+        "text": "Ramp the workload up gradually rather than in sharp steps"
+      },
+      {
+        "id": "C",
+        "text": "Open a new Azure OpenAI resource in the same region to double the allocation"
+      },
+      {
+        "id": "D",
+        "text": "Cache the API key in memory to reduce round trips"
+      },
+      {
+        "id": "E",
+        "text": "Lower the deployment's TPM so requests are spread out"
+      }
     ],
-    "correct": ["A", "B"],
+    "correct": [
+      "A",
+      "B"
+    ],
     "explanation": "Retry with backoff and a gradual ramp are the two the guidance leads with — most 429s during a spike are transient, and sudden load changes are what provoke them. Moving quota between deployments, or requesting more, comes after.",
     "whyWrong": {
       "C": "Quota is constrained at subscription level, so another resource does not conjure new allocation.",
@@ -156,9 +285,17 @@
       "E": "Reducing TPM lowers the ceiling you are already hitting."
     },
     "docs": [
-      { "title": "Azure OpenAI quotas and limits", "url": "https://learn.microsoft.com/azure/foundry/openai/quotas-limits" }
+      {
+        "title": "Azure OpenAI quotas and limits",
+        "url": "https://learn.microsoft.com/azure/foundry/openai/quotas-limits"
+      }
     ],
-    "tags": ["azure-openai", "throttling", "resiliency", "quota"],
+    "tags": [
+      "azure-openai",
+      "throttling",
+      "resiliency",
+      "quota"
+    ],
     "hint": "Two options treat the spike as transient and survivable. The rest try to buy or reconfigure your way out."
   },
   {
@@ -170,12 +307,26 @@
     "difficulty": 3,
     "stem": "Monitoring shows token usage sitting comfortably below the deployment's quota, yet clients still receive 429 responses. What is the most likely explanation?",
     "options": [
-      { "id": "A", "text": "The request-rate ceiling is being hit even though the token ceiling is not" },
-      { "id": "B", "text": "The metric is wrong and should be recalculated from the billing export" },
-      { "id": "C", "text": "Quota has been silently reduced because the subscription is idle" },
-      { "id": "D", "text": "The deployment has been moved to a different region" }
+      {
+        "id": "A",
+        "text": "The request-rate ceiling is hit before the token ceiling"
+      },
+      {
+        "id": "B",
+        "text": "The metric is wrong and should be recalculated from the billing export"
+      },
+      {
+        "id": "C",
+        "text": "Quota has been silently reduced because the subscription is idle"
+      },
+      {
+        "id": "D",
+        "text": "The deployment has been moved to a different region"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Quota has two dimensions. A workload of many small requests exhausts the derived requests-per-minute allowance long before it approaches the token allowance, which is why a token-usage chart can look healthy while callers are being throttled. Microsoft documents this as a specific cause of 429s below quota.",
     "whyWrong": {
       "B": "The metric is measuring what it says; it is simply not the dimension being exceeded.",
@@ -183,9 +334,18 @@
       "D": "Deployments do not silently relocate."
     },
     "docs": [
-      { "title": "Azure OpenAI quotas and limits", "url": "https://learn.microsoft.com/azure/foundry/openai/quotas-limits" }
+      {
+        "title": "Azure OpenAI quotas and limits",
+        "url": "https://learn.microsoft.com/azure/foundry/openai/quotas-limits"
+      }
     ],
-    "tags": ["azure-openai", "throttling", "troubleshooting", "quota", "monitoring"],
+    "tags": [
+      "azure-openai",
+      "throttling",
+      "troubleshooting",
+      "quota",
+      "monitoring"
+    ],
     "hint": "You are watching one of the two numbers. Ask what the other one is doing."
   }
 ]

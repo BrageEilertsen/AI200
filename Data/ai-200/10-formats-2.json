@@ -13,9 +13,18 @@
         "id": "b1",
         "label": "Blank 1 — the command that builds in Azure",
         "choices": [
-          { "id": "a", "text": "build" },
-          { "id": "b", "text": "import" },
-          { "id": "c", "text": "repository show" }
+          {
+            "id": "a",
+            "text": "build"
+          },
+          {
+            "id": "b",
+            "text": "import"
+          },
+          {
+            "id": "c",
+            "text": "repository show"
+          }
         ],
         "correct": "a"
       },
@@ -23,18 +32,34 @@
         "id": "b2",
         "label": "Blank 2 — what the trailing argument is",
         "choices": [
-          { "id": "a", "text": "the build context" },
-          { "id": "b", "text": "--registry-name" },
-          { "id": "c", "text": "--source-location-only" }
+          {
+            "id": "a",
+            "text": "the build context"
+          },
+          {
+            "id": "b",
+            "text": "--registry-name"
+          },
+          {
+            "id": "c",
+            "text": "--source-location-only"
+          }
         ],
         "correct": "a"
       }
     ],
     "explanation": "`az acr build` queues the build as an ACR task and runs it on registry-side compute, so an agent with no Docker daemon can still produce and push an image. Like `docker build`, the final positional argument is the build context — the folder sent to the builder.",
     "docs": [
-      { "title": "Build and run a container image with ACR Tasks", "url": "https://learn.microsoft.com/azure/container-registry/container-registry-quickstart-task-cli" }
+      {
+        "title": "Build and run a container image with ACR Tasks",
+        "url": "https://learn.microsoft.com/azure/container-registry/container-registry-quickstart-task-cli"
+      }
     ],
-    "tags": ["acr", "acr-tasks", "cli"]
+    "tags": [
+      "acr",
+      "acr-tasks",
+      "cli"
+    ]
   },
   {
     "id": "f-cli-002",
@@ -50,9 +75,18 @@
         "id": "b1",
         "label": "Blank 1 — the flag",
         "choices": [
-          { "id": "a", "text": "--attach-acr" },
-          { "id": "b", "text": "--registry-secret" },
-          { "id": "c", "text": "--docker-login-server" }
+          {
+            "id": "a",
+            "text": "--attach-acr"
+          },
+          {
+            "id": "b",
+            "text": "--registry-secret"
+          },
+          {
+            "id": "c",
+            "text": "--docker-login-server"
+          }
         ],
         "correct": "a"
       },
@@ -60,18 +94,35 @@
         "id": "b2",
         "label": "What the command grants behind the scenes",
         "choices": [
-          { "id": "a", "text": "The AcrPull role on the registry, to the cluster's kubelet identity" },
-          { "id": "b", "text": "An imagePullSecret containing the registry admin password" },
-          { "id": "c", "text": "The Contributor role on the registry, to the cluster identity" }
+          {
+            "id": "a",
+            "text": "The AcrPull role on the registry, to the cluster's kubelet identity"
+          },
+          {
+            "id": "b",
+            "text": "An imagePullSecret containing the registry admin password"
+          },
+          {
+            "id": "c",
+            "text": "The Contributor role on the registry, to the cluster identity"
+          }
         ],
         "correct": "a"
       }
     ],
     "explanation": "`--attach-acr` creates a role assignment rather than a secret: the kubelet identity is granted **AcrPull** on the registry, so nodes authenticate with a managed identity and there is no imagePullSecret to rotate or leak.",
     "docs": [
-      { "title": "Authenticate with Azure Container Registry from AKS", "url": "https://learn.microsoft.com/azure/aks/cluster-container-registry-integration" }
+      {
+        "title": "Authenticate with Azure Container Registry from AKS",
+        "url": "https://learn.microsoft.com/azure/aks/cluster-container-registry-integration"
+      }
     ],
-    "tags": ["aks", "acr", "managed-identity", "cli"]
+    "tags": [
+      "aks",
+      "acr",
+      "managed-identity",
+      "cli"
+    ]
   },
   {
     "id": "f-cli-003",
@@ -87,9 +138,18 @@
         "id": "b1",
         "label": "Blank 1 — the server parameter",
         "choices": [
-          { "id": "a", "text": "azure.extensions" },
-          { "id": "b", "text": "shared_preload_libraries" },
-          { "id": "c", "text": "search_path" }
+          {
+            "id": "a",
+            "text": "azure.extensions"
+          },
+          {
+            "id": "b",
+            "text": "shared_preload_libraries"
+          },
+          {
+            "id": "c",
+            "text": "search_path"
+          }
         ],
         "correct": "a"
       },
@@ -97,18 +157,35 @@
         "id": "b2",
         "label": "What still has to happen afterwards",
         "choices": [
-          { "id": "a", "text": "Run `CREATE EXTENSION vector;` in each database that needs it" },
-          { "id": "b", "text": "Nothing — the extension is enabled in every database automatically" },
-          { "id": "c", "text": "Restart the server before the extension appears" }
+          {
+            "id": "a",
+            "text": "Run `CREATE EXTENSION vector;` in each database that needs it"
+          },
+          {
+            "id": "b",
+            "text": "Nothing — the extension is enabled in every database automatically"
+          },
+          {
+            "id": "c",
+            "text": "Restart the server before the extension appears"
+          }
         ],
         "correct": "a"
       }
     ],
     "explanation": "`azure.extensions` is the server-level allow-list of extensions; it permits the extension without installing it. Each database still needs its own `CREATE EXTENSION vector;`. Getting this order wrong is the usual cause of `extension \"vector\" is not allow-listed`.",
     "docs": [
-      { "title": "PostgreSQL extensions in Azure Database for PostgreSQL", "url": "https://learn.microsoft.com/azure/postgresql/extensions/how-to-allow-extensions" }
+      {
+        "title": "PostgreSQL extensions in Azure Database for PostgreSQL",
+        "url": "https://learn.microsoft.com/azure/postgresql/extensions/how-to-allow-extensions"
+      }
     ],
-    "tags": ["postgresql", "pgvector", "extensions", "cli"]
+    "tags": [
+      "postgresql",
+      "pgvector",
+      "extensions",
+      "cli"
+    ]
   },
   {
     "id": "f-cli-004",
@@ -124,9 +201,18 @@
         "id": "b1",
         "label": "Blank 1 — the identity to assign",
         "choices": [
-          { "id": "a", "text": "--system-assigned" },
-          { "id": "b", "text": "--admin-enabled true" },
-          { "id": "c", "text": "--secrets kv-connection" }
+          {
+            "id": "a",
+            "text": "--system-assigned"
+          },
+          {
+            "id": "b",
+            "text": "--admin-enabled true"
+          },
+          {
+            "id": "c",
+            "text": "--secrets kv-connection"
+          }
         ],
         "correct": "a"
       },
@@ -134,18 +220,36 @@
         "id": "b2",
         "label": "Blank 2 — the least-privilege role for reading secret values",
         "choices": [
-          { "id": "a", "text": "Key Vault Secrets User" },
-          { "id": "b", "text": "Key Vault Administrator" },
-          { "id": "c", "text": "Key Vault Reader" }
+          {
+            "id": "a",
+            "text": "Key Vault Secrets User"
+          },
+          {
+            "id": "b",
+            "text": "Key Vault Administrator"
+          },
+          {
+            "id": "c",
+            "text": "Key Vault Reader"
+          }
         ],
         "correct": "a"
       }
     ],
     "explanation": "A system-assigned identity is created and rotated by the platform, so no credential reaches configuration. **Key Vault Secrets User** grants reading secret values; **Key Vault Reader** only reads the vault's metadata and properties, which is the distinction the exam tests.",
     "docs": [
-      { "title": "Provide access to Key Vault keys, certificates, and secrets with RBAC", "url": "https://learn.microsoft.com/azure/key-vault/general/rbac-guide" }
+      {
+        "title": "Provide access to Key Vault keys, certificates, and secrets with RBAC",
+        "url": "https://learn.microsoft.com/azure/key-vault/general/rbac-guide"
+      }
     ],
-    "tags": ["key-vault", "managed-identity", "rbac", "least-privilege", "cli"]
+    "tags": [
+      "key-vault",
+      "managed-identity",
+      "rbac",
+      "least-privilege",
+      "cli"
+    ]
   },
   {
     "id": "f-blk-005",
@@ -161,9 +265,18 @@
         "id": "b1",
         "label": "Blank 1 — the aggregation",
         "choices": [
-          { "id": "a", "text": "percentile" },
-          { "id": "b", "text": "avg" },
-          { "id": "c", "text": "arg_max" }
+          {
+            "id": "a",
+            "text": "percentile"
+          },
+          {
+            "id": "b",
+            "text": "avg"
+          },
+          {
+            "id": "c",
+            "text": "arg_max"
+          }
         ],
         "correct": "a"
       },
@@ -171,20 +284,36 @@
         "id": "b2",
         "label": "Blank 2 — grouping into time buckets",
         "choices": [
-          { "id": "a", "text": "bin" },
-          { "id": "b", "text": "range" },
-          { "id": "c", "text": "todatetime" }
+          {
+            "id": "a",
+            "text": "bin"
+          },
+          {
+            "id": "b",
+            "text": "range"
+          },
+          {
+            "id": "c",
+            "text": "todatetime"
+          }
         ],
         "correct": "a"
       }
     ],
     "explanation": "`percentile(duration, 95)` gives the p95, and `bin(timestamp, 15m)` rounds each row down to a bucket boundary so `summarize` groups by interval. `bin` is the operator behind almost every time-series chart in Application Insights.",
     "docs": [
-      { "title": "KQL bin function", "url": "https://learn.microsoft.com/kusto/query/bin-function" }
+      {
+        "title": "KQL bin function",
+        "url": "https://learn.microsoft.com/kusto/query/bin-function"
+      }
     ],
-    "tags": ["kql", "application-insights", "performance", "aggregation"]
+    "tags": [
+      "kql",
+      "application-insights",
+      "performance",
+      "aggregation"
+    ]
   },
-
   {
     "id": "cs1-005",
     "domain": "data",
@@ -195,12 +324,26 @@
     "difficulty": 3,
     "stem": "Contoso must hold p95 retrieval under 150 ms across four million chunks. Which index choice best fits, given documents arrive continuously?",
     "options": [
-      { "id": "A", "text": "HNSW, which can be built before the data lands and stays effective as rows are inserted" },
-      { "id": "B", "text": "IVFFlat built once at the start, so the lists are ready before ingestion begins" },
-      { "id": "C", "text": "No vector index, relying on a sequential scan with more CPU" },
-      { "id": "D", "text": "A B-tree index on the embedding column" }
+      {
+        "id": "A",
+        "text": "HNSW, effective as rows are inserted"
+      },
+      {
+        "id": "B",
+        "text": "IVFFlat built once before ingestion begins"
+      },
+      {
+        "id": "C",
+        "text": "No vector index, relying on a sequential scan"
+      },
+      {
+        "id": "D",
+        "text": "A B-tree index on the embedding column"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Continuous ingestion is what decides it. IVFFlat computes its centroids from the rows present when the index is built, so an index created before the load is arbitrary and needs rebuilding. HNSW builds a graph incrementally and stays useful as rows arrive, which is why it suits a corpus that never stops growing.",
     "whyWrong": {
       "B": "Building IVFFlat before the data exists is precisely the failure mode — the centroids describe nothing.",
@@ -208,9 +351,18 @@
       "D": "A B-tree cannot answer nearest-neighbour queries; it needs a vector operator class."
     },
     "docs": [
-      { "title": "How to optimize performance when using pgvector", "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/how-to-optimize-performance-pgvector" }
+      {
+        "title": "How to optimize performance when using pgvector",
+        "url": "https://learn.microsoft.com/azure/postgresql/flexible-server/how-to-optimize-performance-pgvector"
+      }
     ],
-    "tags": ["pgvector", "hnsw", "ivfflat", "indexing", "performance"],
+    "tags": [
+      "pgvector",
+      "hnsw",
+      "ivfflat",
+      "indexing",
+      "performance"
+    ],
     "hint": "The corpus never stops growing. Ask which index needs to see the data before it can decide its structure."
   },
   {
@@ -223,12 +375,26 @@
     "difficulty": 2,
     "stem": "The embedding worker must cost nothing while no documents are waiting. What does that require, given the team will not use Kubernetes?",
     "options": [
-      { "id": "A", "text": "A Container App with `minReplicas: 0` and a queue-length scale rule to wake it" },
-      { "id": "B", "text": "A Container App with `minReplicas: 1` so it is always ready to respond" },
-      { "id": "C", "text": "An AKS deployment scaled to zero by the cluster autoscaler" },
-      { "id": "D", "text": "An App Service plan with Always On disabled" }
+      {
+        "id": "A",
+        "text": "A Container App with `minReplicas: 0` and a queue rule"
+      },
+      {
+        "id": "B",
+        "text": "A Container App with `minReplicas: 1`, always ready"
+      },
+      {
+        "id": "C",
+        "text": "An AKS deployment scaled to zero by the cluster autoscaler"
+      },
+      {
+        "id": "D",
+        "text": "An App Service plan with Always On disabled"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Scale to zero needs both halves: `minReplicas: 0` allows it, and a scale rule is what brings it back. A worker with no ingress and no rule would drop to zero and never wake, which is the trap in this requirement.",
     "whyWrong": {
       "B": "One replica always running is exactly the cost the requirement rules out.",
@@ -236,9 +402,17 @@
       "D": "Disabling Always On lets the app idle but the plan is still billed."
     },
     "docs": [
-      { "title": "Set scaling rules in Azure Container Apps", "url": "https://learn.microsoft.com/azure/container-apps/scale-app" }
+      {
+        "title": "Set scaling rules in Azure Container Apps",
+        "url": "https://learn.microsoft.com/azure/container-apps/scale-app"
+      }
     ],
-    "tags": ["container-apps", "keda", "scaling", "cost"],
+    "tags": [
+      "container-apps",
+      "keda",
+      "scaling",
+      "cost"
+    ],
     "hint": "Two settings are needed, not one. Allowing zero is easy; ask what is responsible for bringing it back up."
   },
   {
@@ -251,13 +425,31 @@
     "difficulty": 3,
     "stem": "No secrets may live in application configuration. Which two changes satisfy that for the API's access to Azure OpenAI and PostgreSQL? Choose two.",
     "options": [
-      { "id": "A", "text": "Give the container app a managed identity and grant it the data-plane role on Azure OpenAI" },
-      { "id": "B", "text": "Use Microsoft Entra authentication to PostgreSQL with that same identity" },
-      { "id": "C", "text": "Move the API key into a Container Apps secret and reference it with `secretref:`" },
-      { "id": "D", "text": "Store the connection string in App Configuration rather than an environment variable" },
-      { "id": "E", "text": "Encrypt the key and put the ciphertext in the container image" }
+      {
+        "id": "A",
+        "text": "Give the app a managed identity for Azure OpenAI"
+      },
+      {
+        "id": "B",
+        "text": "Use Entra authentication to PostgreSQL"
+      },
+      {
+        "id": "C",
+        "text": "Move the API key into a Container Apps secret and reference it with `secretref:`"
+      },
+      {
+        "id": "D",
+        "text": "Store the connection string in App Configuration rather than an environment variable"
+      },
+      {
+        "id": "E",
+        "text": "Encrypt the key and put the ciphertext in the container image"
+      }
     ],
-    "correct": ["A", "B"],
+    "correct": [
+      "A",
+      "B"
+    ],
     "explanation": "The only way to have no secret is to have no secret. A managed identity plus Entra authentication on both dependencies removes the credential entirely rather than relocating it.",
     "whyWrong": {
       "C": "A Container Apps secret is a better home than plain configuration, but a stored key is still a stored key.",
@@ -265,9 +457,17 @@
       "E": "The image now carries both the ciphertext and, somewhere, the means to decrypt it."
     },
     "docs": [
-      { "title": "Managed identities in Azure Container Apps", "url": "https://learn.microsoft.com/azure/container-apps/managed-identity" }
+      {
+        "title": "Managed identities in Azure Container Apps",
+        "url": "https://learn.microsoft.com/azure/container-apps/managed-identity"
+      }
     ],
-    "tags": ["managed-identity", "security", "container-apps", "least-privilege"],
+    "tags": [
+      "managed-identity",
+      "security",
+      "container-apps",
+      "least-privilege"
+    ],
     "hint": "Read the constraint literally. Two of these relocate a secret; two remove the need for one."
   },
   {
@@ -280,12 +480,26 @@
     "difficulty": 3,
     "stem": "The nightly job is terminated at roughly the same elapsed time on every run. What explains that, and what fixes it while keeping the no-idle-replica requirement?",
     "options": [
-      { "id": "A", "text": "The Consumption plan's function timeout; restructure as a durable fan-out so each activity is short" },
-      { "id": "B", "text": "Cosmos DB throttling; raise provisioned throughput for the duration of the run" },
-      { "id": "C", "text": "A memory limit; move to a Premium plan with larger instances" },
-      { "id": "D", "text": "The nightly schedule overlapping itself; change the cron expression" }
+      {
+        "id": "A",
+        "text": "The function timeout; restructure as a durable fan-out"
+      },
+      {
+        "id": "B",
+        "text": "Cosmos DB throttling; raise provisioned throughput for the duration of the run"
+      },
+      {
+        "id": "C",
+        "text": "A memory limit; move to a Premium plan with larger instances"
+      },
+      {
+        "id": "D",
+        "text": "The nightly schedule overlapping itself; change the cron expression"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Failing at the same elapsed time every run is the signature of a timeout rather than load. Consumption caps a single execution, so the fix is to stop doing all the work in one execution — a fan-out gives many short activities. Premium would also solve the timeout, but it keeps a warm instance, which this requirement forbids.",
     "whyWrong": {
       "B": "Throttling is real here but it produces 429s in bursts, not termination at a fixed elapsed time.",
@@ -293,9 +507,18 @@
       "D": "An overlapping schedule would show up as concurrent runs, not a consistent cut-off."
     },
     "docs": [
-      { "title": "Azure Functions scale and hosting", "url": "https://learn.microsoft.com/azure/azure-functions/functions-scale" }
+      {
+        "title": "Azure Functions scale and hosting",
+        "url": "https://learn.microsoft.com/azure/azure-functions/functions-scale"
+      }
     ],
-    "tags": ["functions", "durable-functions", "hosting", "limits", "troubleshooting"],
+    "tags": [
+      "functions",
+      "durable-functions",
+      "hosting",
+      "limits",
+      "troubleshooting"
+    ],
     "hint": "The clue is *the same elapsed time*, not the same document. Ask what is measured in time rather than in work done."
   },
   {
@@ -308,12 +531,26 @@
     "difficulty": 3,
     "stem": "Fabrikam wants to keep the existing account and partition key. Which change most directly reduces the 429s concentrated on the largest publisher?",
     "options": [
-      { "id": "A", "text": "Spread that publisher's writes with bulk execution and retry-after handling, accepting the partition's throughput ceiling" },
-      { "id": "B", "text": "Increase provisioned RU/s on the container until the bursts stop" },
-      { "id": "C", "text": "Switch the container to a synthetic partition key combining publisher and date" },
-      { "id": "D", "text": "Enable the analytical store on the container" }
+      {
+        "id": "A",
+        "text": "Bulk execution with retry-after handling"
+      },
+      {
+        "id": "B",
+        "text": "Increase provisioned RU/s on the container until the bursts stop"
+      },
+      {
+        "id": "C",
+        "text": "Switch the container to a synthetic partition key combining publisher and date"
+      },
+      {
+        "id": "D",
+        "text": "Enable the analytical store on the container"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "A hot logical partition can only ever use its share of the container's throughput, so the constraint here is structural. With the partition key fixed, the realistic remedies are smoothing the write rate and honouring `retry-after` rather than buying throughput that the hot partition cannot reach.",
     "whyWrong": {
       "B": "Throughput is divided across physical partitions, so most of the increase lands where there is no pressure.",
@@ -321,9 +558,17 @@
       "D": "The analytical store serves analytics; it does nothing for transactional write throttling."
     },
     "docs": [
-      { "title": "Diagnose and troubleshoot request rate too large", "url": "https://learn.microsoft.com/azure/cosmos-db/troubleshoot-request-rate-too-large" }
+      {
+        "title": "Diagnose and troubleshoot request rate too large",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/troubleshoot-request-rate-too-large"
+      }
     ],
-    "tags": ["cosmos-db", "throttling", "partitioning", "ru"],
+    "tags": [
+      "cosmos-db",
+      "throttling",
+      "partitioning",
+      "ru"
+    ],
     "hint": "One option is genuinely the best engineering answer but breaks a stated constraint. Read the constraints before the options."
   },
   {
@@ -336,12 +581,26 @@
     "difficulty": 2,
     "stem": "Application Insights shows the ingestion worker as a separate operation from the API that triggers it. What restores one end-to-end trace?",
     "options": [
-      { "id": "A", "text": "Propagate the W3C `traceparent` value through the queue message and resume the context in the worker" },
-      { "id": "B", "text": "Increase sampling so more of the worker's telemetry is retained" },
-      { "id": "C", "text": "Point both components at the same Application Insights resource" },
-      { "id": "D", "text": "Add a custom property holding the product id to both sides" }
+      {
+        "id": "A",
+        "text": "Propagate `traceparent` through the queue message"
+      },
+      {
+        "id": "B",
+        "text": "Increase sampling so more of the worker's telemetry is retained"
+      },
+      {
+        "id": "C",
+        "text": "Point both components at the same Application Insights resource"
+      },
+      {
+        "id": "D",
+        "text": "Add a custom property holding the product id to both sides"
+      }
     ],
-    "correct": ["A"],
+    "correct": [
+      "A"
+    ],
     "explanation": "Correlation travels in the message, not in the connection string. Without the trace context crossing the queue hop, the worker starts a brand-new operation id and the two halves can never be joined.",
     "whyWrong": {
       "B": "Sampling changes how much is kept, not whether the two operations are related.",
@@ -349,9 +608,17 @@
       "D": "A shared custom property lets you search manually; it does not build a trace."
     },
     "docs": [
-      { "title": "Distributed tracing telemetry correlation", "url": "https://learn.microsoft.com/azure/azure-monitor/app/distributed-trace-data" }
+      {
+        "title": "Distributed tracing telemetry correlation",
+        "url": "https://learn.microsoft.com/azure/azure-monitor/app/distributed-trace-data"
+      }
     ],
-    "tags": ["opentelemetry", "correlation", "application-insights", "troubleshooting"]
+    "tags": [
+      "opentelemetry",
+      "correlation",
+      "application-insights",
+      "troubleshooting"
+    ]
   },
   {
     "id": "cs2-007",
@@ -363,17 +630,42 @@
     "difficulty": 3,
     "stem": "Put the rebuild in the order that fixes Fabrikam's problems without changing the Cosmos DB account or partition key.",
     "options": [
-      { "id": "1", "text": "Switch the change feed to all-versions-and-deletes mode so deletions are visible" },
-      { "id": "2", "text": "Restructure the nightly job as a durable fan-out of short activities" },
-      { "id": "3", "text": "Send the work through bulk execution with retry-after handling" },
-      { "id": "4", "text": "Propagate trace context from the API into the worker" }
+      {
+        "id": "1",
+        "text": "Switch the change feed to all-versions-and-deletes mode so deletions are visible"
+      },
+      {
+        "id": "2",
+        "text": "Restructure the nightly job as a durable fan-out of short activities"
+      },
+      {
+        "id": "3",
+        "text": "Send the work through bulk execution with retry-after handling"
+      },
+      {
+        "id": "4",
+        "text": "Propagate trace context from the API into the worker"
+      }
     ],
-    "correct": ["2", "3", "1", "4"],
+    "correct": [
+      "2",
+      "3",
+      "1",
+      "4"
+    ],
     "explanation": "Fix the thing that stops the run finishing first — a job that never completes makes everything downstream unmeasurable. Then smooth the writes so it completes reliably, then correct the stale index, and finally restore correlation so the next problem is diagnosable. Ordering questions on the exam usually reward this shape: restore completion, then correctness, then observability.",
     "docs": [
-      { "title": "Change feed in Azure Cosmos DB", "url": "https://learn.microsoft.com/azure/cosmos-db/change-feed" }
+      {
+        "title": "Change feed in Azure Cosmos DB",
+        "url": "https://learn.microsoft.com/azure/cosmos-db/change-feed"
+      }
     ],
-    "tags": ["architecture", "change-feed", "durable-functions", "resiliency"],
+    "tags": [
+      "architecture",
+      "change-feed",
+      "durable-functions",
+      "resiliency"
+    ],
     "hint": "Something has to run to completion before anything else can be judged. Leave the diagnostics until the pipeline works."
   }
 ]

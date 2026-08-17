@@ -56,7 +56,7 @@
     "options": [
       {
         "id": "A",
-        "text": "A health check path, so unhealthy instances are pulled from load balancing"
+        "text": "A health check path for the load balancer"
       },
       {
         "id": "B",
@@ -199,7 +199,7 @@
     "options": [
       {
         "id": "A",
-        "text": "A Docker Compose file listing both containers, deployed to the app"
+        "text": "A Docker Compose file listing both containers"
       },
       {
         "id": "B",
@@ -247,7 +247,7 @@
     "options": [
       {
         "id": "A",
-        "text": "A retention policy that removes untagged manifests after a set number of days"
+        "text": "A retention policy for untagged manifests"
       },
       {
         "id": "B",
@@ -294,7 +294,7 @@
     "options": [
       {
         "id": "A",
-        "text": "A multi-step task defined in a YAML file with `build`, `cmd` and `push` steps"
+        "text": "A multi-step task defined in YAML"
       },
       {
         "id": "B",
@@ -302,11 +302,11 @@
       },
       {
         "id": "C",
-        "text": "A base image update trigger"
+        "text": "A base image update trigger on the task"
       },
       {
         "id": "D",
-        "text": "An ACR webhook per step"
+        "text": "An ACR webhook for each step"
       }
     ],
     "correct": [
@@ -389,7 +389,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Deploy immutable, uniquely versioned tags such as a build number or digest"
+        "text": "Deploy immutable, uniquely versioned tags"
       },
       {
         "id": "B",
@@ -436,11 +436,11 @@
     "options": [
       {
         "id": "A",
-        "text": "It must be created with VNet integration into a subnet that can reach the endpoint"
+        "text": "It must have VNet integration into a suitable subnet"
       },
       {
         "id": "B",
-        "text": "The app must use external ingress"
+        "text": "The app must be using external ingress"
       },
       {
         "id": "C",
@@ -483,7 +483,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Lower `maxReplicas` so concurrency against the database is bounded"
+        "text": "Lower `maxReplicas` to bound concurrency"
       },
       {
         "id": "B",
@@ -495,7 +495,7 @@
       },
       {
         "id": "D",
-        "text": "Switch to a cron scale rule"
+        "text": "Switch to a cron-based scale rule"
       }
     ],
     "correct": [
@@ -579,7 +579,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Multiple revision mode, with traffic weights of 95 and 5 across the two revisions"
+        "text": "Multiple revision mode with 95/5 traffic weights"
       },
       {
         "id": "B",
@@ -628,7 +628,7 @@
     "options": [
       {
         "id": "A",
-        "text": "System logs, which record image pull failures and probe results"
+        "text": "System logs, for image pull and probe results"
       },
       {
         "id": "B",
@@ -640,7 +640,7 @@
       },
       {
         "id": "D",
-        "text": "The subscription activity log"
+        "text": "The subscription's activity log"
       }
     ],
     "correct": [
@@ -675,7 +675,7 @@
     "options": [
       {
         "id": "A",
-        "text": "The pod is scheduled only where 2Gi is available and is killed if it exceeds 2Gi"
+        "text": "Scheduled only where 2Gi is free; killed above it"
       },
       {
         "id": "B",
@@ -722,7 +722,7 @@
     "options": [
       {
         "id": "A",
-        "text": "The pod is killed and restarts forever; add a startup probe so liveness only begins after startup completes"
+        "text": "It restarts forever; add a startup probe"
       },
       {
         "id": "B",
@@ -817,7 +817,7 @@
     "options": [
       {
         "id": "A",
-        "text": "Add a node pool with the required GPU SKU and matching labels or taints"
+        "text": "Add a node pool with the required GPU SKU"
       },
       {
         "id": "B",
@@ -829,7 +829,7 @@
       },
       {
         "id": "D",
-        "text": "Restart the autoscaler"
+        "text": "Restart the cluster autoscaler"
       }
     ],
     "correct": [
@@ -993,7 +993,7 @@
     "options": [
       {
         "id": "A",
-        "text": "The federated credential linking the Kubernetes service account to the managed identity"
+        "text": "The federated credential on the service account"
       },
       {
         "id": "B",
@@ -1050,11 +1050,11 @@
       },
       {
         "id": "C",
-        "text": "`kubectl top pod`"
+        "text": "`kubectl top pod --all-namespaces`"
       },
       {
         "id": "D",
-        "text": "`kubectl describe node`"
+        "text": "`kubectl describe node --all`"
       }
     ],
     "correct": [
